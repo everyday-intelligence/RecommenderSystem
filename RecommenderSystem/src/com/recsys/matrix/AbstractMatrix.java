@@ -3,8 +3,8 @@ package com.recsys.matrix;
 public abstract class AbstractMatrix {
 
 
-	private final int columnsNumber;
-	private final int rowsNumber;
+	protected final int columnsNumber;
+	protected final int rowsNumber;
 		
 	public AbstractMatrix(int columnsNumber, int rowsNumber) {
 		super();

@@ -14,7 +14,16 @@ public class MapMatrix extends AbstractMatrix {
 
 	@Override
 	protected Double get(int row, int col) {
-		return matrix.get(new MatrixCoordinates(row, col));
+		if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
+			throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
+		}else{
+			Double v = matrix.get(new MatrixCoordinates(row, col));
+			if(v==null){
+				return new Double(0);// si on n'a pas la valeur ça veut dire que c'est un zéro qu"on n'a pas sauvegardé.
+			}else{
+				return v;
+			}
+		}
 	}
 
 	@Override
