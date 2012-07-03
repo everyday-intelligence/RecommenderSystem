@@ -32,8 +32,8 @@ public class MapMatrix extends AbstractMatrix {
 		if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 			throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
 		}else if(val != 0){//si c'est un zero on l'ignore
+			
 			matrix.put(new MatrixCoordinates(row, col),val);			
 		}
 	}
-
 }
