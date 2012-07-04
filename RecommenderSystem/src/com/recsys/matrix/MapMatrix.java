@@ -13,11 +13,12 @@ public class MapMatrix extends AbstractMatrix {
 	}
 
 	@Override
-	protected Double get(int row, int col) {
+	public  Double get(int row, int col) {
 		if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 			throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
 		}else{
-			Double v = matrix.get(new MatrixCoordinates(row, col));
+			MatrixCoordinates cell = new MatrixCoordinates(row, col);
+			Double v = matrix.get(cell);
 			if(v==null){
 				return new Double(0);// si on n'a pas la valeur ça veut dire que c'est un zéro qu"on n'a pas sauvegardé.
 			}else{
@@ -28,11 +29,11 @@ public class MapMatrix extends AbstractMatrix {
 	}
 
 	@Override
-	protected void set(int row, int col, Double val) {
+	public void set(int row, int col, Double val) {
 		if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 			throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
 		}else if(val != 0){//si c'est un zero on l'ignore
-			
+			//System.out.println("insert "+val);
 			matrix.put(new MatrixCoordinates(row, col),val);			
 		}
 	}
