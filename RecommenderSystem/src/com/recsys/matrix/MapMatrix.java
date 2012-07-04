@@ -37,4 +37,8 @@ public class MapMatrix extends AbstractMatrix {
 			matrix.put(new MatrixCoordinates(row, col),val);			
 		}
 	}
+	public int getSize(){
+		return matrix.size();
+	}
+	
 }

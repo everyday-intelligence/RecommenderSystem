@@ -54,6 +54,11 @@ public class MapMatrixTest {
 		Double v = m.get(nbR/2, nbC/2);
 		assertEquals(new Double(20), v);
 	}
+	
+	@Test
+	public final void testSize(){
+		System.out.println("real size = "+m.getSize()+ " instead of "+m.getRowsNumber()*m.getColumnsNumber());
+	}
 
 
 }
