@@ -5,7 +5,7 @@ import java.util.List;
 import com.recsys.Domain.User;
 
 
-public interface RecommendationAlgorithm {
+public interface RecommendationStrategy {
 
 	public List<Recommendation> recommend(User activeUser);
 }
