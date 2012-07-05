@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.recsys.Domain.User;
 
-public class RecommendationSystem {
+public class RecommendationSystem {//on verra ce qui est manque
 
 	private RecommendationStrategy algorithm;
 	private int recommendationsNumber = 10;
