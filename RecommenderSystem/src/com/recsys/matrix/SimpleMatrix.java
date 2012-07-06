@@ -9,12 +9,12 @@ import java.util.HashMap;
 
 public class SimpleMatrix extends AbstractMatrix {
 
-	    protected double[][] matrix;   // rows-by-columns array
+	    protected Double[][] matrix;   // rows-by-columns array
 
 	    // create M-by-N matrix of 0's
 	    public SimpleMatrix(int columns, int rows) {
 	        super(columns,rows);
-	        matrix = new double[columns][rows];
+	        matrix = new Double[columns][rows];
 	    }
 	    
 	    protected Double get(int row, int col){
@@ -302,6 +302,20 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	mat.Recommendation(estimMap, THREASHOLD);
 	    	
 	    }
+
+		@Override
+		public AbstractVector getRow(int rowNumber) {
+			return new SimpleVector(matrix[rowNumber]);
+		}
+
+		@Override
+		public AbstractVector getColumn(int colNumber) {
+			Double[] v = new Double[this.rowsNumber];
+			for(int i=0;i<this.rowsNumber;i++){
+				v[i]=matrix[i][colNumber];
+			}
+			return new SimpleVector(v);
+		}
 		
 	
 }

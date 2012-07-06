@@ -1,6 +1,5 @@
 package com.recsys.matrix;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,5 +43,23 @@ public class MapMatrix extends AbstractMatrix {
 		return matrix.size();
 	}
 
+	// rechercher la ligne entière
+	public MapVector  findRow(int rowNumber) {
+		MapVector v = new MapVector();
+	    for (MatrixCoordinates mc : this.matrix.keySet()) {
+	         if (mc.getRow() == rowNumber)
+	             v.set(mc.getColumn(), matrix.get(mc));
+	    }
+	    return v;
+	}
+	// rechercher la colonne entière
+	public MapVector findColumn(int colNumber) {
+		MapVector v = new MapVector();
+	    for (MatrixCoordinates mc : this.matrix.keySet()) {
+	         if (mc.getColumn() == colNumber)
+	             v.set(mc.getRow(), matrix.get(mc));
+	    }
+	    return v;
+	}
 	
 }

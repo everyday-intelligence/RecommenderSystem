@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapVector {
+public class MapVector extends AbstractVector{
 
 	private Map<Integer,Double> vector = new HashMap<Integer,Double>();
 	
+	@Override
 	public  Double get(int index) {
 		if(index<0){
 			throw(new IndexOutOfBoundsException("coordonnées hors du vecteur"));
@@ -22,7 +23,7 @@ public class MapVector {
 		}
 	}
 
-
+	@Override
 	public void set(int index, Double val) {
 		if(index<0){
 			throw(new IndexOutOfBoundsException("coordonnées hors du vecteur"));

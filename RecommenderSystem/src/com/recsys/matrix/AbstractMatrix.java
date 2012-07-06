@@ -23,6 +23,10 @@ public abstract class AbstractMatrix {
 		return rowsNumber;
 	}
 
+	public abstract AbstractVector getRow(int rowNumber);
+	public abstract AbstractVector getColumn(int colNumber);
+	
+	
 	public MatrixCoordinates size(){
 		return new MatrixCoordinates(rowsNumber, columnsNumber);
 	}
