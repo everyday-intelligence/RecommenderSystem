@@ -9,8 +9,6 @@ import java.util.HashMap;
 
 public class SimpleMatrix extends AbstractMatrix {
 
-	    protected int rows;             // number of rows: represents users
-	    protected int columns;             // number of columns: represents items
 	    protected double[][] matrix;   // rows-by-columns array
 
 	    // create M-by-N matrix of 0's
@@ -32,34 +30,76 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	    
 	    }
 	    
+	    // calculates average for standard deviation
+	    protected int average(ArrayList<Double> list){
+	    	
+	    	double avg=0;
+	    	for(double value: list){
+	    		
+	    		avg+=value;
+	    		
+	    	}
+	    	
+	    	return (int)avg/list.size();
+	    	
+	    }
+	    
+	    
+	    protected double standardDeviation(ArrayList<Double> list){
+	    	
+	    	double sd=0;
+	    	for(double value: list){
+	    		sd+=Math.pow((value-this.average(list)),2);
+	    	}
+	    	
+	    	return Math.sqrt(sd/list.size());
+	    }
+	    
+	    
 	    	    
 	    // Similarity: Pearson's correlation coefficient 
 	    //Le calcul est à faire, c'est juste pour tester
 	    protected Map simPearson(int activeUser){
 	    
-	    double avg=0;
+	    double simPears=0;
 	    int card=0;	
 	    Map<Integer,Double> simMap = new HashMap<Integer,Double>();
-	    
-	    // looking for common items & the average rating of users
+	    ArrayList<Double> user = new ArrayList<Double>();
+	    ArrayList<Double> activeList = new ArrayList<Double>();
+	    // looking for common items 
 	    
 	    for(int rows=0;rows<this.getRowsNumber();rows++){
-	    	for(int cols=0;cols<this.getColumnsNumber();cols++){
+	    	
+	    	if(rows!=activeUser){
 	    		
-	    	if(this.get(cols, rows)!=0){
+	    		for(int cols=0;cols<this.getColumnsNumber();cols++){
+	    			if((this.get(cols, rows)!=0)&&(this.get(cols,activeUser)!=0)){
+	    				
+	    				activeList.add(this.get(cols,activeUser));
+	    				user.add(this.get(cols, rows));
 	    		
-	    		avg+=this.get(cols, rows);
-	    		card++;
+	    			}
 	    		}
-	    	}
+	    		//calculates Pearson's correlation coefficient - simPearson(activeUser,allOtherUsers)
+	    		if(!activeList.isEmpty()){
 	    	
-	    	if(avg!=0){
-	    		avg/=card;
-	    	}
+	    			for(int nb=0;nb<user.size();nb++){
+	    		
+	    				simPears+=(activeList.get(nb)*this.average(activeList))*(user.get(nb)*this.average(user));
+	    		
+	    			}
 	    	
-	    	// SimPearson = ...
-		    
-	    	simMap.put(rows, avg);
+	    			simPears/=(user.size()-1)*this.standardDeviation(activeList)*this.standardDeviation(user);
+	    	
+	    			simMap.put(rows, simPears);
+	    	
+	    		}
+	    	
+	    		user.clear();
+	    		activeList.clear();
+	    		simPears=0;
+	    	
+	    	}
 	    }
 	   
 	    
@@ -78,8 +118,15 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	
 	    	// Sorting the similarity list to get top neighborhood 	    	
 	    	Collections.sort(simList,Collections.reverseOrder());
-	    		    	
 	    	
+	    	
+	    	if(simMap.isEmpty()){
+	    		
+	    		System.out.println("There is no neighbors");
+	    		System.exit(0);
+	    	}
+	    	
+
 	    	// Finding the users with the similarity	    	
 	    	for(int i=0;i<simMap.size();i++){
 	    		
@@ -88,27 +135,28 @@ public class SimpleMatrix extends AbstractMatrix {
 	    		while (keys.hasNext()) {
 	    	    
 	    			int key = Integer.parseInt(keys.next().toString());
-	    	    
+	    			
 	    			if(simMap.get(key).equals(simList.get(i))){
 	    				
-	    				userList.add(key);
-	    				
+	    				if(!userList.contains(key)){
+	    					
+	    					userList.add(key);
+	    				}
 	    			}
 		    		
 	    		}
 	    	
 	    	}
 	    	    
-	    	        			    			    		
-	    	    	    	
+	    	
 	    	// Top-k neighborhood
 	    	for(int comp=k;comp<=userList.size();comp++){
-	    		 
+	    		
 	    		userList.remove(k);
 	    		
 	    	}
 	    	
-	    	
+	    	    	
 			return userList;
 	    	
 	    }
@@ -119,6 +167,12 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	
 	    	double estimation;
 	    	Map<Integer,Double> estimMap = new HashMap<Integer,Double>();
+	    	int card=0;
+	    	
+	    	if(userList.isEmpty()){
+	    		System.out.println("No estimation");
+	    		System.exit(0);
+	    	}
 	    	
 	    	
 	    	for(int cols=0;cols<this.getColumnsNumber();cols++){
@@ -127,13 +181,18 @@ public class SimpleMatrix extends AbstractMatrix {
 	    		if(this.get(cols,activeUser )==0){
 	    			
 	    			for(int user:userList){
-	    			
-	    				estimation+=this.get(cols,user);
-	    				
+	    				if(this.get(cols,user)!=0){
+	    					estimation+=this.get(cols,user);
+	    					card++;
+	    				}
+	    				//System.out.println(this.get(cols,user));
 	    			}
-	    			estimation/=userList.size();
+	    			if(estimation!=0){
+	    			estimation/=card;
 	    			estimMap.put(cols, estimation);
-		    		System.out.println("item :"+cols+" - estimation: "+estimation);	
+	    			}
+	    			card=0;
+		    		//System.out.println("item :"+cols+" - estimation: "+estimation);	
 	    		}
 	    		
 	    		
@@ -143,11 +202,13 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	
 	    }
 	    
-	    
+	    //Recommending items
 	    protected void Recommendation(Map<Integer,Double> estimMap,double THREASHOLD){
 	    	
 	    	Iterator keys = estimMap.keySet().iterator();
 	    	
+	    	
+	    	//looking for items with higher rating
     	    while (keys.hasNext()) {
     	      int key = Integer.parseInt(keys.next().toString());
     	      
@@ -165,7 +226,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    public static void main(String args[]){
 	    	
 	    	// matrix with 3 columns and 2 rows
-	    	SimpleMatrix mat=new SimpleMatrix(2,3);
+	    	SimpleMatrix mat=new SimpleMatrix(3,5);
 	    	// similarity Map
 	    	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
 	    	// estimation Map
@@ -178,13 +239,23 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	System.out.println("Column: "+mat.getColumnsNumber()+" - Rows: "+mat.getRowsNumber());
 	    	//Fill the matrix
 	    		//1st column
-	    	mat.set(0, 0, 0.0);
+	    	mat.set(0, 0, 4.0);
 	    	mat.set(0, 1, 1.0);
-	    	mat.set(0, 2, 3.0);  
+	    	mat.set(0, 2, 3.0);
+	    	mat.set(0, 3, 5.0);
+	    	mat.set(0, 4, 2.0);
 	    		//2nd column
-	    	mat.set(1, 0, 0.0);  
+	    	mat.set(1, 0, 2.0);  
 	    	mat.set(1, 1, 3.0);
-	    	mat.set(1, 2, 4.0);
+	    	mat.set(1, 2, 1.0);
+	    	mat.set(1, 3, 5.0);
+	    	mat.set(1, 4, 0.0);
+	    		//3rd column
+	    	mat.set(2, 0, 0.0);  
+	    	mat.set(2, 1, 3.0);
+	    	mat.set(2, 2, 0.0);
+	    	mat.set(2, 3, 3.0);
+	    	mat.set(2, 4, 2.0);
 	    	
 	    	// Print the matrix
 	    	System.out.println("Matrix:");
@@ -206,6 +277,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    		System.out.println(simMap.get(number));
 	    		
 	    	}
+	    	
 	    	
 	    	//looking for neighborhood
 	    	userList=mat.neighborhood(simMap,2);
