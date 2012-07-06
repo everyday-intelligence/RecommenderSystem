@@ -1,5 +1,6 @@
 package com.recsys.matrix;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,11 @@ public class MapMatrix extends AbstractMatrix {
 			matrix.put(new MatrixCoordinates(row, col),val);			
 		}
 	}
-	public int getSize(){
+	
+	
+	public int getRealSize(){
 		return matrix.size();
 	}
+
 	
 }

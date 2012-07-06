@@ -26,7 +26,7 @@ public class MapMatrixTest {
 			for (int i = 0; i < m.getRowsNumber(); i++) {
 				for (int j = 0; j < m.getRowsNumber(); j++) {
 					Double v = Math.ceil(100*Math.random());
-					if(v>90){//simuler une matrice avec presque 90% des valeurs à zero
+					if(v>0){//simuler une matrice avec presque 90% des valeurs à zero
 						m.set(i, j, v);
 					}else{
 						m.set(i, j, 0d);
@@ -56,9 +56,13 @@ public class MapMatrixTest {
 	}
 	
 	@Test
-	public final void testSize(){
-		System.out.println("real size = "+m.getSize()+ " instead of "+m.getRowsNumber()*m.getColumnsNumber());
+	public final void testRealSize(){
+		System.out.println("real size = "+m.getRealSize()+ " instead of "+m.getRowsNumber()*m.getColumnsNumber());
 	}
 
+	@Test
+	public final void testSize(){
+		System.out.println("matrix size = "+m.size());
+	}
 
 }

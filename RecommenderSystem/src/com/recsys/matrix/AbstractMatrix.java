@@ -23,6 +23,8 @@ public abstract class AbstractMatrix {
 		return rowsNumber;
 	}
 
-	
+	public MatrixCoordinates size(){
+		return new MatrixCoordinates(rowsNumber, columnsNumber);
+	}
 
 }
