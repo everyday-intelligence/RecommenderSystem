@@ -6,6 +6,10 @@ import java.util.Map;
 
 public class MapVector extends AbstractVector{
 
+	public MapVector(int length) {
+		super(length);
+	}
+
 	private Map<Integer,Double> vector = new HashMap<Integer,Double>();
 	
 	@Override
@@ -39,4 +43,35 @@ public class MapVector extends AbstractVector{
 	public int size() {
 		return Collections.max(vector.keySet());
 	}
+
+	@Override
+	public String toString() {
+		return "MapVector [" + (vector != null ? "vector=" + vector.values() : "") + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((vector == null) ? 0 : vector.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MapVector other = (MapVector) obj;
+		if (vector == null) {
+			if (other.vector != null)
+				return false;
+		} else if (!vector.equals(other.vector))
+			return false;
+		return true;
+	}
+	
 }

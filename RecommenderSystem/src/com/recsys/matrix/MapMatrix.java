@@ -47,7 +47,7 @@ public class MapMatrix extends AbstractMatrix {
 
 	@Override
 	public AbstractVector getRow(int rowNumber) {
-		MapVector v = new MapVector();
+		MapVector v = new MapVector(this.rowsNumber);
 	    for (MatrixCoordinates mc : this.matrix.keySet()) {
 	         if (mc.getRow() == rowNumber)
 	             v.set(mc.getColumn(), matrix.get(mc));
@@ -57,7 +57,7 @@ public class MapMatrix extends AbstractMatrix {
 
 	@Override
 	public AbstractVector getColumn(int colNumber) {
-		MapVector v = new MapVector();
+		MapVector v = new MapVector(this.rowsNumber);
 	    for (MatrixCoordinates mc : this.matrix.keySet()) {
 	         if (mc.getColumn() == colNumber)
 	             v.set(mc.getRow(), matrix.get(mc));

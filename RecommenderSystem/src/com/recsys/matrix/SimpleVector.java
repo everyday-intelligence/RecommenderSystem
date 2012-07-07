@@ -5,11 +5,11 @@ public class SimpleVector extends AbstractVector{
 	private Double[] vector;
 
 	public SimpleVector(Double[] vector) {
-		super();
+		super(vector.length);
 		this.vector = vector;
 	}
 	public SimpleVector(int size) {
-		super();
+		super(size);
 		this.vector = new Double[size];
 	}
 	public int size(){

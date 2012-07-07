@@ -10,13 +10,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.MapMatrix;
+import com.recsys.matrix.MapVector;
 
 public class MapMatrixTest {
 
 	MapMatrix m = null;
-	int nbR = 1000;
-	int nbC = 1000;
+	int nbR = 3;
+	int nbC = 3;
 
 
 	@Before
@@ -55,6 +57,7 @@ public class MapMatrixTest {
 		assertEquals(new Double(20), v);
 	}
 	
+	
 	@Test
 	public final void testRealSize(){
 		System.out.println("real size = "+m.getRealSize()+ " instead of "+m.getRowsNumber()*m.getColumnsNumber());
@@ -64,5 +67,22 @@ public class MapMatrixTest {
 	public final void testSize(){
 		System.out.println("matrix size = "+m.size());
 	}
-
+	@Test
+	public final void testGetRow() {
+		System.out.println(m);
+		int row = 1;
+		System.out.println("getting row "+row);
+		AbstractVector v = m.getRow(row);
+		System.out.println("result");
+		System.out.println(v);
+		MapVector expected = new MapVector(m.getColumnsNumber());
+		for(int i=0;i<m.getColumnsNumber();i++){
+			expected.set(i, m.get(1, i));
+		}
+		System.out.println("expected");
+		System.out.println(expected);
+		assertTrue(expected.equals(v));
+	}
+	
+	
 }
