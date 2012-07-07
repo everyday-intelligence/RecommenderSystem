@@ -43,8 +43,10 @@ public class MapMatrix extends AbstractMatrix {
 		return matrix.size();
 	}
 
-	// rechercher la ligne entière
-	public MapVector  findRow(int rowNumber) {
+	
+
+	@Override
+	public AbstractVector getRow(int rowNumber) {
 		MapVector v = new MapVector();
 	    for (MatrixCoordinates mc : this.matrix.keySet()) {
 	         if (mc.getRow() == rowNumber)
@@ -52,8 +54,9 @@ public class MapMatrix extends AbstractMatrix {
 	    }
 	    return v;
 	}
-	// rechercher la colonne entière
-	public MapVector findColumn(int colNumber) {
+
+	@Override
+	public AbstractVector getColumn(int colNumber) {
 		MapVector v = new MapVector();
 	    for (MatrixCoordinates mc : this.matrix.keySet()) {
 	         if (mc.getColumn() == colNumber)
