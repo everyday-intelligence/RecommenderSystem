@@ -58,7 +58,6 @@ public class SimpleMatrix extends AbstractMatrix {
 	    
 	    	    
 	    // Similarity: Pearson's correlation coefficient 
-	    //Le calcul est à faire, c'est juste pour tester
 	    protected Map simPearson(int activeUser){
 	    
 	    double simPears=0;
@@ -82,15 +81,18 @@ public class SimpleMatrix extends AbstractMatrix {
 	    		}
 	    		//calculates Pearson's correlation coefficient - simPearson(activeUser,allOtherUsers)
 	    		if(!activeList.isEmpty()){
-	    	
+	    			
 	    			for(int nb=0;nb<user.size();nb++){
 	    		
 	    				simPears+=(activeList.get(nb)*this.average(activeList))*(user.get(nb)*this.average(user));
 	    		
 	    			}
-	    	
+	    			
 	    			simPears/=(user.size()-1)*this.standardDeviation(activeList)*this.standardDeviation(user);
-	    	
+	    			if(simPears==Float.POSITIVE_INFINITY){
+	    				simPears=0;
+	    			}
+	    			System.out.println("Pearson ="+simPears);
 	    			simMap.put(rows, simPears);
 	    	
 	    		}
@@ -272,7 +274,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	   	    
 	   	    //print similarity map
 	    	System.out.println("Simularity map content");
-	    	for(int number=0;number<simMap.size();number++){
+	    	for(int number=1;number<=simMap.size();number++){
 	    	
 	    		System.out.println(simMap.get(number));
 	    		
