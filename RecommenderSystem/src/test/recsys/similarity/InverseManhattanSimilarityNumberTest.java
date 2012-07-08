@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.recsys.similarity.InverseManhattanSimilarityNumber;
 
-public class TestInverseManhattanSimilarityNumber {
+public class InverseManhattanSimilarityNumberTest {
 
 	private List<Double> l1;
 	private List<Double> l2;

@@ -17,14 +17,14 @@ public class SimpleMatrix extends AbstractMatrix {
 	        matrix = new Double[columns][rows];
 	    }
 	    
-	    protected Double get(int row, int col){
+	    public Double get(int row, int col){
 	  
 	    		return matrix[row][col];
 	    	
 	    }
 	    
 	    // Insert a value in the matrix
-	    protected void set(int row,int col,Double vals){
+	    public void set(int row,int col,Double vals){
 	    	
 	    		matrix[row][col]=vals;
 	    	    
