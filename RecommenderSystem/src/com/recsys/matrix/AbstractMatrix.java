@@ -6,7 +6,7 @@ public abstract class AbstractMatrix {
 	protected final int columnsNumber;
 	protected final int rowsNumber;
 		
-	public AbstractMatrix(int columnsNumber, int rowsNumber) {
+	public AbstractMatrix(int rowsNumber,int columnsNumber) {
 		super();
 		this.columnsNumber = columnsNumber;
 		this.rowsNumber = rowsNumber;

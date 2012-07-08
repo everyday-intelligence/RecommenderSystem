@@ -12,14 +12,14 @@ public class SimpleMatrix extends AbstractMatrix {
 	    protected Double[][] matrix;   // rows-by-columns array
 
 	    // create M-by-N matrix of 0's
-	    public SimpleMatrix(int columns, int rows) {
+	    public SimpleMatrix(int rows,int columns) {
 	        super(rows,columns);
 	        matrix = new Double[rows][columns];
 	    }
 	    
-	    public SimpleMatrix(int columns, int rows, int max){
+	    public SimpleMatrix(int rows, int columns, int max){
 	        super(rows,columns);
-	        matrix = new Double[columns][rows];
+	        matrix = new Double[rows][columns];
 			for (int i = 0; i < this.getRowsNumber(); i++) {
 				for (int j = 0; j < this.getColumnsNumber(); j++) {
 					Double v = Math.ceil(max*Math.random());
@@ -83,10 +83,10 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	if(rows!=activeUser){
 	    		
 	    		for(int cols=0;cols<this.getColumnsNumber();cols++){
-	    			if((this.get(cols, rows)!=0)&&(this.get(cols,activeUser)!=0)){
+	    			if((this.get(rows,cols)!=0)&&(this.get(activeUser,cols)!=0)){
 	    				
-	    				activeList.add(this.get(cols,activeUser));
-	    				user.add(this.get(cols, rows));
+	    				activeList.add(this.get(activeUser,cols));
+	    				user.add(this.get(rows,cols));
 	    		
 	    			}
 	    		}

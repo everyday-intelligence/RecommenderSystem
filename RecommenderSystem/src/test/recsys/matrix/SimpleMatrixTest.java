@@ -19,7 +19,7 @@ import com.recsys.matrix.SimpleVector;
 
 public class SimpleMatrixTest {
 	// matrix with 3 columns and 2 rows
-	SimpleMatrix mat=new SimpleMatrix(3,10,5);
+	SimpleMatrix mat=new SimpleMatrix(10,3,5);
 	// similarity Map
 	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
 	// estimation Map
@@ -32,7 +32,7 @@ public class SimpleMatrixTest {
 	@Before
 	public void InitialisationTest() throws Exception {
 		
-    	
+    	System.out.println(mat.size());
     	
     	// Print the matrix
     	System.out.println("Matrix:");
