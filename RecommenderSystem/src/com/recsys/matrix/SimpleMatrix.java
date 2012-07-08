@@ -24,8 +24,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	        matrix = new Double[rows][columns];
 			for (int i = 0; i < this.getRowsNumber(); i++) {
 				for (int j = 0; j < this.getColumnsNumber(); j++) {
-					//Double v = Math.ceil(max*Math.random());
-					Double v = new Double(i%2+j);
+					Double v = Math.floor(max*Math.random())%4;
 					matrix[i][j] = v;
 				}
 			}
