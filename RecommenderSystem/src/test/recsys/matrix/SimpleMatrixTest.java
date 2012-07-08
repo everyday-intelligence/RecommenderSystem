@@ -2,67 +2,86 @@ package test.recsys.matrix;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.MapMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.matrix.SimpleMatrix;
+import com.recsys.matrix.SimpleVector;
 
 public class SimpleMatrixTest {
-	SimpleMatrix m = null;
-	int nbR = 3;
-	int nbC = 3;
+	// matrix with 3 columns and 2 rows
+	SimpleMatrix mat=new SimpleMatrix(3,10,5);
+	// similarity Map
+	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
+	// estimation Map
+	Map<Integer,Double> estimMap = new HashMap<Integer,Double>();
+	// user list array
+	ArrayList<Integer> userList = new ArrayList<Integer>();
+	//threashold used to recommend high ranked items
+	double THREASHOLD=5;
 
 	@Before
-	public void setUp() throws Exception {
-		m = new SimpleMatrix(nbR, nbC);
-		for (int i = 0; i < m.getRowsNumber(); i++) {
-			for (int j = 0; j < m.getRowsNumber(); j++) {
-				Double v = Math.ceil(100*Math.random());
-				if(v>0){//simuler une matrice avec presque 90% des valeurs à zero
-					m.set(i, j, v);
-				}else{
-					m.set(i, j, 0d);
-				}
-			}
-		}
-	m.set(nbR/2, nbC/2, new Double(20));
+	public void InitialisationTest() throws Exception {
+		
+    	
+    	
+    	// Print the matrix
+    	System.out.println("Matrix:");
+    		for(int rows=0;rows<mat.getRowsNumber();rows++){
+    			for(int cols=0;cols<mat.getColumnsNumber();cols++){
+    			System.out.print(mat.get(rows,cols)+"\t");
+    		}
+    		System.out.println();
+    	}
+    	
+   	    
+    	
+    	
+    	
+    	
+    	
+		
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public final void testAverage() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testStandardDeviation() {
-		fail("Not yet implemented"); // TODO
-	}
+	
 
 	@Test
 	public final void testSimPearson() {
-		fail("Not yet implemented"); // TODO
+		simMap = mat.simPearson(0);
+		System.out.println("simPearson = "+simMap);
 	}
 
 	@Test
 	public final void testNeighborhood() {
-		fail("Not yet implemented"); // TODO
+		//looking for neighborhood
+    	userList=mat.neighborhood(simMap,2);
+    	System.out.println("Neighborhood list");	    	
+    	System.out.println(userList);
 	}
 
 	@Test
 	public final void testEstimation() {
-		fail("Not yet implemented"); // TODO
+		//calculate estimated ratings for unrated items
+    	System.out.println("Rating estimation");
+    	estimMap=mat.estimation(0, userList);
+    	System.out.println(estimMap);
+    	
 	}
 
 	@Test
 	public final void testRecommendation() {
-		fail("Not yet implemented"); // TODO
-	}
+		//print items recommended by the system
+    	System.out.println("Recommending Items");	
+    	mat.Recommendation(estimMap, THREASHOLD);
+    }
 
 }

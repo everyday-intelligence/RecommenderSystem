@@ -13,8 +13,19 @@ public class SimpleMatrix extends AbstractMatrix {
 
 	    // create M-by-N matrix of 0's
 	    public SimpleMatrix(int columns, int rows) {
-	        super(columns,rows);
+	        super(rows,columns);
+	        matrix = new Double[rows][columns];
+	    }
+	    
+	    public SimpleMatrix(int columns, int rows, int max){
+	        super(rows,columns);
 	        matrix = new Double[columns][rows];
+			for (int i = 0; i < this.getRowsNumber(); i++) {
+				for (int j = 0; j < this.getColumnsNumber(); j++) {
+					Double v = Math.ceil(max*Math.random());
+					matrix[i][j] = v;
+				}
+			}
 	    }
 	    
 	    public Double get(int row, int col){
@@ -31,7 +42,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    }
 	    
 	    // calculates average for standard deviation
-	    protected int average(ArrayList<Double> list){
+	    public int average(ArrayList<Double> list){
 	    	
 	    	double avg=0;
 	    	for(double value: list){
@@ -58,7 +69,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    
 	    	    
 	    // Similarity: Pearson's correlation coefficient 
-	    protected Map simPearson(int activeUser){
+	    public Map simPearson(int activeUser){
 	    
 	    double simPears=0;
 	    int card=0;	
@@ -111,7 +122,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	        
 	    
 	    // Looking for Neighborhood
-	    protected ArrayList<Integer> neighborhood(Map<Integer,Double> simMap,int k){
+	    public ArrayList<Integer> neighborhood(Map<Integer,Double> simMap,int k){
 	    	
 	    	// Similarity List
 	    	ArrayList<Double> simList=new ArrayList<Double>(simMap.values());
@@ -165,7 +176,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    
 	    
 	    // Rating estimation    
-	    protected Map<Integer,Double> estimation(int activeUser,ArrayList<Integer> userList){
+	    public Map<Integer,Double> estimation(int activeUser,ArrayList<Integer> userList){
 	    	
 	    	double estimation;
 	    	Map<Integer,Double> estimMap = new HashMap<Integer,Double>();
@@ -205,7 +216,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    }
 	    
 	    //Recommending items
-	    protected void Recommendation(Map<Integer,Double> estimMap,double THREASHOLD){
+	    public void Recommendation(Map<Integer,Double> estimMap,double THREASHOLD){
 	    	
 	    	Iterator keys = estimMap.keySet().iterator();
 	    	
