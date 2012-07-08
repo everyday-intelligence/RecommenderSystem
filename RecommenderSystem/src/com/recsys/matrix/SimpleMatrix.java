@@ -102,7 +102,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    			}
 	    			
 	    			simPears/=(user.size()-1)*this.standardDeviation(activeList)*this.standardDeviation(user);
-	    			if(simPears==Float.POSITIVE_INFINITY){
+	    			if((simPears==Float.POSITIVE_INFINITY)||(simPears==Float.NEGATIVE_INFINITY)){
 	    				simPears=0;
 	    			}
 	    			System.out.println("Pearson ="+simPears);
@@ -241,7 +241,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    public static void main(String args[]){
 	    	
 	    	// matrix with 3 columns and 2 rows
-	    	SimpleMatrix mat=new SimpleMatrix(3,5);
+	    	SimpleMatrix mat=new SimpleMatrix(5,3);
 	    	// similarity Map
 	    	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
 	    	// estimation Map
@@ -255,29 +255,29 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	//Fill the matrix
 	    		//1st column
 	    	mat.set(0, 0, 4.0);
-	    	mat.set(0, 1, 1.0);
-	    	mat.set(0, 2, 3.0);
-	    	mat.set(0, 3, 5.0);
-	    	mat.set(0, 4, 2.0);
+	    	mat.set(1, 0, 1.0);
+	    	mat.set(2, 0, 3.0);
+	    	mat.set(3, 0, 5.0);
+	    	mat.set(4, 0, 2.0);
 	    		//2nd column
-	    	mat.set(1, 0, 2.0);  
+	    	mat.set(0, 1, 2.0);  
 	    	mat.set(1, 1, 3.0);
-	    	mat.set(1, 2, 1.0);
-	    	mat.set(1, 3, 5.0);
-	    	mat.set(1, 4, 0.0);
+	    	mat.set(2, 1, 1.0);
+	    	mat.set(3, 1, 5.0);
+	    	mat.set(4, 1, 0.0);
 	    		//3rd column
-	    	mat.set(2, 0, 0.0);  
-	    	mat.set(2, 1, 3.0);
+	    	mat.set(0, 2, 0.0);  
+	    	mat.set(1, 2, 3.0);
 	    	mat.set(2, 2, 0.0);
-	    	mat.set(2, 3, 3.0);
-	    	mat.set(2, 4, 2.0);
+	    	mat.set(3, 2, 3.0);
+	    	mat.set(4, 2, 2.0);
 	    	
 	    	// Print the matrix
 	    	System.out.println("Matrix:");
 	    		for(int rows=0;rows<mat.getRowsNumber();rows++){
 	    			for(int cols=0;cols<mat.getColumnsNumber();cols++){
 	    		    System.out.print("["+cols+","+rows+"]");	
-	    			System.out.print(mat.get(cols,rows)+" ");
+	    			System.out.print(mat.get(rows,cols)+" ");
 	    		}
 	    		System.out.println();
 	    	}
