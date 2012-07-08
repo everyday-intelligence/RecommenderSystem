@@ -19,7 +19,7 @@ import com.recsys.matrix.SimpleVector;
 
 public class SimpleMatrixTest {
 	// matrix with 3 columns and 2 rows
-	SimpleMatrix mat=new SimpleMatrix(10,3,5);
+	SimpleMatrix mat=new SimpleMatrix(10,5,5);
 	// similarity Map
 	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
 	// estimation Map
@@ -62,14 +62,22 @@ public class SimpleMatrixTest {
 
 	@Test
 	public final void testNeighborhood() {
+		simMap = mat.simPearson(0);
+		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,2);
+    	userList=mat.neighborhood(simMap,4);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 	}
 
 	@Test
 	public final void testEstimation() {
+		simMap = mat.simPearson(0);
+		System.out.println("simPearson = "+simMap);
+		//looking for neighborhood
+    	userList=mat.neighborhood(simMap,4);
+    	System.out.println("Neighborhood list");	    	
+    	System.out.println(userList);
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");
     	estimMap=mat.estimation(0, userList);
@@ -79,6 +87,16 @@ public class SimpleMatrixTest {
 
 	@Test
 	public final void testRecommendation() {
+		simMap = mat.simPearson(0);
+		System.out.println("simPearson = "+simMap);
+		//looking for neighborhood
+    	userList=mat.neighborhood(simMap,2);
+    	System.out.println("Neighborhood list");	    	
+    	System.out.println(userList);
+		//calculate estimated ratings for unrated items
+    	System.out.println("Rating estimation");
+    	estimMap=mat.estimation(0, userList);
+    	System.out.println(estimMap);
 		//print items recommended by the system
     	System.out.println("Recommending Items");	
     	mat.Recommendation(estimMap, THREASHOLD);

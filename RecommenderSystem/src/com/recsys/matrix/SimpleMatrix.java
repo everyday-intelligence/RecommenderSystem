@@ -17,12 +17,15 @@ public class SimpleMatrix extends AbstractMatrix {
 	        matrix = new Double[rows][columns];
 	    }
 	    
+	    
+	    //matrice random avec les cellules bornées à max
 	    public SimpleMatrix(int rows, int columns, int max){
 	        super(rows,columns);
 	        matrix = new Double[rows][columns];
 			for (int i = 0; i < this.getRowsNumber(); i++) {
 				for (int j = 0; j < this.getColumnsNumber(); j++) {
-					Double v = Math.ceil(max*Math.random());
+					//Double v = Math.ceil(max*Math.random());
+					Double v = new Double(i%2+j);
 					matrix[i][j] = v;
 				}
 			}
@@ -191,11 +194,11 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	for(int cols=0;cols<this.getColumnsNumber();cols++){
 	    		estimation=0;
 	    		
-	    		if(this.get(cols,activeUser )==0){
+	    		if(this.get(activeUser,cols)==0){
 	    			
 	    			for(int user:userList){
-	    				if(this.get(cols,user)!=0){
-	    					estimation+=this.get(cols,user);
+	    				if(this.get(user,cols)!=0){
+	    					estimation+=this.get(user,cols);
 	    					card++;
 	    				}
 	    				//System.out.println(this.get(cols,user));
