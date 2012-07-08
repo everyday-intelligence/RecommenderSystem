@@ -20,6 +20,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		this.users = users;
 		this.items = items;
 		dataMatrix = MatrixFactory.createMatrix(users.size(), items.size());
+		//remplir la matrice avec les historiques des utilisateurs
 	}
 
 	@Override
