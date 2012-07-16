@@ -28,6 +28,7 @@ public class SimpleMatrixTest {
 	ArrayList<Integer> userList = new ArrayList<Integer>();
 	//threashold used to recommend high ranked items
 	double THREASHOLD=5;
+	int ACTIVEUSER=0;
 
 	@Before
 	public void InitialisationTest() throws Exception {
@@ -56,46 +57,46 @@ public class SimpleMatrixTest {
 
 	@Test
 	public final void testSimPearson() {
-		simMap = mat.simPearson(0);
+		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 	}
 
 	@Test
 	public final void testNeighborhood() {
-		simMap = mat.simPearson(0);
+		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,4);
+    	userList=mat.neighborhood(simMap,4,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 	}
 
 	@Test
 	public final void testEstimation() {
-		simMap = mat.simPearson(0);
+		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,4);
+    	userList=mat.neighborhood(simMap,4,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");
-    	estimMap=mat.estimation(0, userList);
+    	estimMap=mat.estimation(ACTIVEUSER, userList);
     	System.out.println(estimMap);
     	
 	}
 
 	@Test
 	public final void testRecommendation() {
-		simMap = mat.simPearson(0);
+		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,2);
+    	userList=mat.neighborhood(simMap,2,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");
-    	estimMap=mat.estimation(0, userList);
+    	estimMap=mat.estimation(ACTIVEUSER, userList);
     	System.out.println(estimMap);
 		//print items recommended by the system
     	System.out.println("Recommending Items");	
