@@ -265,8 +265,8 @@ public class SimpleMatrix extends AbstractMatrix {
 	    // main 
 	    public static void main(String args[]){
 	    	
-	    	// matrix with 3 columns and 2 rows
-	    	SimpleMatrix mat=new SimpleMatrix(10,5);
+	    	// matrix with 10 columns and 20 rows
+	    	SimpleMatrix mat=new SimpleMatrix(20,10);
 	    	// similarity Map
 	    	Map<Integer,Double> simMap = new HashMap<Integer,Double>();
 	    	// estimation Map
@@ -275,7 +275,10 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	ArrayList<Integer> userList = new ArrayList<Integer>();
 	    	//threashold used to recommend high ranked items
 	    	double THREASHOLD=5;
+	    	//Active User Id
 	    	int ACTIVEUSER=0;
+	    	//Top K neighbors
+	    	int NEIGHBORNUMBER=5;
 	    	
 	    	System.out.println("Column: "+mat.getColumnsNumber()+" - Rows: "+mat.getRowsNumber());
 	    	//Fill the matrix
@@ -331,7 +334,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    	
 	    	
 	    	//looking for neighborhood
-	    	userList=mat.neighborhood(simMap,2,ACTIVEUSER);
+	    	userList=mat.neighborhood(simMap,NEIGHBORNUMBER,ACTIVEUSER);
 	    	System.out.println("Neighborhood list");
 	    	
 	    	for(int number=0;number<userList.size();number++){

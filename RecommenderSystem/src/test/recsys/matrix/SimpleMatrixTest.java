@@ -29,6 +29,7 @@ public class SimpleMatrixTest {
 	//threashold used to recommend high ranked items
 	double THREASHOLD=5;
 	int ACTIVEUSER=0;
+	int NEIGHBORNUMBER=4;
 
 	@Before
 	public void InitialisationTest() throws Exception {
@@ -66,7 +67,7 @@ public class SimpleMatrixTest {
 		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,4,ACTIVEUSER);
+    	userList=mat.neighborhood(simMap,NEIGHBORNUMBER,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 	}
@@ -76,7 +77,7 @@ public class SimpleMatrixTest {
 		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,4,ACTIVEUSER);
+    	userList=mat.neighborhood(simMap,NEIGHBORNUMBER,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 		//calculate estimated ratings for unrated items
@@ -91,7 +92,7 @@ public class SimpleMatrixTest {
 		simMap = mat.simPearson(ACTIVEUSER);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=mat.neighborhood(simMap,2,ACTIVEUSER);
+    	userList=mat.neighborhood(simMap,NEIGHBORNUMBER,ACTIVEUSER);
     	System.out.println("Neighborhood list");	    	
     	System.out.println(userList);
 		//calculate estimated ratings for unrated items
