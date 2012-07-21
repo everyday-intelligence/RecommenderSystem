@@ -26,6 +26,12 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		//remplir la matrice avec les historiques des utilisateurs
 	}
 
+	
+	public AbstractMatrix getDataMatrix(){
+		return dataMatrix;
+	}
+	
+	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
 		int K=3;
