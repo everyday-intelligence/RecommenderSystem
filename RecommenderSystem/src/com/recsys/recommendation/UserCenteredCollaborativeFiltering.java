@@ -27,10 +27,6 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 	}
 
 	
-	public AbstractMatrix getDataMatrix(){
-		return dataMatrix;
-	}
-	
 	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
