@@ -55,7 +55,7 @@ public class SimpleMatrixTest {
 	}
 
 	
-
+/*
 	@Test
 	public final void testSimPearson() {
 		simMap = mat.simPearson(ACTIVEUSER);
@@ -103,5 +103,5 @@ public class SimpleMatrixTest {
     	System.out.println("Recommending Items");	
     	mat.Recommendation(estimMap, THREASHOLD);
     }
-
+*/
 }

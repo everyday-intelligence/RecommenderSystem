@@ -12,8 +12,8 @@ public abstract class AbstractMatrix {
 		this.rowsNumber = rowsNumber;
 	}
 	
-	protected abstract Double get(int row, int col);
-	protected abstract void set(int row, int col, Double vals);
+	public abstract Double get(int row, int col);
+	public abstract void set(int row, int col, Double vals);
 
 	public int getColumnsNumber() {
 		return columnsNumber;
