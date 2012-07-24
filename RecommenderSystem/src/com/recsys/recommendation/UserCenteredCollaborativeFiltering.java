@@ -51,14 +51,14 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		
 		//Recommendation
 	
-    	Set<Item> keyss= estimMap.keySet();
+    	Set<Item> keys= estimMap.keySet();
     	
     	//looking for items with higher rating
 	
-	    for(Item clé:keyss){  
-	    	if(estimMap.get(clé)>=THREASHOLD/2){
+	    for(Item key:keys){  
+	    	if(estimMap.get(key)>=THREASHOLD/2){
 		    	  
-		    	  recommendationList.add(new Recommendation(this.items.get(items.indexOf(clé)),estimMap.get(clé)));
+		    	  recommendationList.add(new Recommendation(this.items.get(items.indexOf(key)),estimMap.get(key)));
 		    	  
 		      }
 	    }
