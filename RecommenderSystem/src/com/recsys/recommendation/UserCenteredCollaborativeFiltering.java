@@ -2,7 +2,6 @@ package com.recsys.recommendation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,11 +50,11 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		estimMap=estimation(activeUser,userList);
 		
 		//Recommendation
-		Iterator keys = estimMap.keySet().iterator();
+	
     	Set<Item> keyss= estimMap.keySet();
     	
     	//looking for items with higher rating
-	    //while (keys.hasNext()) {
+	
 	    for(Item clé:keyss){  
 	    	if(estimMap.get(clé)>=THREASHOLD/2){
 		    	  
@@ -63,12 +62,6 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		    	  
 		      }
 	    }
-	    //	int key = Integer.parseInt(keys.next().toString());
-	      
-	      
-	      
-	      
-	    //}
 		// créer le voisinage
 		//estimer
 		//prédire les notes
