@@ -1,6 +1,6 @@
 package com.recsys.Domain;
 
-public abstract class Item {
+public /*abstract*/ class Item {
 
 	private long idItem;
 

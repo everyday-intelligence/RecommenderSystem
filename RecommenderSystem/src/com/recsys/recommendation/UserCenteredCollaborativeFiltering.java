@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
@@ -26,11 +27,13 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		//remplir la matrice avec les historiques des utilisateurs
 	}
 
-	
+	public AbstractMatrix getDataMatrix(){
+		return this.dataMatrix;
+	}	
 	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
-		int K=3;
+		int K=2;
 		double THREASHOLD=5;
 		// similarity Map
     	Map<User,Double> simMap = new HashMap<User,Double>();
@@ -41,29 +44,31 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	// RecommendationList
     	List<Recommendation> recommendationList = new ArrayList<Recommendation>();
     	//Call simPearson method
-		simMap=simPearson(activeUser.getIdUser());
+		simMap=simPearson(activeUser);
 		//Call neighborhood method
-		userList=neighborhood(simMap,K,activeUser.getIdUser());
+		userList=neighborhood(simMap,K,activeUser);
 		//Call estimation method
-		estimMap=estimation(activeUser.getIdUser(),userList);
+		estimMap=estimation(activeUser,userList);
 		
 		//Recommendation
 		Iterator keys = estimMap.keySet().iterator();
-    	
+    	Set<Item> keyss= estimMap.keySet();
     	
     	//looking for items with higher rating
-	    while (keys.hasNext()) {
-	      int key = Integer.parseInt(keys.next().toString());
-	      
-	      if(estimMap.get(key)>=THREASHOLD/2){
-	    	  
-	    	  System.out.println("item: "+key + " - rating: " + estimMap.get(key));  
-	    	  recommendationList.add(new Recommendation(this.items.get(key),estimMap.get(key)));
-	    	  
-	      }
-	      
-	      
+	    //while (keys.hasNext()) {
+	    for(Item clé:keyss){  
+	    	if(estimMap.get(clé)>=THREASHOLD/2){
+		    	  
+		    	  recommendationList.add(new Recommendation(this.items.get(items.indexOf(clé)),estimMap.get(clé)));
+		    	  
+		      }
 	    }
+	    //	int key = Integer.parseInt(keys.next().toString());
+	      
+	      
+	      
+	      
+	    //}
 		// créer le voisinage
 		//estimer
 		//prédire les notes
@@ -77,7 +82,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     
     	    
     // Similarity: Pearson's correlation coefficient 
-    public Map<User,Double> simPearson(long activeUserId){
+    public Map<User,Double> simPearson(User activeUser){
     
     double simPears=0;
     int card=0;	
@@ -88,12 +93,12 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     
     for(int rows=0;rows<this.dataMatrix.getRowsNumber();rows++){
     	
-    	if(rows!=this.users.indexOf(activeUserId)){
+    	if(rows!=this.users.indexOf(activeUser)){
     		
     		for(int cols=0;cols<this.dataMatrix.getColumnsNumber();cols++){
-    			if((this.dataMatrix.get(rows,cols)!=0)&&(this.dataMatrix.get(this.users.indexOf(activeUserId),cols)!=0)){
+    			if((this.dataMatrix.get(rows,cols)!=0)&&(this.dataMatrix.get(this.users.indexOf(activeUser),cols)!=0)){
     				
-    				activeList.add(this.dataMatrix.get(this.users.indexOf(activeUserId),cols));
+    				activeList.add(this.dataMatrix.get(this.users.indexOf(activeUser),cols));
     				user.add(this.dataMatrix.get(rows,cols));
     			
     		
@@ -133,7 +138,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
         
     
     // Looking for Neighborhood
-    public ArrayList<User> neighborhood(Map<User,Double> simMap,int k,long activeUserId){
+    public ArrayList<User> neighborhood(Map<User,Double> simMap,int k,User activeUser){
     	
     	// Similarity List
     	ArrayList<Double> simList=new ArrayList<Double>(simMap.values());
@@ -154,8 +159,10 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	}
     	
     	
-    	while(this.dataMatrix.get(this.users.indexOf(activeUserId),col)==0){
+    	while(this.dataMatrix.get(this.users.indexOf(activeUser),col)==0){
+    		
     		col++;
+    		
     	}
     	
     	// Sorting the similarity list to get top neighborhood 
@@ -165,15 +172,15 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 	    int user=0;
     		    
 	    for(int i=1;i<simList.size();i++){
-	    	
-    		//if the similarity is equal to infinity, comparing matrix value
+	    
+	    	//if the similarity is equal to infinity, comparing matrix value
     		if((max==Double.POSITIVE_INFINITY)&&(simList.get(i)==Double.POSITIVE_INFINITY)){
-    			if(this.dataMatrix.get(this.users.indexOf(userList.get(user).getIdUser()),col)>this.dataMatrix.get(this.users.indexOf(userList.get(i).getIdUser()),col)){
-    				user=i;
-    				max=simList.get(user);
-    			}else {
+    			
+    			if(this.dataMatrix.get(this.users.indexOf(userList.get(user)),col)<this.dataMatrix.get(this.users.indexOf(userList.get(i)),col)){
+    			
     				max=simList.get(userList.indexOf(userList.get(i)));
     				user=userList.indexOf(userList.get(i));
+    				    			
     			}
     		}
     		else
@@ -185,16 +192,13 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     		
     	}
     	
-    	neighborList.add(this.users.get(this.users.indexOf(userList.get(user).getIdUser())));
+    	neighborList.add(this.users.get(this.users.indexOf(userList.get(user))));
+    	
     	userList.remove(user);
     	simList.remove(user);
     	
     	}
     	   	 
-    	
-    	
-    
-    	
     	// Top-k neighborhood
     	
     		while(neighborList.size()>k){
@@ -210,7 +214,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     
     
     // Rating estimation    
-    public Map<Item,Double> estimation(long activeUserId,ArrayList<User> userList){
+    public Map<Item,Double> estimation(User activeUser,ArrayList<User> userList){
     	
     	double estimation;
     	Map<Item,Double> estimMap = new HashMap<Item,Double>();
@@ -225,11 +229,11 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	for(int cols=0;cols<this.dataMatrix.getColumnsNumber();cols++){
     		estimation=0;
     		
-    		if(this.dataMatrix.get(this.users.indexOf(activeUserId),cols)==0){
+    		if(this.dataMatrix.get(this.users.indexOf(activeUser),cols)==0){
     			
     			for(User user:userList){
-    				if(this.dataMatrix.get(this.users.indexOf(user.getIdUser()),cols)!=0){
-    					estimation+=this.dataMatrix.get(this.users.indexOf(user.getIdUser()),cols);
+    				if(this.dataMatrix.get(this.users.indexOf(user),cols)!=0){
+    					estimation+=this.dataMatrix.get(this.users.indexOf(user),cols);
     					card++;
     				}
     				//System.out.println(this.get(cols,user));
