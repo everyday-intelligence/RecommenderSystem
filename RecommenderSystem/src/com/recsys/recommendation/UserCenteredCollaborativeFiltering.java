@@ -62,6 +62,11 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		    	  
 		      }
 	    }
+	    for(int col=0;col<this.dataMatrix.getColumnsNumber();col++){
+	   		if(this.dataMatrix.get(this.users.indexOf(activeUser), col)>=THREASHOLD/2){
+	    		recommendationList.add(new Recommendation(this.items.get(col),this.dataMatrix.get(this.users.indexOf(activeUser), col)));
+	    	}
+	    }
 		// créer le voisinage
 		//estimer
 		//prédire les notes

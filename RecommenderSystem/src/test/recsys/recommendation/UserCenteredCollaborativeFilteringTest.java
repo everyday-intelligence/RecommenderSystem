@@ -28,10 +28,10 @@ public class UserCenteredCollaborativeFilteringTest {
 	Item i1=new Item(000);
 	Item i2=new Item(001);
 	Item i3=new Item(002);
-	
+	Item i4=new Item(003);
 	
 	private List<User> users = new ArrayList<User>(){{add(u1);add(u2);add(u3);add(u4);add(u5);}};
-	private List<Item> items = new ArrayList<Item>(){{add(i1);add(i2);add(i3);}};
+	private List<Item> items = new ArrayList<Item>(){{add(i1);add(i2);add(i3);add(i4);}};
 		
 	UserCenteredCollaborativeFiltering filtre=new UserCenteredCollaborativeFiltering(users,items);
 	
@@ -52,24 +52,32 @@ public class UserCenteredCollaborativeFilteringTest {
 		//Initialisation
 		System.out.println();
 		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
-		
+			//1st column
 		filtre.getDataMatrix().set(0, 0, 4.0);
 		filtre.getDataMatrix().set(1, 0, 4.0);
 		filtre.getDataMatrix().set(2, 0, 3.0);
 		filtre.getDataMatrix().set(3, 0, 5.0);
-		filtre.getDataMatrix().set(4, 0, 2.0);
+		filtre.getDataMatrix().set(4, 0, 4.0);
     		//2nd column
 		filtre.getDataMatrix().set(0, 1, 2.0);  
 		filtre.getDataMatrix().set(1, 1, 4.0);
 		filtre.getDataMatrix().set(2, 1, 3.0);
 		filtre.getDataMatrix().set(3, 1, 5.0);
-		filtre.getDataMatrix().set(4, 1, 0.0);
+		filtre.getDataMatrix().set(4, 1, 3.5);
     		//3rd column
 		filtre.getDataMatrix().set(0, 2, 0.0);  
 		filtre.getDataMatrix().set(1, 2, 4.0);
 		filtre.getDataMatrix().set(2, 2, 3.0);
 		filtre.getDataMatrix().set(3, 2, 5.0);
-		filtre.getDataMatrix().set(4, 2, 2.0);
+		filtre.getDataMatrix().set(4, 2, 4.0);
+			//4th column
+		filtre.getDataMatrix().set(0, 3, 2.0);
+		filtre.getDataMatrix().set(1, 3, 2.0);
+		filtre.getDataMatrix().set(2, 3, 3.0);
+		filtre.getDataMatrix().set(3, 3, 1.0);
+		filtre.getDataMatrix().set(4, 3, 5.0);
+    	
+		
 		
 		System.out.println("Matrix:");
 		for(int row=0;row<filtre.getDataMatrix().getRowsNumber();row++){
