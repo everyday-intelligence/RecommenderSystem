@@ -112,14 +112,15 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     			}
     			
     			simPears/=(user.size()-1)*Mathematics.standardDeviation(activeList)*Mathematics.standardDeviation(user);
-    			if(simPears==Double.NEGATIVE_INFINITY){
-    				simPears=0;
-    			}
-    			
-    			
-    			System.out.println("Pearson ="+simPears);
+    			//if similarity is infinite: there is no proof of similarity
+    			if(simPears!=Double.NEGATIVE_INFINITY&&simPears!=Double.POSITIVE_INFINITY){
+    				//simPears=0;
+    			System.out.println("SimPearson User"+this.users.get(rows).getIdUser()+" = "+simPears);
     			simMap.put(this.users.get(rows), simPears);
-    	
+    			}
+    			else{
+    				System.out.println("SimPearson User"+this.users.get(rows).getIdUser()+" = 0");
+    			}
     		}
     	
     		user.clear();
@@ -170,22 +171,22 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 	    int user=0;
     		    
 	    for(int i=1;i<simList.size();i++){
-	    
-	    	//if the similarity is equal to infinity, comparing matrix value
-    		if((max==Double.POSITIVE_INFINITY)&&(simList.get(i)==Double.POSITIVE_INFINITY)){
-    			
-    			if(this.dataMatrix.get(this.users.indexOf(userList.get(user)),col)<this.dataMatrix.get(this.users.indexOf(userList.get(i)),col)){
-    			
-    				max=simList.get(userList.indexOf(userList.get(i)));
-    				user=userList.indexOf(userList.get(i));
-    				    			
-    			}
-    		}
-    		else
-    			//else comparing simList values
+	
+    			// comparing simList values
     		if(max<simList.get(i)){
     				max=simList.get(i);
     				user=i;
+    		}
+    		else 
+    		{	//if similarity is equal
+    			if(max==simList.get(i)){
+    					//comparing dataMatrix value to find the top neighbor
+    				if(this.dataMatrix.get(user, col)<this.dataMatrix.get(i, col)){
+    					max=simList.get(i);
+        				user=i;
+    				}
+    			}
+    			
     		}
     		
     	}
@@ -234,14 +235,14 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     					estimation+=this.dataMatrix.get(this.users.indexOf(user),cols);
     					card++;
     				}
-    				//System.out.println(this.get(cols,user));
+    				
     			}
     			if(estimation!=0){
     			estimation/=card;
     			estimMap.put(this.items.get(cols), estimation);
     			}
     			card=0;
-	    		//System.out.println("item :"+cols+" - estimation: "+estimation);	
+	    		
     		}
     		
     		
@@ -251,28 +252,5 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	
     }
     
-  /*  //Recommending items
-    public void Recommendation(Map<Integer,Double> estimMap,double THREASHOLD){
-    	
-    	Iterator keys = estimMap.keySet().iterator();
-    	
-    	
-    	//looking for items with higher rating
-	    while (keys.hasNext()) {
-	      int key = Integer.parseInt(keys.next().toString());
-	      
-	      if(estimMap.get(key)>=THREASHOLD/2){
-	    	  
-	    	  System.out.println("item: "+key + " - rating: " + estimMap.get(key));  
-	      }
-	      
-	      
-	    }
-    	
-    }
-    */
-	
-	
-	
 
 }
