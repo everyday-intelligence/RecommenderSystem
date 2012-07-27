@@ -25,6 +25,15 @@ public class Recommendation implements Comparable {
 		Recommendation r = (Recommendation)o;
 		return (int) (this.recommendationValue - r.getRecommendationValue());
 	}
+
+	@Override
+	public String toString() {
+		return "Recommendation ["
+				+ (recommendedItem != null ? "recommendedItem="
+						+ recommendedItem + ", " : "")
+				+ (recommendationValue != null ? "recommendationValue="
+						+ recommendationValue : "") + "]";
+	}
 	
 	
 }

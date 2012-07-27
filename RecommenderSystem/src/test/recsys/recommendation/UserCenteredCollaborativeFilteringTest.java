@@ -98,11 +98,12 @@ public class UserCenteredCollaborativeFilteringTest {
 
 	@Test
 	public void testRecommend() {
-		
+		System.out.println("----------------Test Recommend----------------------");
+
 		recommendationList=filtre.recommend(activeUser);
 		
 		for(Recommendation recom:recommendationList){
-			System.out.println("Item Id: "+recom.getRecommendedItem().getIdItem()+" - Value: "+recom.getRecommendationValue());
+			System.out.println(recom.toString());
 		}
 		
 	}
@@ -111,6 +112,7 @@ public class UserCenteredCollaborativeFilteringTest {
 	// Similarity: Pearson's correlation coefficient 
 	@Test
     public void simPearson(){
+		System.out.println("----------------TestPearson----------------------");
     
     simMap=filtre.simPearson(activeUser);
     System.out.println("simPearson= "+simMap);
@@ -121,13 +123,14 @@ public class UserCenteredCollaborativeFilteringTest {
     // Looking for Neighborhood
     @Test
     public void neighborhood(){
-    
+		System.out.println("----------------TestNeighborhood----------------------");
+
     	simMap=filtre.simPearson(activeUser);
     	System.out.println("simPearson = "+simMap);
     	userList=filtre.neighborhood(simMap, K, activeUser);
     	System.out.println("Neighbor list");
     	for(User user:userList){
-    	System.out.println("userId: "+user.getIdUser());
+    	System.out.println(user);
     	}
     	
     }
@@ -136,14 +139,14 @@ public class UserCenteredCollaborativeFilteringTest {
     // Rating estimation 
     @Test
     public void estimation(){
-    	
+		System.out.println("----------------TestEstimation----------------------");
     	simMap = filtre.simPearson(activeUser);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
     	userList=filtre.neighborhood(simMap,K,activeUser);
     	System.out.println("Neighbor list");	    	
     	for(User user:userList){
-    	System.out.println("userId: "+user.getIdUser());
+    	System.out.println(user);
     	}
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");

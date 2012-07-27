@@ -13,4 +13,9 @@ public /*abstract*/ class User {
 		return idUser;
 	}
 
+	@Override
+	public String toString() {
+		return "User [idUser=" + idUser + "]";
+	}
+
 }

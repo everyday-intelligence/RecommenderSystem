@@ -14,6 +14,13 @@ public /*abstract*/ class Item {
 	public long getIdItem() {
 		return idItem;
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "Item [idItem=" + idItem + "]";
+	}
 	
 	
 }
