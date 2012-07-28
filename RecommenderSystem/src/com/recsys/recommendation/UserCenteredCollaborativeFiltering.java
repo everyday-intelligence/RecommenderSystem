@@ -30,10 +30,15 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		return this.dataMatrix;
 	}	
 	
+	// Top-K neighbor, threashold, notRated: value for unrated items
+	public static final int K=2;
+	public static final double THREASHOLD=5;
+	public static final int notRated=0;
+	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
-		int K=2;
-		double THREASHOLD=5;
+		
+		
 		// similarity Map
     	Map<User,Double> simMap = new HashMap<User,Double>();
     	// estimation Map
@@ -45,7 +50,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	//Call simPearson method
 		simMap=simPearson(activeUser);
 		//Call neighborhood method
-		userList=neighborhood(simMap,K,activeUser);
+		userList=neighborhood(simMap,activeUser);
 		//Call estimation method
 		estimMap=estimation(activeUser,userList);
 		
@@ -83,7 +88,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     public Map<User,Double> simPearson(User activeUser){
     
     double simPears=0;
-    int card=0;	
+    
     Map<User,Double> simMap = new HashMap<User,Double>();
     ArrayList<Double> user = new ArrayList<Double>();
     ArrayList<Double> activeList = new ArrayList<Double>();
@@ -94,7 +99,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	if(rows!=this.users.indexOf(activeUser)){
     		
     		for(int cols=0;cols<this.dataMatrix.getColumnsNumber();cols++){
-    			if((this.dataMatrix.get(rows,cols)!=0)&&(this.dataMatrix.get(this.users.indexOf(activeUser),cols)!=0)){
+    			if((this.dataMatrix.get(rows,cols)!=notRated)&&(this.dataMatrix.get(this.users.indexOf(activeUser),cols)!=notRated)){
     				
     				activeList.add(this.dataMatrix.get(this.users.indexOf(activeUser),cols));
     				user.add(this.dataMatrix.get(rows,cols));
@@ -137,7 +142,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
         
     
     // Looking for Neighborhood
-    public ArrayList<User> neighborhood(Map<User,Double> simMap,int k,User activeUser){
+    public ArrayList<User> neighborhood(Map<User,Double> simMap,User activeUser){
     	
     	// Similarity List
     	ArrayList<Double> simList=new ArrayList<Double>(simMap.values());
@@ -158,7 +163,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	}
     	
     	
-    	while(this.dataMatrix.get(this.users.indexOf(activeUser),col)==0){
+    	while(this.dataMatrix.get(this.users.indexOf(activeUser),col)!=notRated){
     		
     		col++;
     		
@@ -181,7 +186,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     		{	//if similarity is equal
     			if(max==simList.get(i)){
     					//comparing dataMatrix value to find the top neighbor
-    				if(this.dataMatrix.get(user, col)<this.dataMatrix.get(i, col)){
+    				if(this.dataMatrix.get(this.users.indexOf(userList.get(user)), col)<this.dataMatrix.get(this.users.indexOf(userList.get(i)), col)){
     					max=simList.get(i);
         				user=i;
     				}
@@ -200,12 +205,13 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
     	   	 
     	// Top-k neighborhood
     	
-    		while(neighborList.size()>k){
+    		while(neighborList.size()>K){
     		
-    		neighborList.remove(k);
+    		neighborList.remove(K);
     		
     		
     		}
+    		
 	
 		return neighborList;
     	

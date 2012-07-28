@@ -35,9 +35,8 @@ public class UserCenteredCollaborativeFilteringTest {
 		
 	UserCenteredCollaborativeFiltering filtre=new UserCenteredCollaborativeFiltering(users,items);
 	
-	User activeUser=u1;
-	int K=2;
-	double THREASHOLD=5;
+	public User activeUser=u1;
+	
 	// similarity Map
 	Map<User,Double> simMap = new HashMap<User,Double>();
 	// estimation Map
@@ -54,26 +53,26 @@ public class UserCenteredCollaborativeFilteringTest {
 		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
 			//1st column
 		filtre.getDataMatrix().set(0, 0, 4.0);
-		filtre.getDataMatrix().set(1, 0, 4.0);
-		filtre.getDataMatrix().set(2, 0, 3.0);
+		filtre.getDataMatrix().set(1, 0, 5.0);
+		filtre.getDataMatrix().set(2, 0, 5.0);
 		filtre.getDataMatrix().set(3, 0, 5.0);
 		filtre.getDataMatrix().set(4, 0, 4.0);
     		//2nd column
 		filtre.getDataMatrix().set(0, 1, 2.0);  
 		filtre.getDataMatrix().set(1, 1, 4.0);
-		filtre.getDataMatrix().set(2, 1, 3.0);
+		filtre.getDataMatrix().set(2, 1, 4.0);
 		filtre.getDataMatrix().set(3, 1, 5.0);
 		filtre.getDataMatrix().set(4, 1, 3.5);
     		//3rd column
 		filtre.getDataMatrix().set(0, 2, 0.0);  
-		filtre.getDataMatrix().set(1, 2, 4.0);
-		filtre.getDataMatrix().set(2, 2, 3.0);
+		filtre.getDataMatrix().set(1, 2, 3.0);
+		filtre.getDataMatrix().set(2, 2, 4.0);
 		filtre.getDataMatrix().set(3, 2, 5.0);
 		filtre.getDataMatrix().set(4, 2, 4.0);
 			//4th column
 		filtre.getDataMatrix().set(0, 3, 2.0);
 		filtre.getDataMatrix().set(1, 3, 2.0);
-		filtre.getDataMatrix().set(2, 3, 3.0);
+		filtre.getDataMatrix().set(2, 3, 2.0);
 		filtre.getDataMatrix().set(3, 3, 1.0);
 		filtre.getDataMatrix().set(4, 3, 5.0);
     	
@@ -127,7 +126,7 @@ public class UserCenteredCollaborativeFilteringTest {
 
     	simMap=filtre.simPearson(activeUser);
     	System.out.println("simPearson = "+simMap);
-    	userList=filtre.neighborhood(simMap, K, activeUser);
+    	userList=filtre.neighborhood(simMap, activeUser);
     	System.out.println("Neighbor list");
     	for(User user:userList){
     	System.out.println(user);
@@ -143,7 +142,7 @@ public class UserCenteredCollaborativeFilteringTest {
     	simMap = filtre.simPearson(activeUser);
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
-    	userList=filtre.neighborhood(simMap,K,activeUser);
+    	userList=filtre.neighborhood(simMap,activeUser);
     	System.out.println("Neighbor list");	    	
     	for(User user:userList){
     	System.out.println(user);
