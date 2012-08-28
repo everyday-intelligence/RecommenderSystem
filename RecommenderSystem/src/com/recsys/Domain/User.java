@@ -1,7 +1,11 @@
 package com.recsys.Domain;
 
-public /*abstract*/ class User {
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
+public /*abstract*/ class User {
+	@Id
 	private long idUser;
 
 	public User(long idUser) {

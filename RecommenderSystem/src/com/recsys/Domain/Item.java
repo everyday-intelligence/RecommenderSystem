@@ -1,7 +1,13 @@
 package com.recsys.Domain;
 
-public /*abstract*/ class Item {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table (name = "Product")
+public /*abstract*/ class Item {
+	@Id
 	private long idItem;
 
 	public Item(long idItem) {
