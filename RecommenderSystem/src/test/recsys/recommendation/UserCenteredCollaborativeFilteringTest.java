@@ -48,6 +48,16 @@ public class UserCenteredCollaborativeFilteringTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		
+		/* test du driver
+		try {
+	           Class.forName("com.mysql.jdbc.Driver").newInstance();
+	           System.out.println("Le chargement du driver fonctionne");
+	       } catch (Exception ex) {
+	           // traitement de l'erreur
+	       }
+		*/
+			
 		//Initialisation
 		System.out.println();
 		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());

@@ -10,6 +10,8 @@ public /*abstract*/ class Item {
 	@Id
 	private long idItem;
 
+	public Item(){}
+	
 	public Item(long idItem) {
 		super();
 		this.idItem = idItem;

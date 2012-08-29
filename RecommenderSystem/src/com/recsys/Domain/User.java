@@ -8,6 +8,8 @@ public /*abstract*/ class User {
 	@Id
 	private long idUser;
 
+	public User(){}
+	
 	public User(long idUser) {
 		super();
 		this.idUser = idUser;
