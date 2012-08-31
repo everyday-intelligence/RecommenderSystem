@@ -1,12 +1,12 @@
 package com.recsys.Domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table (name = "Product")
-public /*abstract*/ class Item {
+public /*abstract*/ class Item implements Serializable{
 	@Id
 	private long idItem;
 
