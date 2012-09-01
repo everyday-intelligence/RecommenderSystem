@@ -3,11 +3,12 @@
 	<persistence-unit name="RecommenderSystem">
 		<class>com.recsys.Domain.User</class>
 		<class>com.recsys.Domain.Item</class>
+		<class>com.recsys.Domain.Rating</class>
 	    <properties>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/RecSysDB" />
         <property name="javax.persistence.jdbc.user" value="root" />
-        <property name="javax.persistence.jdbc.password" value="password" />
+        <property name="javax.persistence.jdbc.password" value="" />
              
     </properties>
 	</persistence-unit>
