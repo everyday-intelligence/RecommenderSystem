@@ -17,8 +17,8 @@ import javax.persistence.Table;
 public /*abstract*/ class User implements Serializable {
 	@Id
 	private long idUser;
-	@OneToMany(mappedBy="ratingUser")
-	private List<Rating> Ratings;
+	@OneToMany(fetch=FetchType.EAGER,mappedBy="ratingUser")
+	private List<Rating> ratings;
 	
 	//Joint table Rating
 	@OneToOne(fetch=FetchType.LAZY,mappedBy="ratingUser")
@@ -26,6 +26,7 @@ public /*abstract*/ class User implements Serializable {
 		      name="Rating",
 		      joinColumns={@JoinColumn(name="ratingUser_idUser", referencedColumnName="idUser")},
 		      inverseJoinColumns={@JoinColumn(name="RatedItem_idItem", referencedColumnName="ratedItem_idItem")})
+	
 	private Rating rate;
 	
 	public User(){}
@@ -37,6 +38,10 @@ public /*abstract*/ class User implements Serializable {
 
 	public long getIdUser() {
 		return idUser;
+	}
+	
+	public List<Rating> getRatedItem() {
+		return ratings;
 	}
 
 	@Override

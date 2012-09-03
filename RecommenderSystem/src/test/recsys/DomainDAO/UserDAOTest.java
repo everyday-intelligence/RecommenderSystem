@@ -38,8 +38,8 @@ public class UserDAOTest {
 	@Test
 	public void testCreate() {
 		System.out.println("Ajout d'un utilisateur");
-		userD.create(u1);
-		userD.create(u2);
+		//userD.create(u1);
+		//userD.create(u2);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class UserDAOTest {
 	@Test
 	public void testFindUser() {
 		System.out.println("Recherche d'un utilisateur");
-		System.out.println(userD.findUser((long)123));
+		System.out.println(userD.findUser((long)123).getRatedItem());
 	}
 
 	@Test

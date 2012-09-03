@@ -5,20 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
-import com.recsys.matrix.AbstractMatrix;
-import com.recsys.matrix.SimpleMatrix;
+import com.recsys.DomainDAO.ItemDAO;
+import com.recsys.DomainDAO.UserDAO;
 import com.recsys.recommendation.Recommendation;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
 		
-	User u1=new User(120);
+/*	User u1=new User(120);
 	User u2=new User(121);
 	User u3=new User(122);
 	User u4=new User(123);
@@ -29,13 +33,19 @@ public class UserCenteredCollaborativeFilteringTest {
 	Item i2=new Item(001);
 	Item i3=new Item(002);
 	Item i4=new Item(003);
+	*/
+	private EntityManagerFactory emf=Persistence.createEntityManagerFactory("RecommenderSystem");	
+	ItemDAO itemD=new ItemDAO(emf);
+	UserDAO userD=new UserDAO(emf);
+	private EntityManager em=itemD.getEntityManager();
+	private EntityManager emu=userD.getEntityManager();
 	
-	private List<User> users = new ArrayList<User>(){{add(u1);add(u2);add(u3);add(u4);add(u5);}};
-	private List<Item> items = new ArrayList<Item>(){{add(i1);add(i2);add(i3);add(i4);}};
+	private List<User> users = userD.findUsers();//new ArrayList<User>(){{add(u1);add(u2);add(u3);add(u4);add(u5);}};
+	private List<Item> items = itemD.findItems();//new ArrayList<Item>(){{add(i1);add(i2);add(i3);add(i4);}};
 		
 	UserCenteredCollaborativeFiltering filtre=new UserCenteredCollaborativeFiltering(users,items);
 	
-	public User activeUser=u1;
+	public User activeUser=users.get(0);
 	
 	// similarity Map
 	Map<User,Double> simMap = new HashMap<User,Double>();

@@ -84,7 +84,7 @@ public class RatingDAO {
                 em.close();
             }
         }
-    }
+    }*/
     
     //Retrieve all users
     public List<Rating> findRatings() {
@@ -98,7 +98,7 @@ public class RatingDAO {
             em.close();
         }
     }
-    
+   /* 
     //Retrieve a user by using an Id
     public Rating findRating(int rate) {
         EntityManager em = getEntityManager();

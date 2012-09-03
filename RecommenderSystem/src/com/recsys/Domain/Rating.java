@@ -7,7 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-@Entity
+@Entity 
 public class Rating implements Serializable{
 	
 	@Id
@@ -29,5 +29,11 @@ public class Rating implements Serializable{
 		return rating;
 	}
 	
+	@Override
+	public String toString() {
+		return "User [idUser=" + ratingUser +" idItem= "+ ratedItem +" rating= "+rating + "]";
+	}
+	
 
 }
+

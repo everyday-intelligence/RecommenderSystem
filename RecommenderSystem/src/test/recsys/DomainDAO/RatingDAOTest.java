@@ -39,10 +39,19 @@ public class RatingDAOTest {
 	public void testCreate() {
 	
 		System.out.println("Ajout d'un rating");
-		ratingD.create(r1);
+		/*ratingD.create(r1);
 		ratingD.create(r2);
 		ratingD.create(r3);
+		*/
+	}
+	
+	@Test
+	public void testFindRatings() {
+	
+		System.out.println("Afficher les ratings");
+		System.out.println(ratingD.findRatings());
 		
 	}
+	
 
 }
