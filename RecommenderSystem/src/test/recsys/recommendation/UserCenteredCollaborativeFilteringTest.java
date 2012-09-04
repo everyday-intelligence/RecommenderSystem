@@ -63,9 +63,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		//Initialisation
 		System.out.println();
 		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
-			//variable
-		int column=0;;
-		
+			
 		//Fill the matrix with zeros
 		for (int i = 0; i < filtre.getDataMatrix().getRowsNumber(); i++) {
 			for (int j = 0; j < filtre.getDataMatrix().getColumnsNumber(); j++) {
@@ -77,17 +75,12 @@ public class UserCenteredCollaborativeFilteringTest {
 		for(User usr:users){
 			
 			for(Rating rating:usr.getRatingList()){
-				for(Item itm:items){
-					if(itm.getIdItem()==rating.getRatedItem().getIdItem()){
-						column=items.indexOf(itm);
-					}
-				}
-		/*		
+				
 				System.out.println("Items list: \n"+items);
-				System.out.println("Rated Items: \n"+column);
+				System.out.println("Rated Items: \n"+rating.getRatedItem());
 				System.out.println("testing existence: \n"+items.indexOf(rating.getRatedItem()));
-			*/	
-				filtre.getDataMatrix().set(users.indexOf(usr),column,rating.getRating());
+				
+				filtre.getDataMatrix().set(users.indexOf(usr),items.indexOf(rating.getRatedItem()),rating.getRating());
 			
 			}
 			
