@@ -40,7 +40,7 @@ public /*abstract*/ class User implements Serializable {
 		return idUser;
 	}
 	
-	public List<Rating> getRatedItem() {
+	public List<Rating> getRatingList() {
 		return ratings;
 	}
 

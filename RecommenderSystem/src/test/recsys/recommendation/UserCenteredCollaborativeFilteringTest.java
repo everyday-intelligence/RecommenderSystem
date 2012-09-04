@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.recsys.Domain.Item;
+import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.ItemDAO;
 import com.recsys.DomainDAO.UserDAO;
@@ -62,8 +63,39 @@ public class UserCenteredCollaborativeFilteringTest {
 		//Initialisation
 		System.out.println();
 		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
-			//1st column
-		filtre.getDataMatrix().set(0, 0, 4.0);
+			//variable
+		int column=0;;
+		
+		//Fill the matrix with zeros
+		for (int i = 0; i < filtre.getDataMatrix().getRowsNumber(); i++) {
+			for (int j = 0; j < filtre.getDataMatrix().getColumnsNumber(); j++) {
+					filtre.getDataMatrix().set(i, j,0.0);
+			}
+		}
+		
+		
+		for(User usr:users){
+			
+			for(Rating rating:usr.getRatingList()){
+				for(Item itm:items){
+					if(itm.getIdItem()==rating.getRatedItem().getIdItem()){
+						column=items.indexOf(itm);
+					}
+				}
+		/*		
+				System.out.println("Items list: \n"+items);
+				System.out.println("Rated Items: \n"+column);
+				System.out.println("testing existence: \n"+items.indexOf(rating.getRatedItem()));
+			*/	
+				filtre.getDataMatrix().set(users.indexOf(usr),column,rating.getRating());
+			
+			}
+			
+		}
+		
+		
+		
+/*		filtre.getDataMatrix().set(0, 0, 4.0);
 		filtre.getDataMatrix().set(1, 0, 5.0);
 		filtre.getDataMatrix().set(2, 0, 5.0);
 		filtre.getDataMatrix().set(3, 0, 5.0);
@@ -87,7 +119,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		filtre.getDataMatrix().set(3, 3, 1.0);
 		filtre.getDataMatrix().set(4, 3, 5.0);
     	
-		
+	*/	
 		
 		System.out.println("Matrix:");
 		for(int row=0;row<filtre.getDataMatrix().getRowsNumber();row++){

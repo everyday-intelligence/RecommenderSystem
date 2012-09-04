@@ -57,7 +57,7 @@ public class UserDAOTest {
 	@Test
 	public void testFindUser() {
 		System.out.println("Recherche d'un utilisateur");
-		System.out.println(userD.findUser((long)123).getRatedItem());
+		System.out.println(userD.findUser((long)123).getRatingList());
 	}
 
 	@Test

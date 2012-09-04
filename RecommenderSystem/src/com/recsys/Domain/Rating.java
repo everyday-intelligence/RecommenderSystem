@@ -11,7 +11,9 @@ import javax.persistence.OneToOne;
 public class Rating implements Serializable{
 	
 	@Id
-	private int rating;
+	private long idRating;
+	
+	private double rating;
 	@OneToOne(fetch=FetchType.LAZY)
 	private Item ratedItem;
 	@OneToOne(fetch=FetchType.LAZY)
@@ -25,8 +27,16 @@ public class Rating implements Serializable{
 		this.ratingUser=ratingUser;
 	}
 	
-	public int getRating() {
+	public double getRating() {
 		return rating;
+	}
+	
+	public Item getRatedItem() {
+		return ratedItem;
+	}
+	
+	public User getRatingUser() {
+		return ratingUser;
 	}
 	
 	@Override
