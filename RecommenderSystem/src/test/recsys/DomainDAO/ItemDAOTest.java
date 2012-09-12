@@ -38,7 +38,7 @@ public class ItemDAOTest {
 		System.out.println();
 		
 	}
-
+/*
 	@Test
 	public void testCreate() {
 		System.out.println("Ajout d'un item");
@@ -70,5 +70,7 @@ public class ItemDAOTest {
 		//itemD.destroy((long)001);
 		//itemD.destroy((long)002);
 	}
+*/	
+	
 
 }

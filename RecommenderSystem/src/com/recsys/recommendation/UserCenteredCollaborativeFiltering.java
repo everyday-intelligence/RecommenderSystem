@@ -31,7 +31,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 	}	
 	
 	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K=2;
+	public static final int K=5;
 	public static final double THREASHOLD=5;
 	public static final int notRated=0;
 	

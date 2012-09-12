@@ -21,7 +21,7 @@ public class Rating implements Serializable{
 	
 	public Rating(){}
 	
-	public Rating(int rating,Item ratedItem,User ratingUser){
+	public Rating(double rating,Item ratedItem,User ratingUser){
 		this.rating=rating;
 		this.ratedItem=ratedItem;
 		this.ratingUser=ratingUser;

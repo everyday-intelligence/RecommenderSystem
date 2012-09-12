@@ -34,7 +34,7 @@ public class UserDAOTest {
 		System.out.println("*********************Test ends******************");
 		System.out.println();
 	}
-
+/*
 	@Test
 	public void testCreate() {
 		System.out.println("Ajout d'un utilisateur");
@@ -66,5 +66,7 @@ public class UserDAOTest {
 		//userD.destroy((long)123);
 		//userD.destroy((long)124);
 	}
+	*/
+	
 
 }

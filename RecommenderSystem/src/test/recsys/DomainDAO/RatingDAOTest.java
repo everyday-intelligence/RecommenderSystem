@@ -34,15 +34,15 @@ public class RatingDAOTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+/*
 	@Test
 	public void testCreate() {
 	
 		System.out.println("Ajout d'un rating");
-		/*ratingD.create(r1);
+		ratingD.create(r1);
 		ratingD.create(r2);
 		ratingD.create(r3);
-		*/
+		
 	}
 	
 	@Test
@@ -52,6 +52,8 @@ public class RatingDAOTest {
 		System.out.println(ratingD.findRatings());
 		
 	}
+	*/
+	
 	
 
 }

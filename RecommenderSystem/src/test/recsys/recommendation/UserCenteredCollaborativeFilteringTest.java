@@ -17,33 +17,31 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.ItemDAO;
+import com.recsys.DomainDAO.LoadFile;
+import com.recsys.DomainDAO.RatingDAO;
 import com.recsys.DomainDAO.UserDAO;
 import com.recsys.recommendation.Recommendation;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
 		
-/*	User u1=new User(120);
-	User u2=new User(121);
-	User u3=new User(122);
-	User u4=new User(123);
-	User u5=new User(124);
-	
-	
-	Item i1=new Item(000);
-	Item i2=new Item(001);
-	Item i3=new Item(002);
-	Item i4=new Item(003);
-	*/
+	String ratingsFile ="database/u.data";
+	String usersFile = "database/u.user";
+	String itemsFile = "database/u.item";
+	/*
 	private EntityManagerFactory emf=Persistence.createEntityManagerFactory("RecommenderSystem");	
 	ItemDAO itemD=new ItemDAO(emf);
 	UserDAO userD=new UserDAO(emf);
+	RatingDAO ratingD=new RatingDAO(emf);
+	
+	
 	private EntityManager em=itemD.getEntityManager();
 	private EntityManager emu=userD.getEntityManager();
-	
-	private List<User> users = userD.findUsers();//new ArrayList<User>(){{add(u1);add(u2);add(u3);add(u4);add(u5);}};
-	private List<Item> items = itemD.findItems();//new ArrayList<Item>(){{add(i1);add(i2);add(i3);add(i4);}};
-		
+	private EntityManager emr=ratingD.getEntityManager();
+	*/
+	private List<User> users = LoadFile.findUsersFile(usersFile);//userD.findUsers();
+	private List<Item> items = LoadFile.findItemsFile(itemsFile);//itemD.findItems();
+	private List<Rating> dataBaseEntries=LoadFile.findRatingsFile(ratingsFile);	
 	UserCenteredCollaborativeFiltering filtre=new UserCenteredCollaborativeFiltering(users,items);
 	
 	public User activeUser=users.get(0);
@@ -71,48 +69,26 @@ public class UserCenteredCollaborativeFilteringTest {
 			}
 		}
 		
-		
-		for(User usr:users){
+		//Fill the matrix with rating values from the database
+	/*	for(User usr:users){
 			
 			for(Rating rating:usr.getRatingList()){
-				
-				System.out.println("Items list: \n"+items);
-				System.out.println("Rated Items: \n"+rating.getRatedItem());
-				System.out.println("testing existence: \n"+items.indexOf(rating.getRatedItem()));
-				
-				filtre.getDataMatrix().set(users.indexOf(usr),items.indexOf(rating.getRatedItem()),rating.getRating());
+		*/						
+		// parcours de la liste des entrées à partir du fichier	
+		for(Rating entry:dataBaseEntries){	
 			
+			filtre.getDataMatrix().set((int)entry.getRatingUser().getIdUser()-1/* users.indexOf(usr) */,(int)entry.getRatedItem().getIdItem()-1/*items.indexOf(rating.getRatedItem())*/,entry.getRating()/*rating.getRating()*/);
+			
+			
+		}
+		
+		/*	
 			}
 			
 		}
 		
+		*/
 		
-		
-/*		filtre.getDataMatrix().set(0, 0, 4.0);
-		filtre.getDataMatrix().set(1, 0, 5.0);
-		filtre.getDataMatrix().set(2, 0, 5.0);
-		filtre.getDataMatrix().set(3, 0, 5.0);
-		filtre.getDataMatrix().set(4, 0, 4.0);
-    		//2nd column
-		filtre.getDataMatrix().set(0, 1, 2.0);  
-		filtre.getDataMatrix().set(1, 1, 4.0);
-		filtre.getDataMatrix().set(2, 1, 4.0);
-		filtre.getDataMatrix().set(3, 1, 5.0);
-		filtre.getDataMatrix().set(4, 1, 3.5);
-    		//3rd column
-		filtre.getDataMatrix().set(0, 2, 0.0);  
-		filtre.getDataMatrix().set(1, 2, 3.0);
-		filtre.getDataMatrix().set(2, 2, 4.0);
-		filtre.getDataMatrix().set(3, 2, 5.0);
-		filtre.getDataMatrix().set(4, 2, 4.0);
-			//4th column
-		filtre.getDataMatrix().set(0, 3, 2.0);
-		filtre.getDataMatrix().set(1, 3, 2.0);
-		filtre.getDataMatrix().set(2, 3, 2.0);
-		filtre.getDataMatrix().set(3, 3, 1.0);
-		filtre.getDataMatrix().set(4, 3, 5.0);
-    	
-	*/	
 		
 		System.out.println("Matrix:");
 		for(int row=0;row<filtre.getDataMatrix().getRowsNumber();row++){
