@@ -9,5 +9,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mysql-connector"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink 2.3.2 - Indigo"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
