@@ -89,7 +89,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		
 		*/
 		
-		
+		/*
 		System.out.println("Matrix:");
 		for(int row=0;row<filtre.getDataMatrix().getRowsNumber();row++){
 			for(int col=0;col<filtre.getDataMatrix().getColumnsNumber();col++){
@@ -100,6 +100,7 @@ public class UserCenteredCollaborativeFilteringTest {
 			
 			System.out.println();
 		}
+		*/
 		
 	}
 
