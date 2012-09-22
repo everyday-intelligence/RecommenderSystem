@@ -3,6 +3,7 @@ package com.recsys.recommendation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 
 public class KnowledgeBasedFiltering implements RecommendationStrategy {

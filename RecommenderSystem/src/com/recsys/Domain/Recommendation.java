@@ -1,6 +1,5 @@
-package com.recsys.recommendation;
+package com.recsys.Domain;
 
-import com.recsys.Domain.Item;
 
 public class Recommendation implements Comparable {
 
@@ -23,16 +22,17 @@ public class Recommendation implements Comparable {
 	@Override
 	public int compareTo(Object o) {//sert à comparer deux recommandations (laquelle est meilleur)
 		Recommendation r = (Recommendation)o;
-		return (int) (this.recommendationValue - r.getRecommendationValue());
+		//return (int) (this.recommendationValue - r.getRecommendationValue());
+		return (int) (this.getRecommendedItem().getIdItem() - r.getRecommendedItem().getIdItem());
 	}
 
 	@Override
 	public String toString() {
 		return "Recommendation ["
 				+ (recommendedItem != null ? "recommendedItem="
-						+ recommendedItem + ", " : "")
+						+ recommendedItem : "")
 				+ (recommendationValue != null ? "recommendationValue="
-						+ recommendationValue : "") + "]";
+						+ recommendationValue : "") + "]\n";
 	}
 	
 	

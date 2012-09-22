@@ -1,6 +1,7 @@
 package test.recsys.recommendation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,12 @@ import org.junit.Test;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
+import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.ItemDAO;
 import com.recsys.DomainDAO.LoadFile;
 import com.recsys.DomainDAO.RatingDAO;
 import com.recsys.DomainDAO.UserDAO;
-import com.recsys.recommendation.Recommendation;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
@@ -48,7 +49,7 @@ public class UserCenteredCollaborativeFilteringTest {
 	// similarity Map
 	Map<User,Double> simMap = new HashMap<User,Double>();
 	// estimation Map
-	Map<Item,Double> estimMap = new HashMap<Item,Double>();
+	List<Recommendation> allEstimations = new ArrayList<Recommendation>();
 	// user list array
 	ArrayList<User> userList = new ArrayList<User>();
 	// RecommendationList
@@ -58,8 +59,8 @@ public class UserCenteredCollaborativeFilteringTest {
 	public void setUp() throws Exception {
 		
 		//Initialisation
-		System.out.println();
-		System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
+		//System.out.println();
+		//System.out.println("RowsNumber: "+filtre.getDataMatrix().getRowsNumber()+" - ColumnsNumber: "+filtre.getDataMatrix().getColumnsNumber());
 			
 		//Fill the matrix with zeros
 		for (int i = 0; i < filtre.getDataMatrix().getRowsNumber(); i++) {
@@ -126,7 +127,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		System.out.println("----------------TestPearson----------------------");
     
     simMap=filtre.simPearson(activeUser);
-    System.out.println("simPearson= "+simMap);
+    //System.out.println("simPearson= "+simMap);
     
     }
         
@@ -137,12 +138,14 @@ public class UserCenteredCollaborativeFilteringTest {
 		System.out.println("----------------TestNeighborhood----------------------");
 
     	simMap=filtre.simPearson(activeUser);
-    	System.out.println("simPearson = "+simMap);
+    	//System.out.println("simPearson = "+simMap);
     	userList=filtre.neighborhood(simMap, activeUser);
+    	/*
     	System.out.println("Neighbor list");
     	for(User user:userList){
-    	System.out.println(user);
+    		System.out.println(user);
     	}
+    	*/
     	
     }
     
@@ -151,21 +154,24 @@ public class UserCenteredCollaborativeFilteringTest {
     @Test
     public void estimation(){
 		System.out.println("----------------TestEstimation----------------------");
+		System.out.println("estimating for user "+activeUser.getIdUser());
+		System.out.println(users.size()+" users in DB ");
+		System.out.println(items.size()+" items in DB ");
     	simMap = filtre.simPearson(activeUser);
-		System.out.println("simPearson = "+simMap);
+		//System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
     	userList=filtre.neighborhood(simMap,activeUser);
-    	System.out.println("Neighbor list");
     	/*
+    	 System.out.println("Neighbor list");
     	for(User user:userList){
     	System.out.println(user);
     	}
     	*/
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");
-    	estimMap=filtre.estimation(activeUser, userList);
-    	System.out.println("estimMap size = "+estimMap.size());
-    	System.out.println(estimMap);
+    	allEstimations=filtre.estimation(activeUser, userList);
+    	System.out.println("estimMap size = "+allEstimations.size());
+    	System.out.println(allEstimations);
     	
     }
 	
