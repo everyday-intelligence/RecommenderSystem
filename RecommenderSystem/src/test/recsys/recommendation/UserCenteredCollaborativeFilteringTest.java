@@ -25,7 +25,7 @@ import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
 		
-	String ratingsFile ="database/u.data";
+	String ratingsFile ="database/ua.base";
 	String usersFile = "database/u.user";
 	String itemsFile = "database/u.item";
 	/*
@@ -33,7 +33,6 @@ public class UserCenteredCollaborativeFilteringTest {
 	ItemDAO itemD=new ItemDAO(emf);
 	UserDAO userD=new UserDAO(emf);
 	RatingDAO ratingD=new RatingDAO(emf);
-	
 	
 	private EntityManager em=itemD.getEntityManager();
 	private EntityManager emu=userD.getEntityManager();
@@ -156,13 +155,16 @@ public class UserCenteredCollaborativeFilteringTest {
 		System.out.println("simPearson = "+simMap);
 		//looking for neighborhood
     	userList=filtre.neighborhood(simMap,activeUser);
-    	System.out.println("Neighbor list");	    	
+    	System.out.println("Neighbor list");
+    	/*
     	for(User user:userList){
     	System.out.println(user);
     	}
+    	*/
 		//calculate estimated ratings for unrated items
     	System.out.println("Rating estimation");
     	estimMap=filtre.estimation(activeUser, userList);
+    	System.out.println("estimMap size = "+estimMap.size());
     	System.out.println(estimMap);
     	
     }

@@ -18,6 +18,13 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 	private List<Item> items = new ArrayList<Item>();
 	private AbstractMatrix dataMatrix;
 	
+	// Top-K neighbor, threashold, notRated: value for unrated items
+	public static final int K=5;
+	//TODO à supprimer car on recommande les N meilleurs
+	public static final double THREASHOLD=5; 
+	public static final int notRated=0;
+	public static final int recommendaitonsNumber=0;
+	
 	public UserCenteredCollaborativeFiltering(List<User> users, List<Item> items) {
 		super();
 		this.users = users;
@@ -30,10 +37,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		return this.dataMatrix;
 	}	
 	
-	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K=5;
-	public static final double THREASHOLD=5;
-	public static final int notRated=0;
+
 	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
@@ -67,6 +71,7 @@ public class UserCenteredCollaborativeFiltering implements RecommendationStrateg
 		    	  
 		      }
 	    }
+	    
 	    for(int col=0;col<this.dataMatrix.getColumnsNumber();col++){
 	   		if(this.dataMatrix.get(this.users.indexOf(activeUser), col)>=THREASHOLD/2){
 	    		recommendationList.add(new Recommendation(this.items.get(col),this.dataMatrix.get(this.users.indexOf(activeUser), col)));
