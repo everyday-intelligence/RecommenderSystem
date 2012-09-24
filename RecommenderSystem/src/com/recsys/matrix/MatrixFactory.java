@@ -5,11 +5,18 @@ public class MatrixFactory {
 	public static AbstractMatrix createMatrix(int rowsNumber, int columnsNumber){
 		//on va lire un fichier de configuretion qui dira quel type de matrice utiliser pour le moment on teste avec la SimpleMatrix
 		int matrixType = 0;
+		AbstractMatrix m;
 		if(matrixType == 0){
-			return createSimpleMatrix(rowsNumber, columnsNumber);
+			m = createSimpleMatrix(rowsNumber, columnsNumber);
 		}else{
-			return  createMapMatrix(rowsNumber, columnsNumber);
+			m = createMapMatrix(rowsNumber, columnsNumber);
 		}
+		for (int i = 0; i < m.getRowsNumber(); i++) {
+			for (int j = 0; j < m.getColumnsNumber(); j++) {
+				m.set(i, j, 0.0);
+			}
+		}
+		return m;
 	}
 	
 	private static AbstractMatrix createSimpleMatrix(int rowsNumber, int columnsNumber){

@@ -28,7 +28,7 @@ public /*abstract*/ class Item implements Serializable{
 	@Override
 	public boolean equals(Object o) {
 		
-		return (this.idItem==((Item)o).idItem);
+		return (this.idItem==((Item)o).getIdItem());
 	}
 
 	@Override

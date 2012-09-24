@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.recsys.Domain.Item;
+import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.matrix.AbstractMatrix;
@@ -21,9 +22,8 @@ public class UserCenteredCollaborativeFiltering implements
 	private AbstractMatrix dataMatrix;
 
 	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K = 100;
-	// TODO à supprimer car on recommande les N meilleurs
-	public static final double THREASHOLD = 0;
+	public static final int K = 550;
+
 	public static final int NOTRATED = 0;
 
 	public UserCenteredCollaborativeFiltering(List<User> users, List<Item> items) {
@@ -45,31 +45,12 @@ public class UserCenteredCollaborativeFiltering implements
 		Map<User, Double> simMap = simPearson(activeUser);
 		// user list array
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
-		// RecommendationList
-		List<Recommendation> recommendationList = new ArrayList<Recommendation>();
-		// estimation Map
-		List<Recommendation> allPossibleCandidates =  estimation(activeUser, similarUsersList);
-
-		// looking for items with higher rating
-
-		for (Recommendation rec : allPossibleCandidates) {
-			if (rec.getRecommendationValue() >= THREASHOLD / 2) {
-				recommendationList.add(rec);
-			}
+		List<Rating> allPossibleCandidatesEstimation =  ratingEstimation(activeUser, similarUsersList);
+		List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
+		for(Rating r:allPossibleCandidatesEstimation){
+			allPossibleCandidates.add(new Recommendation(r.getRatedItem(),r.getRating()));
 		}
-		/*
-		 * for(int col=0;col<this.dataMatrix.getColumnsNumber();col++){
-		 * if(this.dataMatrix.get(this.users.indexOf(activeUser),
-		 * col)>=THREASHOLD/2){ recommendationList.add(new
-		 * Recommendation(this.items
-		 * .get(col),this.dataMatrix.get(this.users.indexOf(activeUser), col)));
-		 * } }
-		 */
-		// créer le voisinage
-		// estimer
-		// prédire les notes
-		// retourner toutes les recommandations (tout les produits notés)
-		return recommendationList;
+		return allPossibleCandidates;
 	}
 
 	// ici les méthodes de recherche de voisinage, estimation, ...... .....
@@ -199,19 +180,17 @@ public class UserCenteredCollaborativeFiltering implements
 
 		// Top-k neighborhood
 
-		neighborList = new ArrayList<User>(neighborList.subList(0, K));
-
-
+		neighborList = new ArrayList<User>(neighborList.subList(0, Math.min(K, neighborList.size())));
 		return neighborList;
 
 	}
 
 	// Rating estimation
-	public List<Recommendation> estimation(User activeUser,
+	public List<Rating> ratingEstimation(User activeUser,
 			ArrayList<User> userList) {
 
 		double estimation;
-		List<Recommendation> allPossibleCandidatesEstimations = new ArrayList<Recommendation>();
+		List<Rating> allPossibleCandidatesEstimations = new ArrayList<Rating>();
 		int card = 0;
 
 		if (userList.isEmpty()) {
@@ -231,8 +210,7 @@ public class UserCenteredCollaborativeFiltering implements
 				}
 				if (estimation != 0) {
 					estimation /= card;
-					allPossibleCandidatesEstimations.add(new Recommendation(
-							this.items.get(col), estimation));
+					allPossibleCandidatesEstimations.add(new Rating(estimation,this.items.get(col),activeUser));
 				}
 				card = 0;
 			}
