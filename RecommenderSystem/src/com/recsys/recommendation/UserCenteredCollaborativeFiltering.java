@@ -22,7 +22,7 @@ public class UserCenteredCollaborativeFiltering implements
 	private AbstractMatrix dataMatrix;
 
 	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K = 550;
+	public static final int K = 150;
 
 	public static final int NOTRATED = 0;
 
@@ -187,13 +187,13 @@ public class UserCenteredCollaborativeFiltering implements
 
 	// Rating estimation
 	public List<Rating> ratingEstimation(User activeUser,
-			ArrayList<User> userList) {
+			ArrayList<User> similarUserList) {
 
 		double estimation;
 		List<Rating> allPossibleCandidatesEstimations = new ArrayList<Rating>();
 		int card = 0;
 
-		if (userList.isEmpty()) {
+		if (similarUserList.isEmpty()) {
 			System.out.println("No estimation");
 			System.exit(0);
 		}
@@ -201,7 +201,7 @@ public class UserCenteredCollaborativeFiltering implements
 		for (int col = 0; col < this.dataMatrix.getColumnsNumber(); col++) {
 			estimation = 0;
 			if (this.dataMatrix.get(indexOfActiveUser, col) == 0) {
-				for (User user : userList) {
+				for (User user : similarUserList) {
 					if (this.dataMatrix.get(this.users.indexOf(user), col) != 0) {
 						estimation += this.dataMatrix.get(
 								this.users.indexOf(user), col);
