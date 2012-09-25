@@ -12,7 +12,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 
-public class LoadFile {
+public class MoveieLens100KDataReader{
 
 	// Read the users' Id from the file
 	public static List<User> findUsersFile(String fichier) {
@@ -73,7 +73,7 @@ public class LoadFile {
 
 			while ((ligne = br.readLine()) != null) {
 
-				StringTokenizer st = new StringTokenizer(ligne);
+				StringTokenizer st = new StringTokenizer(ligne,"\t");
 
 				userId = Long.parseLong(st.nextToken());
 				itemId = Long.parseLong(st.nextToken());

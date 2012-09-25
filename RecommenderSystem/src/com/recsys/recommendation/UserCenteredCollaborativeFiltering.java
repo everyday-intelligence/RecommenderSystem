@@ -26,12 +26,18 @@ public class UserCenteredCollaborativeFiltering implements
 
 	public static final int NOTRATED = 0;
 
-	public UserCenteredCollaborativeFiltering(List<User> users, List<Item> items) {
+	public UserCenteredCollaborativeFiltering(List<User> users,
+			List<Item> items, List<Rating> ratings) {
 		super();
 		this.users = users;
 		this.items = items;
 		dataMatrix = MatrixFactory.createMatrix(users.size(), items.size());
-		// remplir la matrice avec les historiques des utilisateurs
+		System.out.println("rating matrix : "+dataMatrix.getRowsNumber()+"x"+dataMatrix.getColumnsNumber());
+		for (Rating entry : ratings) {
+			dataMatrix.set((int) entry.getRatingUser().getIdUser() - 1,
+					(int) entry.getRatedItem().getIdItem() - 1,
+					entry.getRating());
+		}
 	}
 
 	public AbstractMatrix getDataMatrix() {
@@ -45,10 +51,12 @@ public class UserCenteredCollaborativeFiltering implements
 		Map<User, Double> simMap = simPearson(activeUser);
 		// user list array
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
-		List<Rating> allPossibleCandidatesEstimation =  ratingEstimation(activeUser, similarUsersList);
+		List<Rating> allPossibleCandidatesEstimation = ratingEstimation(
+				activeUser, similarUsersList);
 		List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
-		for(Rating r:allPossibleCandidatesEstimation){
-			allPossibleCandidates.add(new Recommendation(r.getRatedItem(),r.getRating()));
+		for (Rating r : allPossibleCandidatesEstimation) {
+			allPossibleCandidates.add(new Recommendation(r.getRatedItem(), r
+					.getRating()));
 		}
 		return allPossibleCandidates;
 	}
@@ -180,7 +188,8 @@ public class UserCenteredCollaborativeFiltering implements
 
 		// Top-k neighborhood
 
-		neighborList = new ArrayList<User>(neighborList.subList(0, Math.min(K, neighborList.size())));
+		neighborList = new ArrayList<User>(neighborList.subList(0,
+				Math.min(K, neighborList.size())));
 		return neighborList;
 
 	}
@@ -210,7 +219,8 @@ public class UserCenteredCollaborativeFiltering implements
 				}
 				if (estimation != 0) {
 					estimation /= card;
-					allPossibleCandidatesEstimations.add(new Rating(estimation,this.items.get(col),activeUser));
+					allPossibleCandidatesEstimations.add(new Rating(estimation,
+							this.items.get(col), activeUser));
 				}
 				card = 0;
 			}

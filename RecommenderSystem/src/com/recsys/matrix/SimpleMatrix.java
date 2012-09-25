@@ -39,7 +39,13 @@ public class SimpleMatrix extends AbstractMatrix {
 	    // Insert a value in the matrix
 	    public void set(int row,int col,Double vals){
 	    	
-	    		matrix[row][col]=vals;
+	    		try {
+					matrix[row][col]=vals;
+				} catch (Exception e) {
+					System.out.println("rating matrix : "+getRowsNumber()+"x"+getColumnsNumber());
+					System.out.println("inserting v="+vals+" in "+row+"-"+col);
+					e.printStackTrace();
+				}
 	    	    
 	    }
 	    

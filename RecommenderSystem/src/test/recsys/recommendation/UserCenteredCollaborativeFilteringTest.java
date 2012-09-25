@@ -19,16 +19,18 @@ import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.ItemDAO;
-import com.recsys.DomainDAO.LoadFile;
+import com.recsys.DomainDAO.MoveieLens100KDataReader;
 import com.recsys.DomainDAO.RatingDAO;
 import com.recsys.DomainDAO.UserDAO;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
 
-	String ratingsFile = "database/ua.base";
-	String usersFile = "database/u.user";
-	String itemsFile = "database/u.item";
+
+	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
+	private static String usersFile = "database/MovieLens/ml-100K/u.user";
+	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
+	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
 	/*
 	 * private EntityManagerFactory
 	 * emf=Persistence.createEntityManagerFactory("RecommenderSystem"); ItemDAO
@@ -39,12 +41,11 @@ public class UserCenteredCollaborativeFilteringTest {
 	 * emu=userD.getEntityManager(); private EntityManager
 	 * emr=ratingD.getEntityManager();
 	 */
-	private List<User> users = LoadFile.findUsersFile(usersFile);// userD.findUsers();
-	private List<Item> items = LoadFile.findItemsFile(itemsFile);// itemD.findItems();
-	private List<Rating> dataBaseEntries = LoadFile
-			.findRatingsFile(ratingsFile);
+	private List<User> users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+	private List<Item> items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+	private List<Rating> dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
 	UserCenteredCollaborativeFiltering filtre = new UserCenteredCollaborativeFiltering(
-			users, items);
+			users, items, dataBaseEntries);
 
 	public User activeUser = users.get(0);
 
@@ -59,13 +60,7 @@ public class UserCenteredCollaborativeFilteringTest {
 
 	@Before
 	public void setUp() throws Exception {
-		// parcours de la liste des entrées à partir du fichier
-		for (Rating entry : dataBaseEntries) {
-			filtre.getDataMatrix().set(
-					(int) entry.getRatingUser().getIdUser() - 1,
-					(int) entry.getRatedItem().getIdItem() - 1,
-					entry.getRating());
-		}
+		
 	}
 
 	@After

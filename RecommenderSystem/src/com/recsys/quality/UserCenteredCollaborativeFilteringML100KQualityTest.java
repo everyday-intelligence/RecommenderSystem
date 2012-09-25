@@ -28,19 +28,19 @@ import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.RecommendationItemIDChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.ItemDAO;
-import com.recsys.DomainDAO.LoadFile;
+import com.recsys.DomainDAO.MoveieLens100KDataReader;
 import com.recsys.DomainDAO.RatingDAO;
 import com.recsys.DomainDAO.UserDAO;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
 
-public class UserCenteredCollaborativeFilteringQualityTest {
+public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
-	private static String learningRatingsFile = "database/ua.base";
-	private static String usersFile = "database/u.user";
-	private static String itemsFile = "database/u.item";
-	private static String testRatingsFile = "database/ua.test";
+	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
+	private static String usersFile = "database/MovieLens/ml-100K/u.user";
+	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
+	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
 
 	List<Double> predictedUsersRatings = new ArrayList<Double>();
 	List<Double> realUsersRatings = new ArrayList<Double>();
@@ -62,17 +62,10 @@ public class UserCenteredCollaborativeFilteringQualityTest {
 
 	@BeforeClass
 	public static void initData() throws Exception {
-		users = LoadFile.findUsersFile(usersFile);// userD.findUsers();
-		items = LoadFile.findItemsFile(itemsFile);// itemD.findItems();
-		filtre = new UserCenteredCollaborativeFiltering(users, items);
-		dataBaseEntries = LoadFile.findRatingsFile(learningRatingsFile);
-		// parcours de la liste des entrées à partir du fichier
-		for (Rating entry : dataBaseEntries) {
-			filtre.getDataMatrix().set(
-					(int) entry.getRatingUser().getIdUser() - 1,
-					(int) entry.getRatedItem().getIdItem() - 1,
-					entry.getRating());
-		}
+		users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+		items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+		dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
 
 	// Rating estimation
@@ -84,7 +77,7 @@ public class UserCenteredCollaborativeFilteringQualityTest {
 		List<Rating> allEstimations = filtre.ratingEstimation(
 				activeUser, similarUserList);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = LoadFile.findUserRatings(
+		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
 		System.out.println("user " + activeUser.getIdUser() + " has "
 				+ userRealRatings.size() + " ratings");
