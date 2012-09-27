@@ -49,4 +49,26 @@ public /*abstract*/ class User implements Serializable {
 		return "User [idUser=" + idUser + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (idUser ^ (idUser >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (idUser != other.idUser)
+			return false;
+		return true;
+	}
+
 }

@@ -37,10 +37,10 @@ import com.recsys.utils.PredicateUtils;
 
 public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
-	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
+	private static String learningRatingsFile = "database/MovieLens/ml-100K/ub.base";
 	private static String usersFile = "database/MovieLens/ml-100K/u.user";
 	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
-	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
+	private static String testRatingsFile = "database/MovieLens/ml-100K/ub.test";
 
 	List<Double> predictedUsersRatings = new ArrayList<Double>();
 	List<Double> realUsersRatings = new ArrayList<Double>();
@@ -67,10 +67,17 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
 		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
-
+/*
+	@Test
+	public void oneUserRatingsQualityTest() {
+		User activeUser = users.get(0);
+		oneUserRatingsQuality(activeUser);
+	}
+*/
+	
 	// Rating estimation
-	public List<RealAndPrediction> oneUserRatingsQualityTest(User activeUser) {
-		System.out.println("-----------------------------------------");
+	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
+		//System.out.println("-----------------------------------------");
 		Map<User, Double> simMap = filtre.simPearson(activeUser);
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,
 				activeUser);
@@ -79,8 +86,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
-		System.out.println("user " + activeUser.getIdUser() + " has "
-				+ userRealRatings.size() + " ratings");
+		//System.out.println("user " + activeUser.getIdUser() + " has "	+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {
 			System.out
 					.println("no ratings in test data so no quality measure : exit");
@@ -108,18 +114,14 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		try {
 			double mae = Mathematics.mae(realsAndPredicted);
 			double rmse = Mathematics.rmse(realsAndPredicted);
-			System.out.println("User " + activeUser.getIdUser() + " mae = "
-					+ mae);
-			System.out.println("User " + activeUser.getIdUser() + " rmse = "
-					+ rmse);
-
+			System.out.format("User %d \t %d \t %.3f \t %.3f \n", activeUser.getIdUser(), userRealRatings.size(), mae, rmse);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return realsAndPredicted;
 	}
-
+/*
 	@Test
 	public void allUsersRatingsQualityTest() {
 		List<RealAndPrediction> allPredictions = new ArrayList<RealAndPrediction>();
@@ -141,7 +143,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-
+*/
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {
@@ -155,7 +157,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 			Callable<List<RealAndPrediction>> callable = new Callable<List<RealAndPrediction>>() {
 				public List<RealAndPrediction> call() throws Exception {
 					// process your input here and compute the output
-					List<RealAndPrediction> output = oneUserRatingsQualityTest(u);
+					List<RealAndPrediction> output = oneUserRatingsQuality(u);
 					return output;
 				}
 			};

@@ -20,6 +20,8 @@ public class UserCenteredCollaborativeFiltering implements
 	private List<User> users = new ArrayList<User>();
 	private List<Item> items = new ArrayList<Item>();
 	private AbstractMatrix dataMatrix;
+	private Map<Long,Integer> userIDMatrixMapping;
+	private Map<Long,Integer> itemIDMatrixMapping;
 
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
@@ -33,11 +35,26 @@ public class UserCenteredCollaborativeFiltering implements
 		this.items = items;
 		dataMatrix = MatrixFactory.createMatrix(users.size(), items.size());
 		System.out.println("rating matrix : "+dataMatrix.getRowsNumber()+"x"+dataMatrix.getColumnsNumber());
+
+		userIDMatrixMapping = new HashMap<Long,Integer>(users.size());
+		for(int i=0;i<users.size();i++){userIDMatrixMapping.put(users.get(i).getIdUser(),i);}
+		itemIDMatrixMapping = new HashMap<Long,Integer>(items.size());
+		for(int i=0;i<items.size();i++){itemIDMatrixMapping.put(items.get(i).getIdItem(),i);}
+		
+		
+		for (Rating r : ratings) {
+			dataMatrix.set(fromRealUserIdToMatrixID(r.getRatingUser().getIdUser()),
+					fromRealItemIdToMatrixID(r.getRatedItem().getIdItem()),
+					r.getRating());
+		}
+		
+		/*
 		for (Rating entry : ratings) {
 			dataMatrix.set((int) entry.getRatingUser().getIdUser() - 1,
 					(int) entry.getRatedItem().getIdItem() - 1,
 					entry.getRating());
 		}
+		*/
 	}
 
 	public AbstractMatrix getDataMatrix() {
@@ -73,19 +90,19 @@ public class UserCenteredCollaborativeFiltering implements
 		ArrayList<Double> activeList = new ArrayList<Double>();
 		// looking for common items
 
-		for (int rows = 0; rows < this.dataMatrix.getRowsNumber(); rows++) {
+		for (int row = 0; row < this.dataMatrix.getRowsNumber(); row++) {
 
-			if (rows != this.users.indexOf(activeUser)) {
+			if (row != fromRealUserIdToMatrixID(activeUser.getIdUser())) {
 
-				for (int cols = 0; cols < this.dataMatrix.getColumnsNumber(); cols++) {
-					if ((this.dataMatrix.get(rows, cols) != NOTRATED)
-							&& (this.dataMatrix.get(
-									this.users.indexOf(activeUser), cols) != NOTRATED)) {
-
-						activeList.add(this.dataMatrix.get(
-								this.users.indexOf(activeUser), cols));
-						user.add(this.dataMatrix.get(rows, cols));
-
+				for (int col = 0; col < this.dataMatrix.getColumnsNumber(); col++) {
+					Double userRowItemColRating = this.dataMatrix.get(row, col);
+					Double activeUserItemColRating = this.dataMatrix.get(fromRealUserIdToMatrixID(activeUser.getIdUser()), col);
+					if ((userRowItemColRating != NOTRATED)&& (activeUserItemColRating != NOTRATED)) {
+						activeList.add(activeUserItemColRating);
+						user.add(userRowItemColRating);
+						//System.out.println("both users "+activeUser.getIdUser()+" and user "+fromMatrixUserIdToRealID(row) +" rated Item "+fromMatrixItemIdToRealID(col));
+					}else{
+						//System.out.println("both users "+activeUser.getIdUser()+" and user "+fromMatrixUserIdToRealID(row) +" have not rated Item "+fromMatrixItemIdToRealID(col));
 					}
 				}
 				// calculates Pearson's correlation coefficient -
@@ -108,11 +125,10 @@ public class UserCenteredCollaborativeFiltering implements
 					if (simPears != Double.NEGATIVE_INFINITY
 							&& simPears != Double.POSITIVE_INFINITY) {
 						// simPears=0;
-						// System.out.println("SimPearson User"+this.users.get(rows).getIdUser()+" = "+simPears);
-						simMap.put(this.users.get(rows), simPears);
+						// System.out.println("SimPearson User"+this.users.get(row).getIdUser()+" = "+simPears);
+						simMap.put(this.users.get(row), simPears);
 					} else {
-						// System.out.println("SimPearson User"+
-						// this.users.get(rows).getIdUser() + " = 0");
+						//System.out.println("SimPearson User"+this.users.get(row).getIdUser() + " = 0");
 					}
 				}
 
@@ -145,7 +161,7 @@ public class UserCenteredCollaborativeFiltering implements
 			System.exit(0);
 		}
 
-		while (this.dataMatrix.get(this.users.indexOf(activeUser), col) != NOTRATED) {
+		while (this.dataMatrix.get(fromRealUserIdToMatrixID(activeUser.getIdUser()), col) != NOTRATED) {
 
 			col++;
 
@@ -167,8 +183,8 @@ public class UserCenteredCollaborativeFiltering implements
 					if (max == simList.get(i)) {
 						// comparing dataMatrix value to find the top neighbor
 						if (this.dataMatrix.get(
-								this.users.indexOf(userList.get(user)), col) < this.dataMatrix
-								.get(this.users.indexOf(userList.get(i)), col)) {
+								fromRealUserIdToMatrixID(activeUser.getIdUser()), col) < this.dataMatrix
+								.get(fromRealUserIdToMatrixID(activeUser.getIdUser()), col)) {
 							max = simList.get(i);
 							user = i;
 						}
@@ -178,8 +194,8 @@ public class UserCenteredCollaborativeFiltering implements
 
 			}
 
-			neighborList.add(this.users.get(this.users.indexOf(userList
-					.get(user))));
+			//TODO
+			neighborList.add(this.users.get(this.users.indexOf(userList.get(user))));
 
 			userList.remove(user);
 			simList.remove(user);
@@ -188,8 +204,7 @@ public class UserCenteredCollaborativeFiltering implements
 
 		// Top-k neighborhood
 
-		neighborList = new ArrayList<User>(neighborList.subList(0,
-				Math.min(K, neighborList.size())));
+		neighborList = new ArrayList<User>(neighborList.subList(0,Math.min(K, neighborList.size())));
 		return neighborList;
 
 	}
@@ -206,21 +221,19 @@ public class UserCenteredCollaborativeFiltering implements
 			System.out.println("No estimation");
 			System.exit(0);
 		}
-		int indexOfActiveUser = this.users.indexOf(activeUser);
+		int indexOfActiveUser = fromRealUserIdToMatrixID(activeUser.getIdUser());
 		for (int col = 0; col < this.dataMatrix.getColumnsNumber(); col++) {
 			estimation = 0;
 			if (this.dataMatrix.get(indexOfActiveUser, col) == 0) {
 				for (User user : similarUserList) {
-					if (this.dataMatrix.get(this.users.indexOf(user), col) != 0) {
-						estimation += this.dataMatrix.get(
-								this.users.indexOf(user), col);
+					if (this.dataMatrix.get(fromRealUserIdToMatrixID(user.getIdUser()), col) != 0) {
+						estimation += this.dataMatrix.get(fromRealUserIdToMatrixID(user.getIdUser()), col);
 						card++;
 					}
 				}
 				if (estimation != 0) {
 					estimation /= card;
-					allPossibleCandidatesEstimations.add(new Rating(estimation,
-							this.items.get(col), activeUser));
+					allPossibleCandidatesEstimations.add(new Rating(estimation,	this.items.get(col), activeUser));
 				}
 				card = 0;
 			}
@@ -228,5 +241,17 @@ public class UserCenteredCollaborativeFiltering implements
 		return allPossibleCandidatesEstimations;
 
 	}
-
+	
+	int fromRealUserIdToMatrixID(long idUser){
+		return userIDMatrixMapping.get(idUser);		
+	}
+	int fromMatrixUserIdToRealID(int userRowIndex){
+		return (int) users.get(userRowIndex).getIdUser();		
+	}
+	int fromRealItemIdToMatrixID(long idItem){
+		return itemIDMatrixMapping.get(idItem);		
+	}
+	int fromMatrixItemIdToRealID(int itemColIndex){
+		return (int) items.get(itemColIndex).getIdItem();		
+	}
 }
