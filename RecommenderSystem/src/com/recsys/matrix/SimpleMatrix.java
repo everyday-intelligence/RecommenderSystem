@@ -15,6 +15,11 @@ public class SimpleMatrix extends AbstractMatrix {
 	    public SimpleMatrix(int rows,int columns) {
 	        super(rows,columns);
 	        matrix = new Double[rows][columns];
+	        for(int i=0;i<getRowsNumber();i++){
+				for(int j=0;j<getRowsNumber();j++){
+					set(i,j,0d);
+				}
+			}
 	    }
 	    
 	    
@@ -31,22 +36,20 @@ public class SimpleMatrix extends AbstractMatrix {
 	    }
 	    
 	    public Double get(int row, int col){
-	  
+	    	if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
+				throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
+			}else{
 	    		return matrix[row][col];
-	    	
+			}
 	    }
 	    
 	    // Insert a value in the matrix
 	    public void set(int row,int col,Double vals){
-	    	
-	    		try {
-					matrix[row][col]=vals;
-				} catch (Exception e) {
-					System.out.println("rating matrix : "+getRowsNumber()+"x"+getColumnsNumber());
-					System.out.println("inserting v="+vals+" in "+row+"-"+col);
-					e.printStackTrace();
-				}
-	    	    
+	    	if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
+				throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
+			}else{
+	    		matrix[row][col]=vals;
+			}
 	    }
 	    
 	    

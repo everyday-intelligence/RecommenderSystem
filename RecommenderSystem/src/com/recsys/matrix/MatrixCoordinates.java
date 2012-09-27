@@ -1,6 +1,6 @@
 package com.recsys.matrix;
 
-public class MatrixCoordinates implements Comparable{
+public class MatrixCoordinates{
 
 	private int row;
 	private int column;
@@ -41,11 +41,6 @@ public class MatrixCoordinates implements Comparable{
 	@Override
 	public String toString() {
 		return "MatrixCoordinates [row=" + row + ", column=" + column + "]";
-	}
-	@Override
-	public int compareTo(Object o) {
-		MatrixCoordinates other = (MatrixCoordinates) o;
-		return this.row-other.row+this.column-other.column;
 	}
 
 	

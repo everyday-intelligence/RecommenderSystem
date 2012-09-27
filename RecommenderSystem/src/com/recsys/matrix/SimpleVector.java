@@ -23,9 +23,5 @@ public class SimpleVector extends AbstractVector{
 	public void set(int index, Double val) {
 		vector[index]=val;		
 	}
-	public Double[] getVector() {
-		return vector;
-	}
-	
 	
 }

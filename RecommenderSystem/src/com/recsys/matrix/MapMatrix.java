@@ -8,8 +8,8 @@ public class MapMatrix extends AbstractMatrix {
 
 	Map<MatrixCoordinates,Double> matrix = new HashMap<MatrixCoordinates,Double>();
 
-	public MapMatrix(int rowsNumber, int columnsNumber) {
-		super(rowsNumber, columnsNumber);
+	public MapMatrix(int columnsNumber, int rowsNumber) {
+		super(columnsNumber, rowsNumber);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class MapMatrix extends AbstractMatrix {
 		return matrix.size();
 	}
 
-	
+	 
 
 	@Override
 	public AbstractVector getRow(int rowNumber) {

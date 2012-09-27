@@ -35,6 +35,6 @@ public /*abstract*/ class Item implements Serializable{
 	public String toString() {
 		return "Item [idItem=" + idItem + "]";
 	}
-	
+
 	
 }
