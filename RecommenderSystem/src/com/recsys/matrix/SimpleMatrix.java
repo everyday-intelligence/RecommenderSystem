@@ -36,6 +36,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	    }
 	    
 	    public Double get(int row, int col){
+	    	if(matrix[row][col]==null){System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!"+row+" , "+col);}
 	    	if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 				throw(new IndexOutOfBoundsException("coordonnées hors de la matrice"));
 			}else{

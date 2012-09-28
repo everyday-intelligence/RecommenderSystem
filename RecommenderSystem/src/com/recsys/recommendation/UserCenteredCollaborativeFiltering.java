@@ -41,9 +41,7 @@ public class UserCenteredCollaborativeFiltering implements
 		}
 	}
 
-	public AbstractMatrix getDataMatrix() {
-		return this.dataMatrix;
-	}
+
 
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
@@ -73,13 +71,13 @@ public class UserCenteredCollaborativeFiltering implements
 	// Similarity: Pearson's correlation coefficient
 	public Map<User, Double> simPearson(User activeUser) {
 
+		
 		double simPears = 0;
 
 		Map<User, Double> simMap = new HashMap<User, Double>();
 		ArrayList<Double> user = new ArrayList<Double>();
 		ArrayList<Double> activeList = new ArrayList<Double>();
 		// looking for common items
-
 		System.out.println("active = "+activeUser.getIdUser());
 		for (User u:users) {
 			System.out.println("other "+u.getIdUser());

@@ -31,6 +31,7 @@ import com.recsys.DomainDAO.ItemDAO;
 import com.recsys.DomainDAO.MoveieLens100KDataReader;
 import com.recsys.DomainDAO.RatingDAO;
 import com.recsys.DomainDAO.UserDAO;
+import com.recsys.recommendation.CopyOfUserCenteredCollaborativeFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
@@ -58,14 +59,14 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 	private static List<User> users;
 	private static List<Item> items;
 	private static List<Rating> dataBaseEntries;
-	private static UserCenteredCollaborativeFiltering filtre;
+	private static CopyOfUserCenteredCollaborativeFiltering filtre;
 
 	@BeforeClass
 	public static void initData() throws Exception {
 		users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 		dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
-		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
+		filtre = new CopyOfUserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
 
 	@Test
