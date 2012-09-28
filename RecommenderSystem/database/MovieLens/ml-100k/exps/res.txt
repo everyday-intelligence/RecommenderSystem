@@ -1,5 +1,0 @@
-100K
-public static final int K = 150;
-total mae = 0.9231719546409279
-total rmse = 1.1833821393017103
-

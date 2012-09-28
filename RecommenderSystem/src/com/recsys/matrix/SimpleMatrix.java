@@ -16,7 +16,7 @@ public class SimpleMatrix extends AbstractMatrix {
 	        super(rows,columns);
 	        matrix = new Double[rows][columns];
 	        for(int i=0;i<getRowsNumber();i++){
-				for(int j=0;j<getRowsNumber();j++){
+				for(int j=0;j<getColumnsNumber();j++){
 					set(i,j,0d);
 				}
 			}

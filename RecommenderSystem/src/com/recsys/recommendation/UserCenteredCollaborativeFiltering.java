@@ -35,7 +35,7 @@ public class UserCenteredCollaborativeFiltering implements
 		System.out.println("rating matrix : "+dataMatrix.getRowsNumber()+"x"+dataMatrix.getColumnsNumber());
 		for (Rating r : ratings) {
 			if(r == null){System.out.println(r+" is null");}
-			dataMatrix.set(r.getRatingUser().getIdUser(),
+			dataMatrix.setByLabel(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
@@ -78,15 +78,11 @@ public class UserCenteredCollaborativeFiltering implements
 		ArrayList<Double> user = new ArrayList<Double>();
 		ArrayList<Double> activeList = new ArrayList<Double>();
 		// looking for common items
-		System.out.println("active = "+activeUser.getIdUser());
 		for (User u:users) {
-			System.out.println("other "+u.getIdUser());
 			if (u.getIdUser() != activeUser.getIdUser()) {
 				for (Item it:items) {
-					System.out.println("item "+it.getIdItem());
-					Double userRowItemColRating = this.dataMatrix.get(u.getIdUser(), it.getIdItem());
-					Double activeUserItemColRating = this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem());
-					System.out.println("here "+activeUserItemColRating+"\t"+userRowItemColRating);
+					Double userRowItemColRating = this.dataMatrix.getByLabel(u.getIdUser(), it.getIdItem());
+					Double activeUserItemColRating = this.dataMatrix.getByLabel(activeUser.getIdUser(), it.getIdItem());
 					if ((userRowItemColRating != NOTRATED) && (activeUserItemColRating != NOTRATED)) {
 						activeList.add(activeUserItemColRating);
 						user.add(userRowItemColRating);
@@ -133,6 +129,29 @@ public class UserCenteredCollaborativeFiltering implements
 
 	}
 
+	public ArrayList<User> neighborhood(Map<User, Double> simMap,
+			User activeUser) {
+		
+		if (simMap.isEmpty()) {
+			System.out.println("There is no neighbors");
+			return null;
+		}
+		
+		ArrayList<Double> simList = new ArrayList<Double>(simMap.values());
+		Collections.sort(simList);
+		double simMin = simList.get(Math.min(simList.size()-1, K));		
+		ArrayList<User> neighborList = new ArrayList<User>();
+		for(User u:simMap.keySet()){
+			if(simMap.get(u)>simMin){
+				neighborList.add(u);
+			}
+		}
+		return neighborList;
+	}
+	
+	
+	/*
+	
 	// Looking for Neighborhood
 	public ArrayList<User> neighborhood(Map<User, Double> simMap,
 			User activeUser) {
@@ -150,10 +169,8 @@ public class UserCenteredCollaborativeFiltering implements
 			return null;
 		}
 
-		while (this.dataMatrix.get(activeUser.getIdUser(), col) != NOTRATED) {
-
+		while (this.dataMatrix.getByLabel(activeUser.getIdUser(), col) != NOTRATED) {
 			col++;
-
 		}
 
 		// Sorting the similarity list to get top neighborhood
@@ -171,9 +188,9 @@ public class UserCenteredCollaborativeFiltering implements
 				} else { // if similarity is equal
 					if (max == simList.get(i)) {
 						// comparing dataMatrix value to find the top neighbor
-						if (this.dataMatrix.get(
+						if (this.dataMatrix.getByLabel(
 								activeUser.getIdUser(), col) < this.dataMatrix
-								.get(activeUser.getIdUser(), col)) {
+								.getByLabel(activeUser.getIdUser(), col)) {
 							max = simList.get(i);
 							user = i;
 						}
@@ -197,7 +214,7 @@ public class UserCenteredCollaborativeFiltering implements
 		return neighborList;
 
 	}
-
+*/
 	// Rating estimation
 	public List<Rating> ratingEstimation(User activeUser,
 			ArrayList<User> similarUserList) {
@@ -208,14 +225,14 @@ public class UserCenteredCollaborativeFiltering implements
 
 		if (similarUserList==null || similarUserList.isEmpty()) {
 			System.out.println("No estimation");
-			return null;
+			return new ArrayList<Rating>();
 		}
 		for (Item it:items) {
 			estimation = 0;
-			if (this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
+			if (this.dataMatrix.getByLabel(activeUser.getIdUser(), it.getIdItem()) == 0) {
 				for (User user : similarUserList) {
-					if (this.dataMatrix.get(user.getIdUser(), it.getIdItem()) != 0) {
-						estimation += this.dataMatrix.get(user.getIdUser(), it.getIdItem());
+					if (this.dataMatrix.getByLabel(user.getIdUser(), it.getIdItem()) != 0) {
+						estimation += this.dataMatrix.getByLabel(user.getIdUser(), it.getIdItem());
 						card++;
 					}
 				}
