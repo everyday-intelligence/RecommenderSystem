@@ -85,7 +85,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		System.out.println("estimating for user " + activeUser.getIdUser());
 		System.out.println(users.size() + " users in DB ");
 		System.out.println(items.size() + " items in DB ");
-		simMap = filtre.simPearson(activeUser);
+		simMap = filtre.calculateUsersSimilarities(activeUser);
 		userList = filtre.neighborhood(simMap, activeUser);
 		System.out.println("Rating estimation");
 		allEstimations = filtre.ratingEstimation(activeUser, userList);
@@ -95,7 +95,7 @@ public class UserCenteredCollaborativeFilteringTest {
 	@Test
 	public void simPearsonTest() {
 		System.out.println("----------------TestPearson----------------------");
-		simMap = filtre.simPearson(activeUser);
+		simMap = filtre.calculateUsersSimilarities(activeUser);
 		// System.out.println("simPearson= "+simMap);
 
 	}
@@ -104,7 +104,7 @@ public class UserCenteredCollaborativeFilteringTest {
 	@Test
 	public void neighborhoodTest() {
 		System.out.println("----------------TestNeighborhood----------------------");
-		simMap = filtre.simPearson(activeUser);
+		simMap = filtre.calculateUsersSimilarities(activeUser);
 		userList = filtre.neighborhood(simMap, activeUser);
 	}
 

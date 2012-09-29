@@ -84,7 +84,7 @@ public class UserCenteredCollaborativeFilteringML1MQualityTest {
 */
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
-		Map<User, Double> simMap = filtre.simPearson(activeUser);
+		Map<User, Double> simMap = filtre.calculateUsersSimilarities(activeUser);
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,activeUser);
 		List<Rating> allEstimations = filtre.ratingEstimation(activeUser, similarUserList);
 		/* begin Quality Test */

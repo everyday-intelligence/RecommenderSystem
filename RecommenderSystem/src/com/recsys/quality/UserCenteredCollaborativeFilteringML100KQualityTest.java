@@ -69,18 +69,18 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
 
-/*
+
 	@Test
 	public void oneUserRatingsQualityTest() {
 		User activeUser = users.get(1);
 		oneUserRatingsQuality(activeUser);
 	}
-*/
+
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
 		//System.out.println("-----------------------------------------");
-		Map<User, Double> simMap = filtre.simPearson(activeUser);
+		Map<User, Double> simMap = filtre.calculateUsersSimilarities(activeUser);
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,
 				activeUser);
 		List<Rating> allEstimations = filtre.ratingEstimation(
@@ -145,7 +145,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-*/
+
 	
 	@Test
 	public void allUsersRatingsQualityTestParallel()
@@ -185,5 +185,5 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-
+*/
 }

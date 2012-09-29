@@ -29,7 +29,7 @@ public class IndexedSimpleMatrix extends SimpleMatrix {
 		System.out.println("cols = "+itemIDMatrixMapping.size()+" = "+colsLabels.size());
 	}
 
-	public Double getByLabel(long rowLabel, long colLabel) {
+	public Double get(long rowLabel, long colLabel) {
 		Double rij = super.get(fromRowLabelToMatrixRow(rowLabel), fromColLabelToMatrixCol(colLabel));
 		if(rij == null){
 			System.out.println("rating "+rowLabel+" , "+colLabel+" dans la case "+fromRowLabelToMatrixRow(rowLabel)+" , "+fromColLabelToMatrixCol(colLabel)+" is null");
@@ -37,7 +37,7 @@ public class IndexedSimpleMatrix extends SimpleMatrix {
 		return rij;
 	}
 
-	public void setByLabel(long rowLabel, long colLabel, Double vals) {
+	public void set(long rowLabel, long colLabel, Double vals) {
 		super.set(fromRowLabelToMatrixRow(rowLabel), fromColLabelToMatrixCol(colLabel), vals);
 	}
 	

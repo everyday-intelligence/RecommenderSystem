@@ -14,6 +14,7 @@ import com.recsys.Domain.User;
 import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
+import com.recsys.similarity.PearsonCorrelation;
 
 public class UserCenteredCollaborativeFiltering implements
 		RecommendationStrategy {
@@ -23,8 +24,9 @@ public class UserCenteredCollaborativeFiltering implements
 	private IndexedSimpleMatrix dataMatrix;
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
-
 	public static final int NOTRATED = 0;
+	PearsonCorrelation pc = new PearsonCorrelation();
+
 
 	public UserCenteredCollaborativeFiltering(List<User> users,
 			List<Item> items, List<Rating> ratings) {
@@ -35,7 +37,7 @@ public class UserCenteredCollaborativeFiltering implements
 		System.out.println("rating matrix : "+dataMatrix.getRowsNumber()+"x"+dataMatrix.getColumnsNumber());
 		for (Rating r : ratings) {
 			if(r == null){System.out.println(r+" is null");}
-			dataMatrix.setByLabel(r.getRatingUser().getIdUser(),
+			dataMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
@@ -47,7 +49,7 @@ public class UserCenteredCollaborativeFiltering implements
 	public List<Recommendation> recommend(User activeUser) {
 
 		// similarity Map
-		Map<User, Double> simMap = simPearson(activeUser);
+		Map<User, Double> simMap = calculateUsersSimilarities(activeUser);
 		// user list array
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
 		List<Rating> allPossibleCandidatesEstimation = ratingEstimation(
@@ -69,23 +71,22 @@ public class UserCenteredCollaborativeFiltering implements
 	// ici les méthodes de recherche de voisinage, estimation, ...... .....
 
 	// Similarity: Pearson's correlation coefficient
-	public Map<User, Double> simPearson(User activeUser) {
+	public Map<User, Double> calculateUsersSimilarities(User activeUser) {
 
-		
-		double simPears = 0;
 
 		Map<User, Double> simMap = new HashMap<User, Double>();
-		ArrayList<Double> user = new ArrayList<Double>();
-		ArrayList<Double> activeList = new ArrayList<Double>();
+		ArrayList<Double> userRatings = new ArrayList<Double>();
+		ArrayList<Double> activeUserRatings = new ArrayList<Double>();
 		// looking for common items
 		for (User u:users) {
+			double simPears = 0d;
 			if (u.getIdUser() != activeUser.getIdUser()) {
 				for (Item it:items) {
-					Double userRowItemColRating = this.dataMatrix.getByLabel(u.getIdUser(), it.getIdItem());
-					Double activeUserItemColRating = this.dataMatrix.getByLabel(activeUser.getIdUser(), it.getIdItem());
+					Double userRowItemColRating = this.dataMatrix.get(u.getIdUser(), it.getIdItem());
+					Double activeUserItemColRating = this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem());
 					if ((userRowItemColRating != NOTRATED) && (activeUserItemColRating != NOTRATED)) {
-						activeList.add(activeUserItemColRating);
-						user.add(userRowItemColRating);
+						activeUserRatings.add(activeUserItemColRating);
+						userRatings.add(userRowItemColRating);
 						//System.out.println("both users "+activeUser.getIdUser()+" and user "+fromMatrixUserIdToRealID(row) +" rated Item "+fromMatrixItemIdToRealID(col));
 					}else{
 						//System.out.println("both users "+activeUser.getIdUser()+" and user "+fromMatrixUserIdToRealID(row) +" have not rated Item "+fromMatrixItemIdToRealID(col));
@@ -93,19 +94,7 @@ public class UserCenteredCollaborativeFiltering implements
 				}
 				// calculates Pearson's correlation coefficient -
 				// simPearson(activeUser,allOtherUsers)
-				if (!activeList.isEmpty() && user.size() > 1) {
-
-					for (int nb = 0; nb < user.size(); nb++) {
-
-						simPears += (activeList.get(nb) * Mathematics
-								.average(activeList))
-								* (user.get(nb) * Mathematics.average(user));
-
-					}
-
-					simPears /= (user.size() - 1)
-							* Mathematics.standardDeviation(activeList)
-							* Mathematics.standardDeviation(user);
+				simPears = pc.measureSimilarity(activeUserRatings,userRatings);
 					// if similarity is infinite: there is no proof of
 					// similarity
 					if (simPears != Double.NEGATIVE_INFINITY
@@ -118,16 +107,16 @@ public class UserCenteredCollaborativeFiltering implements
 					}
 				}
 
-				user.clear();
-				activeList.clear();
+				userRatings.clear();
+				activeUserRatings.clear();
 				simPears = 0;
 
 			}
-		}
+		
 
 		return simMap;
-
 	}
+	
 
 	public ArrayList<User> neighborhood(Map<User, Double> simMap,
 			User activeUser) {
@@ -229,10 +218,10 @@ public class UserCenteredCollaborativeFiltering implements
 		}
 		for (Item it:items) {
 			estimation = 0;
-			if (this.dataMatrix.getByLabel(activeUser.getIdUser(), it.getIdItem()) == 0) {
+			if (this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
 				for (User user : similarUserList) {
-					if (this.dataMatrix.getByLabel(user.getIdUser(), it.getIdItem()) != 0) {
-						estimation += this.dataMatrix.getByLabel(user.getIdUser(), it.getIdItem());
+					if (this.dataMatrix.get(user.getIdUser(), it.getIdItem()) != 0) {
+						estimation += this.dataMatrix.get(user.getIdUser(), it.getIdItem());
 						card++;
 					}
 				}
