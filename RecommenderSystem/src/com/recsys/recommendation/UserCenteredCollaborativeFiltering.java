@@ -14,6 +14,8 @@ import com.recsys.Domain.User;
 import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
+import com.recsys.similarity.InverseManhattanSimilarityNotNullNumber;
+import com.recsys.similarity.InverseManhattanSimilarityNumber;
 import com.recsys.similarity.PearsonCorrelation;
 
 public class UserCenteredCollaborativeFiltering implements
@@ -25,7 +27,7 @@ public class UserCenteredCollaborativeFiltering implements
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
-	PearsonCorrelation pc = new PearsonCorrelation();
+	InverseManhattanSimilarityNotNullNumber<Double> pc = new InverseManhattanSimilarityNotNullNumber();
 
 
 	public UserCenteredCollaborativeFiltering(List<User> users,

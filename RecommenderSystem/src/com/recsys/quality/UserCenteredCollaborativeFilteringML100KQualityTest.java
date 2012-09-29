@@ -38,10 +38,10 @@ import com.recsys.utils.PredicateUtils;
 
 public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
-	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
+	private static String learningRatingsFile = "database/MovieLens/ml-100K/ub.base";
 	private static String usersFile = "database/MovieLens/ml-100K/u.user";
 	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
-	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
+	private static String testRatingsFile = "database/MovieLens/ml-100K/ub.test";
 
 	List<Double> predictedUsersRatings = new ArrayList<Double>();
 	List<Double> realUsersRatings = new ArrayList<Double>();
@@ -145,7 +145,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-
+*/
 	
 	@Test
 	public void allUsersRatingsQualityTestParallel()
@@ -185,5 +185,5 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-*/
+
 }
