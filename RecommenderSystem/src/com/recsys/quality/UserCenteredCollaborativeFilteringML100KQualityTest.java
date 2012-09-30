@@ -72,7 +72,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 /*
 	@Test
 	public void oneUserRatingsQualityTest() {
-		User activeUser = users.get(1);
+		User activeUser = users.get(9);
 		oneUserRatingsQuality(activeUser);
 	}
 */

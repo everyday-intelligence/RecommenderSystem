@@ -18,9 +18,11 @@ import com.recsys.ratingsAggregator.MeanAggregator;
 import com.recsys.ratingsAggregator.RatingAggregator;
 import com.recsys.ratingsAggregator.WeightedMeanAggregator;
 import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
-import com.recsys.similarity.CosineSimilarityNumber;
+import com.recsys.similarity.CosineDistanceNumber;
+import com.recsys.similarity.MAEDistanceNumber;
 import com.recsys.similarity.ManhattanDistanceNumber;
-import com.recsys.similarity.PearsonCorrelation;
+import com.recsys.similarity.PearsonCorrelationSimilarity;
+import com.recsys.similarity.RMSEDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
 
 public class UserCenteredCollaborativeFiltering implements
@@ -32,8 +34,8 @@ public class UserCenteredCollaborativeFiltering implements
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
-	SimilarityMeasure<Double> pc = new CosineSimilarityNumber<Double>();
-	RatingAggregator na = new MeanAggregator();
+	SimilarityMeasure<Double> pc = new PearsonCorrelationSimilarity<Double>();
+	RatingAggregator na = new WeightedMeanAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();

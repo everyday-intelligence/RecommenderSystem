@@ -2,7 +2,7 @@ package com.recsys.similarity;
 
 import java.util.List;
 
-public class CosineSimilarityNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
+public class CosineDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
 
 
 	@Override
