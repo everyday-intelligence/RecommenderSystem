@@ -19,8 +19,8 @@ import com.recsys.ratingsAggregator.RatingAggregator;
 import com.recsys.ratingsAggregator.WeightedMeanAggregator;
 import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.similarity.CosineSimilarityNumber;
-import com.recsys.similarity.InverseManhattanSimilarityNumber;
-import com.recsys.similarity.InversePearsonCorrelation;
+import com.recsys.similarity.ManhattanDistanceNumber;
+import com.recsys.similarity.PearsonCorrelation;
 import com.recsys.similarity.SimilarityMeasure;
 
 public class UserCenteredCollaborativeFiltering implements
@@ -32,11 +32,10 @@ public class UserCenteredCollaborativeFiltering implements
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
-	SimilarityMeasure<Double> pc = new InverseManhattanSimilarityNumber<Double>();
-	RatingAggregator na = new WeightedMeanNonBiasedAggregator();
+	SimilarityMeasure<Double> pc = new CosineSimilarityNumber<Double>();
+	RatingAggregator na = new WeightedMeanAggregator();
 
-	public UserCenteredCollaborativeFiltering(List<User> users,
-			List<Item> items, List<Rating> ratings) {
+	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();
 		this.users = users;
 		this.items = items;
@@ -133,12 +132,33 @@ public class UserCenteredCollaborativeFiltering implements
 		
 		ArrayList<Double> simList = new ArrayList<Double>(simMap.values());
 		Collections.sort(simList);
-		double simMin = simList.get(Math.min(simList.size()-1, K));		
+		if(pc.isSimilarity()){
+			Collections.reverse(simList);
+		}
+		double threashold = simList.get(Math.min(simList.size()-1, K));	
+		
+		//System.out.println("user "+activeUser.getIdUser()+" sims vary from "+Collections.min(simList)+" to "+Collections.max(simList)+ " simMin = "+threashold);
 		ArrayList<User> neighborList = new ArrayList<User>();
 		for(User u:simMap.keySet()){
-			if(simMap.get(u)>simMin){
-				neighborList.add(u);
+			if(pc.isSimilarity()){
+				if(simMap.get(u)>=threashold){
+					neighborList.add(u);
+				}
+			}else{
+				if(simMap.get(u)<=threashold){
+					neighborList.add(u);
+				}
 			}
+			
+		}
+		if(neighborList.isEmpty()){
+		System.out.println("!!!!!!!!!!!!!!!!"+neighborList.size());
+		try {
+			this.wait(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		}
 		return neighborList;
 	}

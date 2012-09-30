@@ -123,7 +123,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		}
 		return realsAndPredicted;
 	}
-
+/*
 	@Test
 	public void allUsersRatingsQualityTest() {
 		List<RealAndPrediction> allPredictions = new ArrayList<RealAndPrediction>();
@@ -146,7 +146,8 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total rmse = " + rmse);
 	}
 
-/*
+*/
+	
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {
@@ -185,5 +186,5 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-*/
+
 }

@@ -8,6 +8,7 @@ public class Mathematics {
 
 	// calculates average for standard deviation
 	public static double average(List<Double> list) {
+		if(list.isEmpty()){return 0;}
 
 		double avg = 0;
 		for (double value : list) {
@@ -16,6 +17,7 @@ public class Mathematics {
 
 		}
 
+		
 		return avg / list.size();
 
 	}
@@ -42,6 +44,10 @@ public class Mathematics {
 		for (int i = 0; i < predictionsCouples.size(); i++) {
 			error += Math.abs(predictionsCouples.get(i).getPredictedValue() - predictionsCouples.get(i).getRealValue());
 		}
+		/*
+		if(new Double(error / predictionsCouples.size()).isNaN()){
+			System.out.println(predictionsCouples);
+		}*/
 		return error / predictionsCouples.size();
 	}
 

@@ -35,7 +35,11 @@ public class WeightedMeanNonBiasedAggregator extends RatingAggregator {
 						nbActiveRatings++;
 					}
 				}
-				activeMeanRatings = activeMeanRatings / nbActiveRatings;
+				if(nbActiveRatings==0){
+					activeMeanRatings = 0;
+				}else{
+					activeMeanRatings = activeMeanRatings / nbActiveRatings;					
+				}
 
 				for (User user : similarUsers) {
 					double meanURatings = 0d;
@@ -47,7 +51,11 @@ public class WeightedMeanNonBiasedAggregator extends RatingAggregator {
 							nbURatings++;
 						}
 					}
-					similarsMeanRatings.add(meanURatings / nbURatings);
+					if(nbActiveRatings==0){
+						similarsMeanRatings.add(0d);
+					}else{
+						similarsMeanRatings.add(meanURatings / nbURatings);
+					}
 				}
 			}
 
@@ -67,6 +75,9 @@ public class WeightedMeanNonBiasedAggregator extends RatingAggregator {
 			for (int i = 0; i < similarsCommonRatings.size(); i++) {
 				avg += Math.abs(similarsCommonRatings.get(i) - similarsMeanRatings.get(i))*similarsSimilarityValues.get(i);
 				norm += similarsSimilarityValues.get(i);
+			}
+			if(avg==0){
+				return 0d;
 			}
 			estimation= activeMeanRatings + (avg / norm);
 

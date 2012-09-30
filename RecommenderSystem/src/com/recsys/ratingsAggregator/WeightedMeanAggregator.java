@@ -34,8 +34,11 @@ public class WeightedMeanAggregator extends RatingAggregator {
 			avg += similarsCommonRatings.get(i)*similarsSimilarityValues.get(i);
 			norm+=similarsSimilarityValues.get(i);
 		}
-		estimation= avg/norm;
+		if(avg!=0){
+			estimation= avg/norm;
+		}
 	}
+		
 		return estimation;
 	}
 	

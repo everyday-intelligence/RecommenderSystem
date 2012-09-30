@@ -2,7 +2,7 @@ package com.recsys.similarity;
 
 import java.util.List;
 
-public class InverseManhattanSimilarityNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
+public class ManhattanDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
 
 
 	@Override
@@ -12,7 +12,15 @@ public class InverseManhattanSimilarityNumber<Double> extends NumbersSimilarityM
 		for(int i=0;i<values1.size();i++){
 			dist += Math.abs(values1.get(i)-values2.get(i));
 		}
-		return new java.lang.Double(1)/dist;
+		if(dist==0){
+			return 1d;
+		}
+		return dist;
+	}
+
+	@Override
+	public Boolean isSimilarity() {
+		return false;
 	}
 
 }

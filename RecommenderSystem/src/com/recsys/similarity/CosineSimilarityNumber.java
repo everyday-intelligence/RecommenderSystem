@@ -16,7 +16,12 @@ public class CosineSimilarityNumber<Double> extends NumbersSimilarityMeasure<jav
 			normX+=Math.pow(values1.get(i),2);
 			normY+=Math.pow(values2.get(i),2);
 		}
-		return dist/(normX*normY);
+		return (dist/(normX*normY));
+	}
+
+	@Override
+	public Boolean isSimilarity() {
+		return false;
 	}
 
 }

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.recsys.similarity.InverseManhattanSimilarityNumber;
+import com.recsys.similarity.ManhattanDistanceNumber;
 
 public class InverseManhattanSimilarityNumberTest {
 
@@ -35,7 +35,7 @@ public class InverseManhattanSimilarityNumberTest {
 
 	@Test
 	public final void testMeasureSimilarityListOfTListOfT() {
-		InverseManhattanSimilarityNumber<Double> manhattanSim = new InverseManhattanSimilarityNumber<Double>();
+		ManhattanDistanceNumber<Double> manhattanSim = new ManhattanDistanceNumber<Double>();
 		Double sim = manhattanSim.measureSimilarity(l1, l2);
 		assertEquals(new Double(1d/(length*1)),sim);
 	}

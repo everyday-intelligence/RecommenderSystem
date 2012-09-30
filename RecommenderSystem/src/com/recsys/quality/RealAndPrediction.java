@@ -15,5 +15,10 @@ public class RealAndPrediction {
 	public double getPredictedValue() {
 		return predictedValue;
 	}
+	@Override
+	public String toString() {
+		return "realValue=" + realValue
+				+ ", predictedValue=" + predictedValue + "";
+	}
 		
 }

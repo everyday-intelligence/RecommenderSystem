@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.recsys.recommendation.Mathematics;
 
-public class InversePearsonCorrelation<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {
+public class PearsonCorrelation<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {
 
 	public java.lang.Double measureSimilarity(List<java.lang.Double> values1,List<java.lang.Double> values2) {
 
@@ -21,7 +21,12 @@ public class InversePearsonCorrelation<Double> extends	NumbersSimilarityMeasure<
 					* Mathematics.standardDeviation(values1)
 					* Mathematics.standardDeviation(values2);
 		}
-		return 1/simPears;
+		return simPears;
 
+	}
+
+	@Override
+	public Boolean isSimilarity() {
+		return true;
 	}
 }
