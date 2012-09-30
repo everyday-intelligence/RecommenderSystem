@@ -33,7 +33,7 @@ public class UserCenteredCollaborativeFiltering implements
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
 	SimilarityMeasure<Double> pc = new CosineSimilarityNumber<Double>();
-	RatingAggregator na = new WeightedMeanAggregator();
+	RatingAggregator na = new MeanAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();
@@ -96,19 +96,19 @@ public class UserCenteredCollaborativeFiltering implements
 						//System.out.println("both users "+activeUser.getIdUser()+" and user "+fromMatrixUserIdToRealID(row) +" have not rated Item "+fromMatrixItemIdToRealID(col));
 					}
 				}
-				// calculates Pearson's correlation coefficient -
-				// simPearson(activeUser,allOtherUsers)
-				simPears = pc.measureSimilarity(activeUserRatings,userRatings);
+					// calculates Pearson's correlation coefficient -
+					// simPearson(activeUser,allOtherUsers)
+					if(!activeUserRatings.isEmpty()){//no commons
+						simPears = pc.measureSimilarity(activeUserRatings,userRatings);
+						if (!Double.isInfinite(simPears) && !Double.isNaN(simPears)) {
+							//simPears=0;
+							//System.out.println("SimPearson User"+this.users.get(row).getIdUser()+" = "+simPears);
+							simMap.put(u, simPears);
+						}
+					}
 					// if similarity is infinite: there is no proof of
 					// similarity
-					if (simPears != Double.NEGATIVE_INFINITY
-							&& simPears != Double.POSITIVE_INFINITY) {
-						// simPears=0;
-						// System.out.println("SimPearson User"+this.users.get(row).getIdUser()+" = "+simPears);
-						simMap.put(u, simPears);
-					} else {
-						//System.out.println("SimPearson User"+this.users.get(row).getIdUser() + " = 0");
-					}
+					
 				}
 
 				userRatings.clear();
@@ -143,10 +143,12 @@ public class UserCenteredCollaborativeFiltering implements
 			if(pc.isSimilarity()){
 				if(simMap.get(u)>=threashold){
 					neighborList.add(u);
+					//System.out.println(simMap.get(u)+" taken");
 				}
 			}else{
 				if(simMap.get(u)<=threashold){
 					neighborList.add(u);
+					//System.out.println(simMap.get(u)+" taken");
 				}
 			}
 			

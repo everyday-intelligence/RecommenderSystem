@@ -16,17 +16,21 @@ public class MeanAggregator extends RatingAggregator {
 			Map<User, Double> simMap, IndexedSimpleMatrix dataMatrix) {
 
 		double estimation = 0;
+		List<Double> similarsCommonRatings = new ArrayList<Double>();
 		if (dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
-			List<Double> similarsCommonRatings = new ArrayList<Double>();
 			for (User user : similarUsers) {
-				if (dataMatrix.get(user.getIdUser(), it.getIdItem()) != 0) {
-					similarsCommonRatings.add(dataMatrix.get(user.getIdUser(),
-							it.getIdItem()));
+				Double userItRating = dataMatrix.get(user.getIdUser(),it.getIdItem());
+				if (userItRating != 0) {
+					similarsCommonRatings.add(userItRating);
 				}
 			}
-
 			 estimation= Mathematics.average(similarsCommonRatings);
 		}
+		
+		if(estimation == 0){
+			//System.out.println(similarsCommonRatings);
+		}
+
 		return estimation;
 	}
 }

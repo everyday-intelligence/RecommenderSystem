@@ -6,21 +6,19 @@ import com.recsys.recommendation.Mathematics;
 
 public class PearsonCorrelation<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {
 
-	public java.lang.Double measureSimilarity(List<java.lang.Double> values1,List<java.lang.Double> values2) {
-
+	public java.lang.Double measureSimilarity(List<java.lang.Double> activeRatings,List<java.lang.Double> otherUserRatings) {
 		double simPears = 0d;
-		if (!values1.isEmpty() && values2.size() > 1) {
-			for (int nb = 0; nb < values2.size(); nb++) {
-				simPears += (values1.get(nb) * Mathematics
-						.average(values1))
-						* (values2.get(nb) * Mathematics
-								.average(values2));
+		if (!activeRatings.isEmpty() && otherUserRatings.size() > 1) {
+			for (int nb = 0; nb < otherUserRatings.size(); nb++) {
+				simPears += (activeRatings.get(nb) * Mathematics.average(activeRatings))
+						* (otherUserRatings.get(nb) * Mathematics
+								.average(otherUserRatings));
 			}
 
-			simPears /= (values2.size() - 1)
-					* Mathematics.standardDeviation(values1)
-					* Mathematics.standardDeviation(values2);
+			simPears /= (otherUserRatings.size()* Mathematics.standardDeviation(activeRatings)
+					* Mathematics.standardDeviation(otherUserRatings));
 		}
+		//System.out.println("SPPPPPPPPPPPPPPPP = "+simPears);
 		return simPears;
 
 	}

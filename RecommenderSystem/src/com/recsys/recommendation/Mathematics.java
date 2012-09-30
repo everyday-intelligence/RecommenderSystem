@@ -8,7 +8,9 @@ public class Mathematics {
 
 	// calculates average for standard deviation
 	public static double average(List<Double> list) {
-		if(list.isEmpty()){return 0;}
+		if(list.isEmpty()){
+			//System.out.println("emptyyyyyyyyyyyyyyyyy");
+			return 0;}
 
 		double avg = 0;
 		for (double value : list) {

@@ -38,7 +38,6 @@ public class WeightedMeanAggregator extends RatingAggregator {
 			estimation= avg/norm;
 		}
 	}
-		
 		return estimation;
 	}
 	
