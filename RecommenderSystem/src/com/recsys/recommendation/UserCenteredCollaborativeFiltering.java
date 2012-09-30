@@ -14,9 +14,14 @@ import com.recsys.Domain.User;
 import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
-import com.recsys.similarity.InverseManhattanSimilarityNotNullNumber;
+import com.recsys.ratingsAggregator.MeanAggregator;
+import com.recsys.ratingsAggregator.RatingAggregator;
+import com.recsys.ratingsAggregator.WeightedMeanAggregator;
+import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
+import com.recsys.similarity.CosineSimilarityNumber;
 import com.recsys.similarity.InverseManhattanSimilarityNumber;
-import com.recsys.similarity.PearsonCorrelation;
+import com.recsys.similarity.InversePearsonCorrelation;
+import com.recsys.similarity.SimilarityMeasure;
 
 public class UserCenteredCollaborativeFiltering implements
 		RecommendationStrategy {
@@ -27,8 +32,8 @@ public class UserCenteredCollaborativeFiltering implements
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
-	InverseManhattanSimilarityNotNullNumber<Double> pc = new InverseManhattanSimilarityNotNullNumber();
-
+	SimilarityMeasure<Double> pc = new InverseManhattanSimilarityNumber<Double>();
+	RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,
 			List<Item> items, List<Rating> ratings) {
@@ -54,8 +59,7 @@ public class UserCenteredCollaborativeFiltering implements
 		Map<User, Double> simMap = calculateUsersSimilarities(activeUser);
 		// user list array
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
-		List<Rating> allPossibleCandidatesEstimation = ratingEstimation(
-				activeUser, similarUsersList);
+		List<Rating> allPossibleCandidatesEstimation = ratingEstimation(activeUser, similarUsersList,simMap);
 		if(allPossibleCandidatesEstimation == null || allPossibleCandidatesEstimation.isEmpty()){
 			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
 			for (Rating r : allPossibleCandidatesEstimation) {
@@ -74,7 +78,6 @@ public class UserCenteredCollaborativeFiltering implements
 
 	// Similarity: Pearson's correlation coefficient
 	public Map<User, Double> calculateUsersSimilarities(User activeUser) {
-
 
 		Map<User, Double> simMap = new HashMap<User, Double>();
 		ArrayList<Double> userRatings = new ArrayList<Double>();
@@ -140,98 +143,29 @@ public class UserCenteredCollaborativeFiltering implements
 		return neighborList;
 	}
 	
-	
-	/*
-	
-	// Looking for Neighborhood
-	public ArrayList<User> neighborhood(Map<User, Double> simMap,
-			User activeUser) {
-
-		// Similarity List
-		ArrayList<Double> simList = new ArrayList<Double>(simMap.values());
-		// Users List
-		ArrayList<User> userList = new ArrayList<User>(simMap.keySet());
-		ArrayList<User> neighborList = new ArrayList<User>();
-
-		int col = 0;
-
-		if (simMap.isEmpty()) {
-			System.out.println("There is no neighbors");
-			return null;
-		}
-
-		while (this.dataMatrix.getByLabel(activeUser.getIdUser(), col) != NOTRATED) {
-			col++;
-		}
-
-		// Sorting the similarity list to get top neighborhood
-		while (!userList.isEmpty()) {
-
-			double max = simList.get(0);
-			int user = 0;
-
-			for (int i = 1; i < simList.size(); i++) {
-
-				// comparing simList values
-				if (max < simList.get(i)) {
-					max = simList.get(i);
-					user = i;
-				} else { // if similarity is equal
-					if (max == simList.get(i)) {
-						// comparing dataMatrix value to find the top neighbor
-						if (this.dataMatrix.getByLabel(
-								activeUser.getIdUser(), col) < this.dataMatrix
-								.getByLabel(activeUser.getIdUser(), col)) {
-							max = simList.get(i);
-							user = i;
-						}
-					}
-
-				}
-
-			}
-
-			//TODO
-			neighborList.add(this.users.get(this.users.indexOf(userList.get(user))));
-
-			userList.remove(user);
-			simList.remove(user);
-
-		}
-
-		// Top-k neighborhood
-
-		neighborList = new ArrayList<User>(neighborList.subList(0,Math.min(K, neighborList.size())));
-		return neighborList;
-
-	}
-*/
 	// Rating estimation
 	public List<Rating> ratingEstimation(User activeUser,
-			ArrayList<User> similarUserList) {
+			ArrayList<User> similarUserList, Map<User, Double> simMap) {
 
 		double estimation;
 		List<Rating> allPossibleCandidatesEstimations = new ArrayList<Rating>();
-		int card = 0;
 
 		if (similarUserList==null || similarUserList.isEmpty()) {
 			System.out.println("No estimation");
 			return new ArrayList<Rating>();
 		}
+		
+		List<Double> activeRatings = new ArrayList<Double>();
+		for (Item it:items) {
+			activeRatings.add(this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()));
+		}
 		for (Item it:items) {
 			estimation = 0;
 			if (this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
-				for (User user : similarUserList) {
-					if (this.dataMatrix.get(user.getIdUser(), it.getIdItem()) != 0) {
-						estimation += this.dataMatrix.get(user.getIdUser(), it.getIdItem());
-						card++;
-					}
-				}
+				estimation = na.aggregate(activeUser,it,similarUserList,items,simMap,dataMatrix);
 				if (estimation != 0) {
-					estimation /= card;
 					allPossibleCandidatesEstimations.add(new Rating(estimation,	it, activeUser));
 				}
-				card = 0;
 			}
 		}
 		return allPossibleCandidatesEstimations;

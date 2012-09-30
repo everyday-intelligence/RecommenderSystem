@@ -7,7 +7,7 @@ import com.recsys.quality.RealAndPrediction;
 public class Mathematics {
 
 	// calculates average for standard deviation
-	public static int average(List<Double> list) {
+	public static double average(List<Double> list) {
 
 		double avg = 0;
 		for (double value : list) {
@@ -16,7 +16,7 @@ public class Mathematics {
 
 		}
 
-		return (int) avg / list.size();
+		return avg / list.size();
 
 	}
 

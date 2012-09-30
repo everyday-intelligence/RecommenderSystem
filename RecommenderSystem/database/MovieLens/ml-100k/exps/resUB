@@ -1,15 +1,23 @@
-UB k=150 pearson
+UB k=150 inverse pearson Mean
+total mae = 0.9406641326003385
+total rmse = 1.165324796551697
 
-total mae = 0.9434209443760704
-total rmse = 1.1999371554498794
-
-UB k=150 manhattan
-
+UB k=150 inverse manhattan Mean
 total mae = 0.9198737320643934
 total rmse = 1.1520131057464063
 
+UB k=150 inverse manhattan WeightedMean
+total mae = 0.9303677652259134
+total rmse = 1.15757965157492
 
-UB k=150 manhattan a*b!=0
+UB k=150 inverse manhattan WeightedMeanNonBiased
+total mae = 1.126031928044915
+total rmse = 1.437256490250941
 
-total mae = 0.9198737320643934
-total rmse = 1.1520131057464063
+UB k=150 cosine Mean
+total mae = 0.9382544519475152
+total rmse = 1.167760026247393
+
+UB k=150 inverse pearson WeightedMean
+total mae = 0.9669895829036648
+total rmse = 1.1837486118015492

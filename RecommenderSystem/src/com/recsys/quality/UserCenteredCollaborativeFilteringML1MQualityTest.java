@@ -86,7 +86,7 @@ public class UserCenteredCollaborativeFilteringML1MQualityTest {
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
 		Map<User, Double> simMap = filtre.calculateUsersSimilarities(activeUser);
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,activeUser);
-		List<Rating> allEstimations = filtre.ratingEstimation(activeUser, similarUserList);
+		List<Rating> allEstimations = filtre.ratingEstimation(activeUser, similarUserList,simMap);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MoveieLens1MDataReader.findUserRatings(testRatingsFile, activeUser.getIdUser());
 		//System.out.println("user " + activeUser.getIdUser() + " has "+ userRealRatings.size() + " ratings");

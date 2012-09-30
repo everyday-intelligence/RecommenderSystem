@@ -69,13 +69,13 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
 
-
+/*
 	@Test
 	public void oneUserRatingsQualityTest() {
 		User activeUser = users.get(1);
 		oneUserRatingsQuality(activeUser);
 	}
-
+*/
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
@@ -84,7 +84,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,
 				activeUser);
 		List<Rating> allEstimations = filtre.ratingEstimation(
-				activeUser, similarUserList);
+				activeUser, similarUserList,simMap);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
@@ -123,7 +123,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		}
 		return realsAndPredicted;
 	}
-/*
+
 	@Test
 	public void allUsersRatingsQualityTest() {
 		List<RealAndPrediction> allPredictions = new ArrayList<RealAndPrediction>();
@@ -145,8 +145,8 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-*/
-	
+
+/*
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {
@@ -185,5 +185,5 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 	}
-
+*/
 }

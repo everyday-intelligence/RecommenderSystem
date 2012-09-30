@@ -88,7 +88,7 @@ public class UserCenteredCollaborativeFilteringTest {
 		simMap = filtre.calculateUsersSimilarities(activeUser);
 		userList = filtre.neighborhood(simMap, activeUser);
 		System.out.println("Rating estimation");
-		allEstimations = filtre.ratingEstimation(activeUser, userList);
+		allEstimations = filtre.ratingEstimation(activeUser, userList,simMap);
 	}
 
 	// Similarity: Pearson's correlation coefficient
