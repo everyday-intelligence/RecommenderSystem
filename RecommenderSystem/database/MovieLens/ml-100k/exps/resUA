@@ -1,10 +1,44 @@
-cf ua k=150 pearson
+UA k=150  pearson Mean
+total mae = 0.9445748825760194
+total rmse = 1.1842717335219748
 
-total mae = 0.9222251981508809
-total rmse = 1.178921381219597
+UA k=150 pearson WeightedMean
+total mae = 0.9451120882702522
+total rmse = 1.1824715418471814
 
-cf ua k=150 manhattan
+UA k=150 pearson WeightedMeanNonBiased
+total mae = 0.8784238859641288
+total rmse = 1.1075677640687198
 
-total mae = 0.9095597908840315
-total rmse = 1.1493396462093421
+UA k=150 manhattan Mean
+total mae = 0.9893374516271869
+total rmse = 1.2734161039503478
+
+UA k=150 manhattan WeightedMean
+total mae = 0.9937158112019602
+total rmse = 1.2785362235035223
+
+UA k=150 manhattan WeightedMeanNonBiased
+total mae = 0.942061017173106
+total rmse = 1.1999198883986937
+
+UA k=150 cosine Mean
+total mae = 0.9264952307153475
+total rmse = 1.1712406672816238
+
+UA k=150 cosine WeightedMean
+total mae = 0.928096247422667
+total rmse = 1.1727854165147855
+
+UA k=150 cosine WeightedMeanNonBiased
+total mae = 0.867408672978626
+total rmse = 1.0986639249331167
+
+UA k=150 MAE WeightedMeanNonBiased
+
+
+UB k=150 RMSE WeightedMeanNonBiased
+
+
+UB k=150 RMSE Mean
 

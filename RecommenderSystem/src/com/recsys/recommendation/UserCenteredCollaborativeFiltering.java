@@ -34,7 +34,7 @@ public class UserCenteredCollaborativeFiltering implements
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
-	SimilarityMeasure<Double> pc = new PearsonCorrelationSimilarity<Double>();
+	SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
 	RatingAggregator na = new WeightedMeanAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {

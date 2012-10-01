@@ -1,9 +1,6 @@
 package com.recsys.quality;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -12,36 +9,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
-import com.recsys.Domain.Recommendation;
-import com.recsys.Domain.RecommendationItemIDChecker;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.ItemDAO;
 import com.recsys.DomainDAO.MoveieLens100KDataReader;
-import com.recsys.DomainDAO.RatingDAO;
-import com.recsys.DomainDAO.UserDAO;
-import com.recsys.recommendation.CopyOfUserCenteredCollaborativeFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
 
 public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
-	private static String learningRatingsFile = "database/MovieLens/ml-100K/ub.base";
+	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
 	private static String usersFile = "database/MovieLens/ml-100K/u.user";
 	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
-	private static String testRatingsFile = "database/MovieLens/ml-100K/ub.test";
+	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
 
 	List<Double> predictedUsersRatings = new ArrayList<Double>();
 	List<Double> realUsersRatings = new ArrayList<Double>();
