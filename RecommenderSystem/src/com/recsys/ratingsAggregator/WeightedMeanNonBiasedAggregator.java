@@ -1,7 +1,5 @@
 package com.recsys.ratingsAggregator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
 import com.recsys.matrix.IndexedSimpleMatrix;
-import com.recsys.recommendation.Mathematics;
 
 public class WeightedMeanNonBiasedAggregator extends RatingAggregator {
 

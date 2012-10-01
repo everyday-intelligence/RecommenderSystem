@@ -1,6 +1,6 @@
 package test.recsys.DomainDAO;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -11,7 +11,6 @@ import org.junit.Test;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens100KDataReader;
 import com.recsys.DomainDAO.MoveieLens1MDataReader;
 
 public class MoveieLens1MDataReaderTest {

@@ -1,11 +1,7 @@
 package com.recsys.similarity;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.recsys.Domain.User;
-import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
 public class AdjustedCosineSimilarity<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {

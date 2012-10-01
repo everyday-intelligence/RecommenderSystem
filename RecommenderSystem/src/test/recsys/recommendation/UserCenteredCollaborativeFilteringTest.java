@@ -1,14 +1,9 @@
 package test.recsys.recommendation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,10 +13,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.ItemDAO;
 import com.recsys.DomainDAO.MoveieLens100KDataReader;
-import com.recsys.DomainDAO.RatingDAO;
-import com.recsys.DomainDAO.UserDAO;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {

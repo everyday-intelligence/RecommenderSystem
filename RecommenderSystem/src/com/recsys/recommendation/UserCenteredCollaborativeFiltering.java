@@ -5,23 +5,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
-import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
-import com.recsys.ratingsAggregator.MeanAggregator;
 import com.recsys.ratingsAggregator.RatingAggregator;
-import com.recsys.ratingsAggregator.WeightedMeanAggregator;
 import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.similarity.CosineDistanceNumber;
-import com.recsys.similarity.MAEDistanceNumber;
-import com.recsys.similarity.ManhattanDistanceNumber;
-import com.recsys.similarity.RMSEDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
 
 public class UserCenteredCollaborativeFiltering implements

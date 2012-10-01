@@ -1,21 +1,12 @@
 package test.recsys.matrix;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-import com.recsys.matrix.AbstractVector;
-import com.recsys.matrix.MapMatrix;
-import com.recsys.matrix.MatrixFactory;
 import com.recsys.matrix.SimpleMatrix;
-import com.recsys.matrix.SimpleVector;
 
 public class SimpleMatrixTest {
 	// matrix with 3 columns and 2 rows

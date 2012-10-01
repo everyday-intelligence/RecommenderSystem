@@ -6,7 +6,6 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;

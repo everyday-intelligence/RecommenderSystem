@@ -1,10 +1,5 @@
 package com.recsys.matrix;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
 
 
 public class SimpleMatrix extends AbstractMatrix {
