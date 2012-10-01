@@ -2,6 +2,8 @@ package com.recsys.similarity;
 
 import java.util.List;
 
+import com.recsys.matrix.IndexedSimpleMatrix;
+
 public class ManhattanDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
 
 

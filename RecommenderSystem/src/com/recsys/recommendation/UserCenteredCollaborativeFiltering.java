@@ -21,7 +21,6 @@ import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.similarity.CosineDistanceNumber;
 import com.recsys.similarity.MAEDistanceNumber;
 import com.recsys.similarity.ManhattanDistanceNumber;
-import com.recsys.similarity.PearsonCorrelationSimilarity;
 import com.recsys.similarity.RMSEDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
 
@@ -32,10 +31,10 @@ public class UserCenteredCollaborativeFiltering implements
 	private List<Item> items = new ArrayList<Item>();
 	private IndexedSimpleMatrix dataMatrix;
 	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K = 150;
+	public static final int K = 40;
 	public static final int NOTRATED = 0;
-	SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
-	RatingAggregator na = new WeightedMeanAggregator();
+	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
+	RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();

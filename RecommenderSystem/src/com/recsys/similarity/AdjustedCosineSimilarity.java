@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.recsys.Domain.User;
+import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
-public class PearsonCorrelationSimilarity<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {
+public class AdjustedCosineSimilarity<Double> extends	NumbersSimilarityMeasure<java.lang.Double> {
 
 	
 	public java.lang.Double measureSimilarity(List<java.lang.Double> activeRatings,List<java.lang.Double> otherUserRatings) {
