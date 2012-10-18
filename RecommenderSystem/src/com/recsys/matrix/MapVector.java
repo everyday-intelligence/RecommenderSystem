@@ -2,6 +2,7 @@ package com.recsys.matrix;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapVector extends AbstractVector{
@@ -42,5 +43,10 @@ public class MapVector extends AbstractVector{
 	}
 	public int size() {
 		return Collections.max(vector.keySet());
+	}
+
+	@Override
+	public List toList() {
+		return (List) vector.values();
 	}
 }

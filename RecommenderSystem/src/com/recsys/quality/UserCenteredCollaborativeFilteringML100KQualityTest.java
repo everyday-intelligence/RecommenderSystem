@@ -68,7 +68,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		Map<User, Double> simMap = filtre.calculateUsersSimilarities(activeUser);
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,
 				activeUser);
-		List<Rating> allEstimations = filtre.ratingEstimation(
+		List<Rating> allEstimations = filtre.userRatingsEstimation(
 				activeUser, similarUserList,simMap);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(

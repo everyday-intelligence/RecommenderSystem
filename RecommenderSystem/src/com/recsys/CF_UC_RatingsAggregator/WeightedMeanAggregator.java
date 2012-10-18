@@ -1,4 +1,4 @@
-package com.recsys.ratingsAggregator;
+package com.recsys.CF_UC_RatingsAggregator;
 
 import java.util.List;
 import java.util.Map;
@@ -7,7 +7,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
 import com.recsys.matrix.IndexedSimpleMatrix;
 
-public class WeightedMeanAggregator extends RatingAggregator {
+public class WeightedMeanAggregator extends CF_UC_RatingAggregator {
 
 	@Override
 	public Double aggregate(User activeUser, Item it, List<User> similarUsers,

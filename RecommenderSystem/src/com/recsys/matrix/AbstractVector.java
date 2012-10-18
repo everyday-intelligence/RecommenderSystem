@@ -1,5 +1,7 @@
 package com.recsys.matrix;
 
+import java.util.List;
+
 public abstract class AbstractVector {
 
 	public int length;
@@ -9,5 +11,5 @@ public abstract class AbstractVector {
 		super();
 		this.length = length;
 	}
-
+	public abstract List toList();
 }

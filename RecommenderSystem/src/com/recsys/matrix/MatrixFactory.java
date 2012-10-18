@@ -35,5 +35,12 @@ public class MatrixFactory {
 		}
 		return new IndexedSimpleMatrix(usersLabels, itemsLabels);
 	}
-	
+	public static IndexedSimpleMatrix createMatrix(List<Item> items) {
+		List<Long> itemsLabels = new ArrayList<Long>();
+
+		for(int i=0;i<items.size();i++){
+			itemsLabels.add(items.get(i).getIdItem());
+		}
+		return new IndexedSimpleMatrix(itemsLabels, itemsLabels);
+	}
 }

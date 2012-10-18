@@ -1,4 +1,4 @@
-package com.recsys.ratingsAggregator;
+package com.recsys.CF_UC_RatingsAggregator;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
 import com.recsys.matrix.IndexedSimpleMatrix;
 
-public class WeightedMeanNonBiasedAggregator extends RatingAggregator {
+public class WeightedMeanNonBiasedAggregator extends CF_UC_RatingAggregator {
 
 
 	private static Map<User, Double> allUsersMeanRatings = new ConcurrentHashMap<User, Double>();

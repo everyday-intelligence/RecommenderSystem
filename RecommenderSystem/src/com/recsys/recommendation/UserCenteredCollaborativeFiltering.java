@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.recsys.CF_UC_RatingsAggregator.CF_UC_RatingAggregator;
+import com.recsys.CF_UC_RatingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
-import com.recsys.ratingsAggregator.RatingAggregator;
-import com.recsys.ratingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.similarity.CosineDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
 
@@ -27,7 +27,7 @@ public class UserCenteredCollaborativeFiltering implements
 	public static final int K = 40;
 	public static final int NOTRATED = 0;
 	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
-	RatingAggregator na = new WeightedMeanNonBiasedAggregator();
+	CF_UC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();
@@ -52,7 +52,7 @@ public class UserCenteredCollaborativeFiltering implements
 		Map<User, Double> simMap = calculateUsersSimilarities(activeUser);
 		// user list array
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
-		List<Rating> allPossibleCandidatesEstimation = ratingEstimation(activeUser, similarUsersList,simMap);
+		List<Rating> allPossibleCandidatesEstimation = userRatingsEstimation(activeUser, similarUsersList,simMap);
 		if(allPossibleCandidatesEstimation == null || allPossibleCandidatesEstimation.isEmpty()){
 			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
 			for (Rating r : allPossibleCandidatesEstimation) {
@@ -147,20 +147,12 @@ public class UserCenteredCollaborativeFiltering implements
 			}
 			
 		}
-		if(neighborList.isEmpty()){
-		System.out.println("!!!!!!!!!!!!!!!!"+neighborList.size());
-		try {
-			this.wait(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
+
 		return neighborList;
 	}
 	
 	// Rating estimation
-	public List<Rating> ratingEstimation(User activeUser,
+	public List<Rating> userRatingsEstimation(User activeUser,
 			ArrayList<User> similarUserList, Map<User, Double> simMap) {
 
 		double estimation;
@@ -171,10 +163,6 @@ public class UserCenteredCollaborativeFiltering implements
 			return new ArrayList<Rating>();
 		}
 		
-		List<Double> activeRatings = new ArrayList<Double>();
-		for (Item it:items) {
-			activeRatings.add(this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()));
-		}
 		for (Item it:items) {
 			estimation = 0;
 			if (this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {

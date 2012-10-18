@@ -1,4 +1,4 @@
-package com.recsys.ratingsAggregator;
+package com.recsys.CF_UC_RatingsAggregator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import com.recsys.Domain.User;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
-public class MeanAggregator extends RatingAggregator {
+public class MeanAggregator extends CF_UC_RatingAggregator {
 
 	@Override
 	public Double aggregate(User activeUser, Item it, List<User> similarUsers,List<Item> items,
