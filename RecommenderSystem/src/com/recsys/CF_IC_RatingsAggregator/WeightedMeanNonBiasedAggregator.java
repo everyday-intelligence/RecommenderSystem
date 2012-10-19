@@ -17,11 +17,7 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 	
 	public Double aggregate(User user, Item item, IndexedSimpleMatrix itemItemSimilarityMatrix, IndexedSimpleMatrix userItemRatingMatrix, ArrayList<Item> itemNeighborhoodRatedByUser) {
 		
-		Double itmMeanRatings=allItemsMeanRatings.get(item);
-		if (itmMeanRatings  == null) {
-			itmMeanRatings = getItemMeanRatings(item, userItemRatingMatrix);
-			allItemsMeanRatings.put(item, itmMeanRatings);
-		}
+		Double itmMeanRatings=getItemMeanRatings(item, userItemRatingMatrix);
 		
 		Double estimation = 0d;
 		double norm = 0d;
@@ -37,18 +33,24 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 	}
 	
 	double getItemMeanRatings(Item itm, IndexedSimpleMatrix userItemRatingMatrix){
-		double itmMeanRating = 0d;
+		Double itmMeanRating=allItemsMeanRatings.get(itm);
+		if (itmMeanRating  != null) {
+			return itmMeanRating;
+		}
+		itmMeanRating = 0d;
 		int nbItmRatings = 0;
 		AbstractVector allItmRatings = userItemRatingMatrix.getColumn(itm.getIdItem());
 		for(int i=0;i<allItmRatings.length;i++){
-			if(allItmRatings.get(i)!=0){
-				itmMeanRating+=1;
+			Double itmR = allItmRatings.get(i);
+			if(itmR!=0){
+				itmMeanRating+=itmR;
 				nbItmRatings++;
 			}
 		}
 		if(nbItmRatings!=0){
 			itmMeanRating/=nbItmRatings;
 		}
+		allItemsMeanRatings.put(itm, itmMeanRating);
 		return itmMeanRating;
 	}
 }

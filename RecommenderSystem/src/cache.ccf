@@ -1,0 +1,17 @@
+##############################################################
+##### Default Region Configuration
+jcs.default=DC
+jcs.default.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.default.cacheattributes.MaxObjects=0
+jcs.default.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+
+
+
+
+##############################################################
+##### AUXILIARY CACHES
+# Indexed Disk Cache
+jcs.auxiliary.DC=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheFactory
+jcs.auxiliary.DC.attributes=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheAttributes
+jcs.auxiliary.DC.attributes.DiskPath=D:/PHD/Experimentations/cache
+log4j.logger.org.apache.jcs=info,CONSOLE

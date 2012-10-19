@@ -29,20 +29,28 @@ public class ItemCenteredCollaborativeFiltering implements
 	private List<Item> items;
 	private IndexedSimpleMatrix userItemRatingMatrix;
 	private IndexedSimpleMatrix itemItemSimilarityMatrix;
-	public static final int K = 300;
 
-	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
-	CF_IC_RatingAggregator na = new MeanAggregator();
+	public static final int K = 800;
+	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
+	public static CF_IC_RatingAggregator na = new WeightedMeanAggregator();
 
+	
+	public ItemCenteredCollaborativeFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {
+		super();
+		this.items = items;
+		this.userItemRatingMatrix = userItemRatingMatrix;
+		if(itemItemSimilarityMatrix == null){
+			itemItemSimilarityMatrix = calculateItemsSimilarities();			
+			System.out.println("finished calculating item item similarities 2");
+		}
+		this.itemItemSimilarityMatrix = itemItemSimilarityMatrix;			
+	}
+	
 	public ItemCenteredCollaborativeFiltering(List<User> users,
 			List<Item> items, List<Rating> ratings) {
 		super();
 		this.items = items;
 		this.userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
-		System.out.println("rating matrix : "
-				+ userItemRatingMatrix.getRowsNumber() + "x"
-				+ userItemRatingMatrix.getColumnsNumber());
-		System.out.println("filling ratings");
 		for (Rating r : ratings) {
 			if (r == null) {
 				System.out.println(r + " is null");
@@ -51,7 +59,7 @@ public class ItemCenteredCollaborativeFiltering implements
 					.getRatedItem().getIdItem(), r.getRating());
 		}
 		System.out.println("calculating item item similarities");
-		calculateItemsSimilarities();
+		itemItemSimilarityMatrix = calculateItemsSimilarities();
 		System.out.println("finished calculating item item similarities");
 	}
 
@@ -159,18 +167,19 @@ public class ItemCenteredCollaborativeFiltering implements
 		return neighborList;
 	}
 
-	public void calculateItemsSimilarities() {
-		this.itemItemSimilarityMatrix = MatrixFactory.createMatrix(items);
+	public IndexedSimpleMatrix calculateItemsSimilarities() {
+		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createMatrix(items);
 		for (Item it1 : items) {
 			for (Item it2 : items) {
-				if (!it1.equals(it2) && this.itemItemSimilarityMatrix.get(it1.getIdItem(),it2.getIdItem()) == 0) {
+				if (!it1.equals(it2) && tmpItemItemSimilarityMatrix.get(it1.getIdItem(),it2.getIdItem()) == 0) {
 				double it1it2Sim = calculateTwoItesmSimilarities(it1, it2);
-				itemItemSimilarityMatrix.set(it1.getIdItem(), it2.getIdItem(),it1it2Sim);
-				itemItemSimilarityMatrix.set(it2.getIdItem(), it1.getIdItem(),it1it2Sim);
+				tmpItemItemSimilarityMatrix.set(it1.getIdItem(), it2.getIdItem(),it1it2Sim);
+				tmpItemItemSimilarityMatrix.set(it2.getIdItem(), it1.getIdItem(),it1it2Sim);
 				//System.out.println("sim(" + it1.getIdItem() + ","	+ it2.getIdItem() + ") =" + it1it2Sim);
 			}
 			}
 		}
+		return tmpItemItemSimilarityMatrix;
 	}
 
 	private double calculateTwoItesmSimilarities(Item it1, Item it2) {
@@ -196,7 +205,30 @@ public class ItemCenteredCollaborativeFiltering implements
 			return Double.NEGATIVE_INFINITY;
 		}
 	}
-	
-	
+
+	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+		return userItemRatingMatrix;
+	}
+
+	public void setUserItemRatingMatrix(IndexedSimpleMatrix userItemRatingMatrix) {
+		this.userItemRatingMatrix = userItemRatingMatrix;
+	}
+
+	public IndexedSimpleMatrix getItemItemSimilarityMatrix() {
+		return itemItemSimilarityMatrix;
+	}
+
+	public void setItemItemSimilarityMatrix(
+			IndexedSimpleMatrix itemItemSimilarityMatrix) {
+		this.itemItemSimilarityMatrix = itemItemSimilarityMatrix;
+	}
+
+	public static int getK() {
+		return K;
+	}
+
+	public static Class<? extends SimilarityMeasure> getPc() {
+		return pc.getClass();
+	}
 
 }

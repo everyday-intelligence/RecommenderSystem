@@ -1,11 +1,12 @@
 package com.recsys.matrix;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IndexedSimpleMatrix extends SimpleMatrix {
+public class IndexedSimpleMatrix extends SimpleMatrix implements Serializable{
 
 	private Map<Long,Integer> rowLabelMatrixRowMapping;
 	private Map<Long,Integer> colLabelMatrixColMapping;
@@ -25,8 +26,6 @@ public class IndexedSimpleMatrix extends SimpleMatrix {
 			colLabelMatrixColMapping.put(colsLabels.get(i), i);
 			this.colsLabels.add(colsLabels.get(i));
 		}
-		System.out.println("rows = "+rowLabelMatrixRowMapping.size()+" = "+rowsLabels.size());
-		System.out.println("cols = "+colLabelMatrixColMapping.size()+" = "+colsLabels.size());
 	}
 
 	public Double get(long rowLabel, long colLabel) {

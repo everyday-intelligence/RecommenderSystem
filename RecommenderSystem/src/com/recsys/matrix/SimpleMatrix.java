@@ -1,8 +1,10 @@
 package com.recsys.matrix;
 
+import java.io.Serializable;
 
 
-public class SimpleMatrix extends AbstractMatrix {
+
+public class SimpleMatrix extends AbstractMatrix implements Serializable{
 
 	    protected Double[][] matrix;   // rows-by-columns array
 

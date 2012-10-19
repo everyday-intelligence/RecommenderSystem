@@ -1,6 +1,8 @@
 package com.recsys.matrix;
 
-public abstract class AbstractMatrix {
+import java.io.Serializable;
+
+public abstract class AbstractMatrix  implements Serializable{
 
 
 	protected final int columnsNumber;
