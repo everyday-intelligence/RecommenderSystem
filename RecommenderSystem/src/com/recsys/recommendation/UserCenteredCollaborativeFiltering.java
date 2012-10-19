@@ -22,9 +22,9 @@ public class UserCenteredCollaborativeFiltering implements
 
 	private List<User> users = new ArrayList<User>();
 	private List<Item> items = new ArrayList<Item>();
-	private IndexedSimpleMatrix dataMatrix;
+	private IndexedSimpleMatrix userItemRatingMatrix;
 	// Top-K neighbor, threashold, notRated: value for unrated items
-	public static final int K = 40;
+	public static final int K = 150;
 	public static final int NOTRATED = 0;
 	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
 	CF_UC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
@@ -33,14 +33,21 @@ public class UserCenteredCollaborativeFiltering implements
 		super();
 		this.users = users;
 		this.items = items;
-		this.dataMatrix = MatrixFactory.createMatrix(users, items);
-		System.out.println("rating matrix : "+dataMatrix.getRowsNumber()+"x"+dataMatrix.getColumnsNumber());
+		this.userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
+		System.out.println("rating matrix : "+userItemRatingMatrix.getRowsNumber()+"x"+userItemRatingMatrix.getColumnsNumber());
 		for (Rating r : ratings) {
 			if(r == null){System.out.println(r+" is null");}
-			dataMatrix.set(r.getRatingUser().getIdUser(),
+			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
+	}
+
+	public UserCenteredCollaborativeFiltering(List<User> users,
+			List<Item> items, IndexedSimpleMatrix userItemRatingMatrix) {
+		this.users = users;
+		this.items = items;
+		this.userItemRatingMatrix = userItemRatingMatrix;
 	}
 
 
@@ -80,8 +87,8 @@ public class UserCenteredCollaborativeFiltering implements
 			double simPears = 0d;
 			if (u.getIdUser() != activeUser.getIdUser()) {
 				for (Item it:items) {
-					Double userRowItemColRating = this.dataMatrix.get(u.getIdUser(), it.getIdItem());
-					Double activeUserItemColRating = this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem());
+					Double userRowItemColRating = this.userItemRatingMatrix.get(u.getIdUser(), it.getIdItem());
+					Double activeUserItemColRating = this.userItemRatingMatrix.get(activeUser.getIdUser(), it.getIdItem());
 					if ((userRowItemColRating != NOTRATED) && (activeUserItemColRating != NOTRATED)) {
 						activeUserRatings.add(activeUserItemColRating);
 						userRatings.add(userRowItemColRating);
@@ -165,8 +172,8 @@ public class UserCenteredCollaborativeFiltering implements
 		
 		for (Item it:items) {
 			estimation = 0;
-			if (this.dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
-				estimation = na.aggregate(activeUser,it,similarUserList,items,simMap,dataMatrix);
+			if (this.userItemRatingMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {
+				estimation = na.aggregate(activeUser,it,similarUserList,items,simMap,userItemRatingMatrix);
 				if (estimation != 0) {
 					allPossibleCandidatesEstimations.add(new Rating(estimation,	it, activeUser));
 				}
@@ -174,6 +181,10 @@ public class UserCenteredCollaborativeFiltering implements
 		}
 		return allPossibleCandidatesEstimations;
 
+	}
+
+	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+		return userItemRatingMatrix;
 	}
 	
 	

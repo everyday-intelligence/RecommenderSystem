@@ -32,7 +32,7 @@ public class ItemCenteredCollaborativeFiltering implements
 
 	public static final int K = 800;
 	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
-	public static CF_IC_RatingAggregator na = new WeightedMeanAggregator();
+	public static CF_IC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	
 	public ItemCenteredCollaborativeFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {

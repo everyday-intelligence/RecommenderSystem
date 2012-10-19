@@ -17,16 +17,26 @@ import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MoveieLens100KDataReader;
+import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.IndexedSimpleMatrix;
+import com.recsys.recommendation.ItemCenteredCollaborativeFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
 
 public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
-	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
-	private static String usersFile = "database/MovieLens/ml-100K/u.user";
-	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
-	private static String testRatingsFile = "database/MovieLens/ml-100K/ua.test";
+	private static String databaseURL = "database/MovieLens";
+	private static String databaseName = "ml-100K";
+	private static String learningDatafile = "ua.base";
+	private static String testDatafile = "ua.test";
+	private static String usersDatafile = "u.user";
+	private static String itemsDatafile = "u.item";
+	private static String learningRatingsFile = databaseURL+"/"+databaseName+"/"+learningDatafile;
+	private static String usersFile = databaseURL+"/"+databaseName+"/"+usersDatafile;
+	private static String itemsFile = databaseURL+"/"+databaseName+"/"+itemsDatafile;
+	private static String testRatingsFile = databaseURL+"/"+databaseName+"/"+testDatafile;
+	private static final String userItemRatingMatrixCacheID = "userItemRatingMatrix"+"_"+databaseName+"_"+learningDatafile;
 
 	List<Double> predictedUsersRatings = new ArrayList<Double>();
 	List<Double> realUsersRatings = new ArrayList<Double>();
@@ -50,8 +60,21 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 	public static void initData() throws Exception {
 		users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
-		dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
-		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
+		
+		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
+		
+		if(userItemRatingMatrix != null){
+			System.out.println("userItemRatingMatrix cached");
+			filtre = new UserCenteredCollaborativeFiltering(users,items, userItemRatingMatrix);
+		}else{
+			System.out.println("NO cached data");
+			dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+			filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
+			System.out.println("saving "+userItemRatingMatrixCacheID);
+			RecSysCache.getJcs().put(userItemRatingMatrixCacheID, filtre.getUserItemRatingMatrix());
+			//RecSysCache.getJcs().dispose();
+
+		}
 	}
 
 /*
@@ -170,6 +193,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		}
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
+		RecSysCache.getJcs().dispose();
 	}
 
 }

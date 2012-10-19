@@ -30,8 +30,8 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 
 	private static String databaseURL = "database/MovieLens";
 	private static String databaseName = "ml-100K";
-	private static String learningDatafile = "ua.base";
-	private static String testDatafile = "ua.test";
+	private static String learningDatafile = "u1.base";
+	private static String testDatafile = "u1.test";
 	private static String usersDatafile = "u.user";
 	private static String itemsDatafile = "u.item";
 	private static String learningRatingsFile = databaseURL+"/"+databaseName+"/"+learningDatafile;
