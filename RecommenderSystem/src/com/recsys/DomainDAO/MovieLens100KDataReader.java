@@ -12,7 +12,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 
-public class MoveieLens100KDataReader{
+public class MovieLens100KDataReader{
 
 	// Read the users' Id from the file
 	public static List<User> findUsersFile(String fichier) {
@@ -48,7 +48,9 @@ public class MoveieLens100KDataReader{
 			while ((ligne = br.readLine()) != null) {
 
 				StringTokenizer st = new StringTokenizer(ligne, "|");
-				itemList.add(new Item(Long.parseLong(st.nextToken())));
+				//itemList.add(new Item(Long.parseLong(st.nextToken())));
+				Item itm = MovieLensItemDataParser.parseItemData(ligne);
+				itemList.add(itm);
 
 			}
 			br.close();

@@ -16,7 +16,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens100KDataReader;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ItemCenteredCollaborativeFiltering;
@@ -58,8 +58,8 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
 	@BeforeClass
 	public static void initData() throws Exception {
-		users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
-		items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+		items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 		
 		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
 		
@@ -68,7 +68,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 			filtre = new UserCenteredCollaborativeFiltering(users,items, userItemRatingMatrix);
 		}else{
 			System.out.println("NO cached data");
-			dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+			dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 			filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 			System.out.println("saving "+userItemRatingMatrixCacheID);
 			RecSysCache.getJcs().put(userItemRatingMatrixCacheID, filtre.getUserItemRatingMatrix());
@@ -94,7 +94,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		List<Rating> allEstimations = filtre.userRatingsEstimation(
 				activeUser, similarUserList,simMap);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(
+		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
 		//System.out.println("user " + activeUser.getIdUser() + " has "	+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {

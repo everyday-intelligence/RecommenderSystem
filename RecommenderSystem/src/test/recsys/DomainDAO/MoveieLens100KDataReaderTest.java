@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens100KDataReader;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class MoveieLens100KDataReaderTest {
 	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
@@ -29,31 +29,31 @@ public class MoveieLens100KDataReaderTest {
 
 	@Test
 	public final void testFindUsersFile() {
-		List<User> users = MoveieLens100KDataReader.findUsersFile(usersFile);
+		List<User> users = MovieLens100KDataReader.findUsersFile(usersFile);
 		assertEquals(943, users.size());
 	}
 
 	@Test
 	public final void testFindItemsFile() {
-		List<Item> items = MoveieLens100KDataReader.findItemsFile(itemsFile);
+		List<Item> items = MovieLens100KDataReader.findItemsFile(itemsFile);
 		assertEquals(1682, items.size());
 	}
 
 	@Test
 	public final void testFindLearningRatingsFile() {
-		List<Rating> ratings = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+		List<Rating> ratings = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 		assertEquals(90570, ratings.size());
 	}
 
 	@Test
 	public final void testFindTestRatingsFile() {
-		List<Rating> ratings = MoveieLens100KDataReader.findRatingsFile(testRatingsFile);
+		List<Rating> ratings = MovieLens100KDataReader.findRatingsFile(testRatingsFile);
 		assertEquals(9430, ratings.size());
 	}
 	
 	@Test
 	public final void testFindUserRatings() {
-		List<Rating> ratings = MoveieLens100KDataReader.findUserRatings(learningRatingsFile,1);
+		List<Rating> ratings = MovieLens100KDataReader.findUserRatings(learningRatingsFile,1);
 		System.out.println(ratings);
 	}
 

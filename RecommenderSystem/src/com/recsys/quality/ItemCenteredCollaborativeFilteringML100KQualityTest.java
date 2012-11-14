@@ -18,7 +18,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens100KDataReader;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ItemCenteredCollaborativeFiltering;
@@ -61,8 +61,8 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 
 	@Before
 	public void initData() throws Exception {
-		items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
-		users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+		items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		
 		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
 		
@@ -80,7 +80,7 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 			}
 		}else{
 			System.out.println("NO cached data");
-			dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+			dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 			filtre = new ItemCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 			System.out.println("saving "+userItemRatingMatrixCacheID);
 			RecSysCache.getJcs().put(userItemRatingMatrixCacheID, filtre.getUserItemRatingMatrix());
@@ -105,7 +105,7 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
 		List<Rating> allEstimations = filtre.userRatingsEstimation(activeUser);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = MoveieLens100KDataReader.findUserRatings(
+		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
 		//System.out.println("user " + activeUser.getIdUser() + " has "	+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {

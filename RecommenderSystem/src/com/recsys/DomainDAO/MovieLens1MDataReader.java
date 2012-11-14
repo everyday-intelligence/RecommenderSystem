@@ -12,7 +12,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 
-public class MoveieLens1MDataReader{
+public class MovieLens1MDataReader{
 
 	// Read the users' Id from the file
 	public static List<User> findUsersFile(String fichier) {

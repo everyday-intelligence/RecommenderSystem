@@ -13,7 +13,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens100KDataReader;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UserCenteredCollaborativeFilteringTest {
@@ -33,9 +33,9 @@ public class UserCenteredCollaborativeFilteringTest {
 	 * emu=userD.getEntityManager(); private EntityManager
 	 * emr=ratingD.getEntityManager();
 	 */
-	private List<User> users = MoveieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
-	private List<Item> items = MoveieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
-	private List<Rating> dataBaseEntries = MoveieLens100KDataReader.findRatingsFile(learningRatingsFile);
+	private List<User> users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+	private List<Item> items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+	private List<Rating> dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 	UserCenteredCollaborativeFiltering filtre = new UserCenteredCollaborativeFiltering(
 			users, items, dataBaseEntries);
 

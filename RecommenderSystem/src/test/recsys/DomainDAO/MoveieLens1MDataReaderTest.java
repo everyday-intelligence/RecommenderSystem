@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens1MDataReader;
+import com.recsys.DomainDAO.MovieLens1MDataReader;
 
 public class MoveieLens1MDataReaderTest {
 	private static String learningRatingsFile = "database/MovieLens/ml-1m/ratings.dat";
@@ -29,19 +29,19 @@ public class MoveieLens1MDataReaderTest {
 
 	@Test
 	public final void testFindUsersFile() {
-		List<User> users = MoveieLens1MDataReader.findUsersFile(usersFile);
+		List<User> users = MovieLens1MDataReader.findUsersFile(usersFile);
 		assertEquals(6040, users.size());
 	}
 
 	@Test
 	public final void testFindItemsFile() {
-		List<Item> items = MoveieLens1MDataReader.findItemsFile(itemsFile);
+		List<Item> items = MovieLens1MDataReader.findItemsFile(itemsFile);
 		assertEquals(3883, items.size());
 	}
 
 	@Test
 	public final void testFindLearningRatingsFile() {
-		List<Rating> ratings = MoveieLens1MDataReader.findRatingsFile(learningRatingsFile);
+		List<Rating> ratings = MovieLens1MDataReader.findRatingsFile(learningRatingsFile);
 		assertEquals(1000209, ratings.size());
 	}
 
@@ -54,7 +54,7 @@ public class MoveieLens1MDataReaderTest {
 	*/
 	@Test
 	public final void testFindUserRatings() {
-		List<Rating> ratings = MoveieLens1MDataReader.findUserRatings(learningRatingsFile,1);
+		List<Rating> ratings = MovieLens1MDataReader.findUserRatings(learningRatingsFile,1);
 		System.out.println(ratings);
 	}
 

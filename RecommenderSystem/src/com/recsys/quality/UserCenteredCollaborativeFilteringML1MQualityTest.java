@@ -16,7 +16,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
-import com.recsys.DomainDAO.MoveieLens1MDataReader;
+import com.recsys.DomainDAO.MovieLens1MDataReader;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
@@ -48,9 +48,9 @@ public class UserCenteredCollaborativeFilteringML1MQualityTest {
 
 	@BeforeClass
 	public static void initData() throws Exception {
-		users = MoveieLens1MDataReader.findUsersFile(usersFile);// userD.findUsers();
-		items = MoveieLens1MDataReader.findItemsFile(itemsFile);// itemD.findItems();
-		dataBaseEntries = MoveieLens1MDataReader.findRatingsFile(learningRatingsFile);
+		users = MovieLens1MDataReader.findUsersFile(usersFile);// userD.findUsers();
+		items = MovieLens1MDataReader.findItemsFile(itemsFile);// itemD.findItems();
+		dataBaseEntries = MovieLens1MDataReader.findRatingsFile(learningRatingsFile);
 		//System.out.println(dataBaseEntries);
 		filtre = new UserCenteredCollaborativeFiltering(users, items, dataBaseEntries);
 	}
@@ -88,7 +88,7 @@ public class UserCenteredCollaborativeFilteringML1MQualityTest {
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,activeUser);
 		List<Rating> allEstimations = filtre.userRatingsEstimation(activeUser, similarUserList,simMap);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = MoveieLens1MDataReader.findUserRatings(testRatingsFile, activeUser.getIdUser());
+		List<Rating> userRealRatings = MovieLens1MDataReader.findUserRatings(testRatingsFile, activeUser.getIdUser());
 		//System.out.println("user " + activeUser.getIdUser() + " has "+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {
 			System.out.println("no ratings in test data so no quality measure : exit");
