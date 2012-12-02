@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import weka.core.Instances;
+
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
@@ -37,6 +39,13 @@ public class MoveieLens100KDataReaderTest {
 	public final void testFindItemsFile() {
 		List<Item> items = MovieLens100KDataReader.findItemsFile(itemsFile);
 		assertEquals(1682, items.size());
+	}
+	
+	@Test
+	public final void testFromItemsToWekaDataset() {
+		Instances data = MovieLens100KDataReader.fromItemsToWekaDataset(itemsFile);
+		System.out.println(data);
+		assertEquals(1682, data.numInstances());
 	}
 
 	@Test
