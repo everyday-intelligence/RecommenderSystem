@@ -194,9 +194,9 @@ public class CreateDataset {
 	    // - sexe (nominal)
 	    vals[1] = 1;
 	    data.add(new Instance(1,vals));
-	    data.attribute("sexe").addStringValue("Homme");
-	    data.attribute(1).addStringValue("Femme");
-	    System.out.println(data);
+	    System.out.println(data.attribute("sexe").enumerateValues().nextElement());
+	    //data.attribute(1).addStringValue("Femme");
+	    System.out.println(data.attribute(1));
 	}
 
 }

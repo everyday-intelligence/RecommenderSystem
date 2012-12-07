@@ -21,15 +21,22 @@ public class MovieLensItemDataParser {
 
 		int i=0;
 		Item item = new Item();
-		item.setIdItem(Long.parseLong(st.nextToken()));
+		String nextToken = st.nextToken();
+		item.setIdItem(Long.parseLong(nextToken));
+		Attribute att = new Attribute();
+		att.setAttributeName(attributesNames[i]);
+		att.setAttributeType(attributesTypes[i]);
+		att.setComparable(isComparable[i]);
+		AttributeValue attValue = new AttributeValue(att,nextToken);
+		item.addAttributeValue(attValue);
 		i++;
 		while(st.hasMoreTokens()){
-			Attribute att = new Attribute();
+			att = new Attribute();
 			att.setAttributeName(attributesNames[i]);
 			//att.setAProperty(isAProperty[i]);
 			att.setAttributeType(attributesTypes[i]);
 			att.setComparable(isComparable[i]);
-			AttributeValue attValue = new AttributeValue(att,st.nextToken());
+			attValue = new AttributeValue(att,st.nextToken());
 			item.addAttributeValue(attValue);
 			//System.out.println(attValue);
 			i++;

@@ -91,17 +91,17 @@ public class MovieLens100KDataReader{
 						attVals[i]=Double.parseDouble(attVal.getValue());
 						break;
 					case BOOLEAN:
-							attVals[i]=Double.parseDouble(attVal.getValue());
-						break;
 					case CATEGORICAL:
+					case STRING:
 						String v = attVal.getValue();
-						if(!categoricalVariablesValues.containsKey(v)){
+						if(!categoricalVariablesValues.containsKey(attVal.getAttribute().getAttributeName())){
 							categoricalVariablesValues.put(attVal.getAttribute().getAttributeName(), new ArrayList<String>());
 						}
 						if(!categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).contains(v)){
 							categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).add(v);
 						}
 						attVals[i]=categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).indexOf(v);
+						//System.out.println(categoricalVariablesValues.values());
 						break;
 					case DATE:
 						SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
@@ -113,16 +113,14 @@ public class MovieLens100KDataReader{
 					}
 						break;
 					default:
-						attVals[i]= 1;
+						
 				}
 				i++;
-				for(double vv : attVals){
-				System.out.print(vv+"|");
-				}
-				System.out.println(" ");
+				
 			}
 			instancesList.add(new Instance(1,attVals));
 		}
+		//System.out.println(categoricalVariablesValues);
 		FastVector attributes = new FastVector();
 		for(int i=0;i< MovieLensItemDataParser.attributesNames.length;i++){
 			switch(MovieLensItemDataParser.attributesTypes[i]){
@@ -130,15 +128,13 @@ public class MovieLens100KDataReader{
 					attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i]));
 					break;
 				case BOOLEAN:
-					FastVector booleans = new FastVector();
-					booleans.addElement("TRUE");
-					booleans.addElement("FALSE");
-				    attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], booleans));
-					break;
 				case CATEGORICAL:
+				case STRING:
 					FastVector categoricals = new FastVector();
-					for(String possibleValue:categoricalVariablesValues.get(MovieLensItemDataParser.attributesNames[i])){
-						categoricals.addElement(new Attribute(possibleValue));
+					ArrayList<String> attpossvals = categoricalVariablesValues.get(MovieLensItemDataParser.attributesNames[i]);
+					//System.out.println("pos vals de "+MovieLensItemDataParser.attributesNames[i]+" sont "+attpossvals);
+					for(String possibleValue:attpossvals){
+						categoricals.addElement(possibleValue);
 					}
 				    attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], categoricals));
 				    break;
@@ -147,15 +143,19 @@ public class MovieLens100KDataReader{
 					attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], (FastVector)null));
 					break;
 				default:
-					attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], (FastVector)null));
 			}
 		}
+				
 		Instances data = new Instances("MyData", attributes, 0);
+		//System.out.println(data.attribute(10));
+
 		for(Instance in:instancesList){
 			in.setDataset(data);
 			data.add(in);
 		}
-		
+		//System.out.println(categoricalVariablesValues.keySet());
+		//System.out.println(categoricalVariablesValues);
+
 //		Enumeration enumAtt = data.enumerateAttributes();
 //		while(enumAtt.hasMoreElements()){
 //			Attribute a = (Attribute) enumAtt.nextElement();
@@ -164,6 +164,7 @@ public class MovieLens100KDataReader{
 		
 		return data;
 	}
+	
 	
 
 	public static List<Rating> findRatingsFile(String fichier) {

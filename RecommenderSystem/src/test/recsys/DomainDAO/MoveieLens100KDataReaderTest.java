@@ -42,9 +42,10 @@ public class MoveieLens100KDataReaderTest {
 	}
 	
 	@Test
-	public final void testFromItemsToWekaDataset() {
+	public final void testFromItemsToWekaDataset() throws Exception {
 		Instances data = MovieLens100KDataReader.fromItemsToWekaDataset(itemsFile);
-		System.out.println(data);
+		System.out.println("---------------------------");
+		System.out.println(data.toSummaryString());
 		assertEquals(1682, data.numInstances());
 	}
 
