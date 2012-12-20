@@ -139,8 +139,8 @@ public class MovieLens100KDataReader{
 				    attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], categoricals));
 				    break;
 				case DATE:
-					//attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], "dd-MMM-yyyy"));
-					attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], (FastVector)null));
+					attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], "dd-MMM-yyyy"));
+					//attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], (FastVector)null));
 					break;
 				default:
 			}
