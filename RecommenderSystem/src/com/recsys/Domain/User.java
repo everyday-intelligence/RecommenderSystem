@@ -1,6 +1,7 @@
 package com.recsys.Domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -17,6 +18,9 @@ import javax.persistence.Table;
 public /*abstract*/ class User implements Serializable {
 	@Id
 	private long idUser;
+	private double group; 
+	private List<AttributeValue> attributesValues;
+
 	@OneToMany(fetch=FetchType.EAGER,mappedBy="ratingUser")
 	private List<Rating> ratings;
 	
@@ -33,6 +37,11 @@ public /*abstract*/ class User implements Serializable {
 	
 	public User(long idUser) {
 		super();
+		this.idUser = idUser;
+	}
+
+	
+	public void setIdUser(long idUser) {
 		this.idUser = idUser;
 	}
 
@@ -71,5 +80,26 @@ public /*abstract*/ class User implements Serializable {
 		return true;
 	}
 
+	public double getGroup() {
+		return group;
+	}
+
+	public void setGroup(double group) {
+		this.group = group;
+	}
+
+	public List<AttributeValue> getAttributesValues() {
+		return attributesValues;
+	}
+
+	public void setAttributesValues(List<AttributeValue> attributesValues) {
+		this.attributesValues = attributesValues;
+	}
+	public void addAttributeValue(AttributeValue attributeValue) {
+		if(this.attributesValues == null){
+			this.attributesValues = new ArrayList<AttributeValue>();
+		}
+		this.attributesValues.add(attributeValue);
+	}
 
 }

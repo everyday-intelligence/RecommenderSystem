@@ -2,8 +2,15 @@ package com.recsys.recommendation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+
+import weka.core.EuclideanDistance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.ManhattanDistance;
+import weka.core.neighboursearch.LinearNNSearch;
 
 import com.recsys.CF_IC_RatingsAggregator.CF_IC_RatingAggregator;
 import com.recsys.CF_IC_RatingsAggregator.MeanAggregator;
@@ -13,6 +20,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
@@ -30,9 +38,9 @@ public class ContentBasedFiltering implements
 	private IndexedSimpleMatrix userItemRatingMatrix;
 	private IndexedSimpleMatrix itemItemSimilarityMatrix;
 
-	public static final int K = 10;
-	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
-	public static CF_IC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
+	public static final int K = 300;
+	public static SimilarityMeasure<Double> pc = new ManhattanDistanceNumber<Double>();
+	public static CF_IC_RatingAggregator na = new MeanAggregator();
 
 	
 	public ContentBasedFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {
@@ -169,42 +177,47 @@ public class ContentBasedFiltering implements
 
 	public IndexedSimpleMatrix calculateItemsSimilarities() {
 		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createMatrix(items);
-		for (Item it1 : items) {
-			for (Item it2 : items) {
-				if (!it1.equals(it2) && tmpItemItemSimilarityMatrix.get(it1.getIdItem(),it2.getIdItem()) == 0) {
-				double it1it2Sim = calculateTwoItesmSimilarities(it1, it2);
-				tmpItemItemSimilarityMatrix.set(it1.getIdItem(), it2.getIdItem(),it1it2Sim);
-				tmpItemItemSimilarityMatrix.set(it2.getIdItem(), it1.getIdItem(),it1it2Sim);
-				//System.out.println("sim(" + it1.getIdItem() + ","	+ it2.getIdItem() + ") =" + it1it2Sim);
+		Instances instances = MovieLens100KDataReader.fromItemsToWekaDataset(items);
+		/**********weka도도도도도�****/
+		LinearNNSearch knn = new LinearNNSearch(instances);
+		try {
+			ManhattanDistance df = new ManhattanDistance(instances);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("3,6-last");
+			//System.out.println(df.getAttributeIndices());
+			knn.setDistanceFunction(df);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Enumeration itms = instances.enumerateInstances();
+		while(itms.hasMoreElements()){
+			Instance in = (Instance) itms.nextElement();
+			 try {
+				Instances nearestNeighbour = knn.kNearestNeighbours(in,instances.numInstances());
+				double[] distances = knn.getDistances();
+				for(int i=0;i<nearestNeighbour.numInstances();i++){
+					Instance in2 = nearestNeighbour.instance(i);
+					long  it1 = Long.parseLong(in.attribute(0).value((int) in.value(0)));
+					long it2 = Long.parseLong(in2.attribute(0).value((int) in2.value(0)));
+					//System.out.println(it1+"-"+it2);
+					if ((it1 != it2) && tmpItemItemSimilarityMatrix.get(it1,it2) == 0) {
+						double it1it2Sim =distances[i];
+						//System.out.println(it1+"-"+it2+"="+it1it2Sim);
+						tmpItemItemSimilarityMatrix.set(it1, it2,it1it2Sim);
+						tmpItemItemSimilarityMatrix.set(it2, it1,it1it2Sim);
+					}
+				}
+				} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			}
+
 		}
 		return tmpItemItemSimilarityMatrix;
 	}
 
-	private double calculateTwoItesmSimilarities(Item it1, Item it2) {
-		if (!it1.equals(it2)) {
-			AbstractVector it1Ratings = this.userItemRatingMatrix.getColumn(it1
-					.getIdItem());
-			AbstractVector it2Ratings = this.userItemRatingMatrix.getColumn(it2
-					.getIdItem());
-			// cosine
-			List<Double> it1CommonRatings = new ArrayList<Double>();
-			List<Double> it2CommonRatings = new ArrayList<Double>();
-			for (int i = 0; i < it1Ratings.length; i++) {
-				if (it1Ratings.get(i) != 0 && it1Ratings.get(i) != 0) {
-					it1CommonRatings.add(it1Ratings.get(i));
-					it2CommonRatings.add(it2Ratings.get(i));
-				}
-			}
-			if (it1CommonRatings.isEmpty()) {
-				return Double.NEGATIVE_INFINITY;
-			}
-			return pc.measureSimilarity(it1CommonRatings, it2CommonRatings);
-		} else {
-			return Double.NEGATIVE_INFINITY;
-		}
-	}
 
 	public IndexedSimpleMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;

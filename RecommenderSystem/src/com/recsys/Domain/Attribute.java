@@ -1,5 +1,7 @@
 package com.recsys.Domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Attribute {
+public class Attribute implements Serializable{
 	
 	@Id
 	private String attributeName;

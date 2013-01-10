@@ -1,5 +1,7 @@
 package com.recsys.Domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class AttributeValue {
+public class AttributeValue implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

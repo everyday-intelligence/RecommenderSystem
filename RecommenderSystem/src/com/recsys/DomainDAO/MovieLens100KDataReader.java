@@ -39,8 +39,10 @@ public class MovieLens100KDataReader{
 
 			while ((ligne = br.readLine()) != null) {
 
-				StringTokenizer st = new StringTokenizer(ligne, "|");
-				userList.add(new User(Long.parseLong(st.nextToken())));
+				//StringTokenizer st = new StringTokenizer(ligne, "|");
+				//userList.add(new User(Long.parseLong(st.nextToken())));
+				User itm = MovieLensUserDataParser.parseUserData(ligne);
+				userList.add(itm);
 
 			}
 			br.close();
@@ -61,7 +63,7 @@ public class MovieLens100KDataReader{
 
 			while ((ligne = br.readLine()) != null) {
 
-				StringTokenizer st = new StringTokenizer(ligne, "|");
+				//StringTokenizer st = new StringTokenizer(ligne, "|");
 				//itemList.add(new Item(Long.parseLong(st.nextToken())));
 				Item itm = MovieLensItemDataParser.parseItemData(ligne);
 				itemList.add(itm);
@@ -75,8 +77,7 @@ public class MovieLens100KDataReader{
 		return itemList;
 	}
 	
-	public static Instances fromItemsToWekaDataset(String fichier) {
-		List<Item> items = findItemsFile(fichier);
+	public static Instances fromItemsToWekaDataset(List<Item> items) {
 		List<Instance> instancesList = new ArrayList<Instance>();
 		int numAttributes = MovieLensItemDataParser.attributesNames.length;
 		Map<String, ArrayList<String>> categoricalVariablesValues = new HashMap<String,ArrayList<String>>();
@@ -162,9 +163,108 @@ public class MovieLens100KDataReader{
 //			System.out.println(a);
 //		}
 		
-		return data;
+		return data;		
+	}
+
+	public static Instances fromItemsFileToWekaDataset(String fichier) {
+		List<Item> items = findItemsFile(fichier);
+		return fromItemsToWekaDataset(items);
 	}
 	
+
+	public static Instances fromUsersToWekaDataset(List<User> users) {
+		List<Instance> instancesList = new ArrayList<Instance>();
+		int numAttributes = MovieLensUserDataParser.attributesNames.length;
+		Map<String, ArrayList<String>> categoricalVariablesValues = new HashMap<String,ArrayList<String>>();
+		for(User itm:users){
+			int i=0;
+			double attVals[] = new double[numAttributes]; 
+			for(AttributeValue attVal:itm.getAttributesValues()){
+				//System.out.println(itm.getAttributesValues().size());
+
+				switch(attVal.getAttribute().getAttributeType()){
+					case NUMERICAL :
+						attVals[i]=Double.parseDouble(attVal.getValue());
+						break;
+					case BOOLEAN:
+					case CATEGORICAL:
+					case STRING:
+						String v = attVal.getValue();
+						if(!categoricalVariablesValues.containsKey(attVal.getAttribute().getAttributeName())){
+							categoricalVariablesValues.put(attVal.getAttribute().getAttributeName(), new ArrayList<String>());
+						}
+						if(!categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).contains(v)){
+							categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).add(v);
+						}
+						attVals[i]=categoricalVariablesValues.get(attVal.getAttribute().getAttributeName()).indexOf(v);
+						//System.out.println(categoricalVariablesValues.values());
+						break;
+					case DATE:
+						SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+					try {
+						attVals[i]=sdf.parse(attVal.getValue()).getTime();
+					} catch (ParseException e) {
+						attVals[i]= 0;
+						System.out.println(e);
+					}
+						break;
+					default:
+						
+				}
+				i++;
+				
+			}
+			instancesList.add(new Instance(1,attVals));
+		}
+		//System.out.println(categoricalVariablesValues);
+		FastVector attributes = new FastVector();
+		for(int i=0;i< MovieLensUserDataParser.attributesNames.length;i++){
+			switch(MovieLensUserDataParser.attributesTypes[i]){
+				case NUMERICAL :
+					attributes.addElement(new Attribute(MovieLensUserDataParser.attributesNames[i]));
+					break;
+				case BOOLEAN:
+				case CATEGORICAL:
+				case STRING:
+					FastVector categoricals = new FastVector();
+					ArrayList<String> attpossvals = categoricalVariablesValues.get(MovieLensUserDataParser.attributesNames[i]);
+					//System.out.println("pos vals de "+MovieLensItemDataParser.attributesNames[i]+" sont "+attpossvals);
+					for(String possibleValue:attpossvals){
+						categoricals.addElement(possibleValue);
+					}
+				    attributes.addElement(new Attribute(MovieLensUserDataParser.attributesNames[i], categoricals));
+				    break;
+				case DATE:
+					attributes.addElement(new Attribute(MovieLensUserDataParser.attributesNames[i], "dd-MMM-yyyy"));
+					//attributes.addElement(new Attribute(MovieLensItemDataParser.attributesNames[i], (FastVector)null));
+					break;
+				default:
+			}
+		}
+				
+		Instances data = new Instances("MyData", attributes, 0);
+		//System.out.println(data.attribute(10));
+
+		for(Instance in:instancesList){
+			in.setDataset(data);
+			data.add(in);
+		}
+		//System.out.println(categoricalVariablesValues.keySet());
+		//System.out.println(categoricalVariablesValues);
+
+//		Enumeration enumAtt = data.enumerateAttributes();
+//		while(enumAtt.hasMoreElements()){
+//			Attribute a = (Attribute) enumAtt.nextElement();
+//			System.out.println(a);
+//		}
+		
+		return data;		
+	}
+
+	public static Instances fromUsersFileToWekaDataset(String fichier) {
+		List<User> users = findUsersFile(fichier);
+		return fromUsersToWekaDataset(users);
+	}
 	
 
 	public static List<Rating> findRatingsFile(String fichier) {

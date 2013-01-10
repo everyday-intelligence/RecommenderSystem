@@ -43,25 +43,33 @@ public class MoveieLens100KDataReaderTest {
 	
 	@Test
 	public final void testFromItemsToWekaDataset() throws Exception {
-		Instances data = MovieLens100KDataReader.fromItemsToWekaDataset(itemsFile);
+		Instances data = MovieLens100KDataReader.fromItemsFileToWekaDataset(itemsFile);
 		System.out.println("---------------------------");
 		System.out.println(data.toSummaryString());
 		assertEquals(1682, data.numInstances());
 	}
-
+	
 	@Test
+	public final void testFromUsersToWekaDataset() throws Exception {
+		Instances data = MovieLens100KDataReader.fromUsersFileToWekaDataset(usersFile);
+		System.out.println("---------------------------");
+		System.out.println(data.toSummaryString());
+		assertEquals(943, data.numInstances());
+	}
+
+	//@Test
 	public final void testFindLearningRatingsFile() {
 		List<Rating> ratings = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 		assertEquals(90570, ratings.size());
 	}
 
-	@Test
+	//@Test
 	public final void testFindTestRatingsFile() {
 		List<Rating> ratings = MovieLens100KDataReader.findRatingsFile(testRatingsFile);
 		assertEquals(9430, ratings.size());
 	}
 	
-	@Test
+	//@Test
 	public final void testFindUserRatings() {
 		List<Rating> ratings = MovieLens100KDataReader.findUserRatings(learningRatingsFile,1);
 		System.out.println(ratings);

@@ -16,8 +16,8 @@ public class PredicateUtils {
 	    return l;
 	}
 	
-	public static <T> boolean verifyPredicate(T obj, Checker<T> chk){
-		return chk.verifyPredicate(obj);
-	}
-	
+//	public static <T> boolean verifyPredicate(T obj, Checker<T> chk){
+//		return chk.verifyPredicate(obj);
+//	}
+//	
 }

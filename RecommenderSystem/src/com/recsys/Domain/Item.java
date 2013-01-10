@@ -14,6 +14,7 @@ public /*abstract*/ class Item implements Serializable{
 	@Id
 	private long idItem;
 	private List<AttributeValue> attributesValues;
+	private double category; 
 
 	public Item(){}
 	
@@ -64,6 +65,14 @@ public /*abstract*/ class Item implements Serializable{
 				+ ", "
 				+ (attributesValues != null ? "attributesValues="
 						+ attributesValues : "") + "]";
+	}
+
+	public double getCategory() {
+		return category;
+	}
+
+	public void setCategory(double category) {
+		this.category = category;
 	}
 
 	
