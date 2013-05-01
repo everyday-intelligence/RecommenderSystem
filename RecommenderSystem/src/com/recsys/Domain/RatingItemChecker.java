@@ -15,7 +15,7 @@ public class RatingItemChecker implements Checker<Rating> {
 
 	@Override
 	public boolean verifyPredicate(Rating obj) {
-		return this.item.equals(item);
+		return this.item.equals(obj.getRatedItem());
 	}
 
 	

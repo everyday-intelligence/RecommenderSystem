@@ -30,9 +30,9 @@ public class ItemCenteredCollaborativeFiltering implements
 	private IndexedSimpleMatrix userItemRatingMatrix;
 	private IndexedSimpleMatrix itemItemSimilarityMatrix;
 
-	public static final int K = 800;
+	public static final int K = 100;
 	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
-	public static CF_IC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
+	public static CF_IC_RatingAggregator na = new WeightedMeanAggregator();
 
 	
 	public ItemCenteredCollaborativeFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {

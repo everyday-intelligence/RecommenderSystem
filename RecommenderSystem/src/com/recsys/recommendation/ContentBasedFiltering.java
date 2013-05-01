@@ -38,7 +38,7 @@ public class ContentBasedFiltering implements
 	private IndexedSimpleMatrix userItemRatingMatrix;
 	private IndexedSimpleMatrix itemItemSimilarityMatrix;
 
-	public static final int K = 300;
+	public static final int K = 100;
 	public static SimilarityMeasure<Double> pc = new ManhattanDistanceNumber<Double>();
 	public static CF_IC_RatingAggregator na = new MeanAggregator();
 
