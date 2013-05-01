@@ -31,30 +31,58 @@ import com.recsys.similarity.ManhattanDistanceNumber;
 import com.recsys.similarity.RMSEDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
 
-public class ContentBasedFiltering implements
+public class DemographicFiltering implements
 		RecommendationStrategy {
 
 	private List<Item> items;
+	private List<User> users;
 	private IndexedSimpleMatrix userItemRatingMatrix;
 	private IndexedSimpleMatrix itemItemSimilarityMatrix;
+	private IndexedSimpleMatrix userUserSimilarityMatrix;
 
-	public static final int K = 300;
-	public static SimilarityMeasure<Double> pc = new ManhattanDistanceNumber<Double>();
-	public static CF_IC_RatingAggregator na = new MeanAggregator();
+	public IndexedSimpleMatrix getUserUserSimilarityMatrix() {
+		return userUserSimilarityMatrix;
+	}
+
+	public void setUserUserSimilarityMatrix(
+			IndexedSimpleMatrix userUserSimilarityMatrix) {
+		this.userUserSimilarityMatrix = userUserSimilarityMatrix;
+	}
+
+	public static int getKitems() {
+		return KItems;
+	}
+
+	public static int getKusers() {
+		return KUsers;
+	}
+
+
+
+	public static final int KItems = 5;
+	public static final int KUsers = 5;
+	
+	public static SimilarityMeasure<Double> pc = new AdjustedCosineSimilarity<Double>();
 
 	
-	public ContentBasedFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {
+	public DemographicFiltering(List<Item> items,List<User> users, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix,IndexedSimpleMatrix userUserSimilarityMatrix) {
 		super();
 		this.items = items;
+		this.users = users;
 		this.userItemRatingMatrix = userItemRatingMatrix;
 		if(itemItemSimilarityMatrix == null){
 			itemItemSimilarityMatrix = calculateItemsSimilarities();			
 			System.out.println("finished calculating item item similarities 2");
 		}
 		this.itemItemSimilarityMatrix = itemItemSimilarityMatrix;			
+		if(userUserSimilarityMatrix == null){
+			userUserSimilarityMatrix = calculateUsersSimilarities();			
+			System.out.println("finished calculating user user similarities 2");
+		}
+		this.userUserSimilarityMatrix = userUserSimilarityMatrix;			
 	}
 	
-	public ContentBasedFiltering(List<User> users,
+	public DemographicFiltering(List<User> users,
 			List<Item> items, List<Rating> ratings) {
 		super();
 		this.items = items;
@@ -69,13 +97,16 @@ public class ContentBasedFiltering implements
 		System.out.println("calculating item item similarities");
 		itemItemSimilarityMatrix = calculateItemsSimilarities();
 		System.out.println("finished calculating item item similarities");
+		System.out.println("calculating user user similarities");
+		userUserSimilarityMatrix = calculateUsersSimilarities();
+		System.out.println("finished calculating user user similarities");
 	}
 
+	
 	@Override
 	public List<Recommendation> recommend(User activeUser) {
 		List<Rating> allPossibleCandidatesEstimation = userRatingsEstimation(activeUser);
-		if (allPossibleCandidatesEstimation == null
-				|| allPossibleCandidatesEstimation.isEmpty()) {
+		if (allPossibleCandidatesEstimation == null	|| allPossibleCandidatesEstimation.isEmpty()) {
 			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
 			for (Rating r : allPossibleCandidatesEstimation) {
 				allPossibleCandidates.add(new Recommendation(r.getRatedItem(),
@@ -89,47 +120,89 @@ public class ContentBasedFiltering implements
 	}
 
 	public List<Rating> userRatingsEstimation(User activeUser) {
+		ArrayList<User> similarUsers = userNeighborhood(activeUser);
 		List<Rating> allRatingsEstimations = new ArrayList<Rating>();
 		for (Item it : items) {
-			ArrayList<Item> itemNeighborhoodRatedByUser = itemNeighborhoodRatedByUser(activeUser, it);
-			Double estimatedRating = na.aggregate(activeUser, it, itemItemSimilarityMatrix, userItemRatingMatrix, itemNeighborhoodRatedByUser );
+			ArrayList<Item> similarItems = itemNeighborhood(it);
+			Double estimatedRating = 0d;
+			double norm = 0;
+			for(User u:similarUsers){
+				for(Item sItem:similarItems){
+					Double simUsSimItRating = userItemRatingMatrix.get(u.getIdUser(), sItem.getIdItem());
+					if(simUsSimItRating!=0){
+						Double uSim = userUserSimilarityMatrix.get(activeUser.getIdUser(), u.getIdUser());
+						Double itSim = itemItemSimilarityMatrix.get(it.getIdItem(), sItem.getIdItem());
+						estimatedRating+=simUsSimItRating * uSim * itSim;
+						norm+=uSim*itSim;
+					}					
+				}
+			}
+			if(!estimatedRating.isInfinite()&&estimatedRating != 0){
+				estimatedRating/= norm;
+			}
 			allRatingsEstimations.add(new Rating(estimatedRating, it, activeUser));
+			//System.out.println("-------------------------"+norm);
 		}
 
 		return allRatingsEstimations;
+		
 	}
 	
-	
-	public ArrayList<Item> itemNeighborhoodRatedByUser(User user, Item item) {
-		ArrayList<Item> itemsRatedByUser = new ArrayList<Item>();
-		List<Double> itemRatedSimilarityValues = new ArrayList<Double>();
-
-		for(Item it:items){
-			if(userItemRatingMatrix.get(user.getIdUser(), it.getIdItem())!=0){
-				itemsRatedByUser.add(it);
-				itemRatedSimilarityValues.add(itemItemSimilarityMatrix.get(item.getIdItem(), it.getIdItem()));
-			}
-		}
+	public ArrayList<Item> itemNeighborhood(Item activeItem) {
+		List<Double> similaritiesWithActiveItem = itemItemSimilarityMatrix.getRow(activeItem.getIdItem()).toList();
 		
-		Collections.sort(itemRatedSimilarityValues);
+		Collections.sort(similaritiesWithActiveItem);
 		if (pc.isSimilarity()) {
-			Collections.reverse(itemRatedSimilarityValues);
+			Collections.reverse(similaritiesWithActiveItem);
 		}
-		double threashold = itemRatedSimilarityValues.get(Math.min(
-				itemRatedSimilarityValues.size() - 1, K));
+		double threashold = similaritiesWithActiveItem.get(Math.min(
+				similaritiesWithActiveItem.size() - 1, KItems));
+		
 		ArrayList<Item> neighborList = new ArrayList<Item>();
 
-		for (Item itm : itemsRatedByUser) {
-			if (!itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()).isNaN()) {
+		for (Item itm : items) {
+			if (!itemItemSimilarityMatrix.get(activeItem.getIdItem(), itm.getIdItem()).isNaN()) {
 				if (pc.isSimilarity()) {
-					if (itemItemSimilarityMatrix.get(item.getIdItem(),
+					if (itemItemSimilarityMatrix.get(activeItem.getIdItem(),
 							itm.getIdItem()) >= threashold) {
 						neighborList.add(itm);
 						// System.out.println(simMap.get(u)+" taken");
 					}
 				} else {
-					if (itemItemSimilarityMatrix.get(item.getIdItem(),
+					if (itemItemSimilarityMatrix.get(activeItem.getIdItem(),
 							itm.getIdItem()) <= threashold) {
+						neighborList.add(itm);
+						// System.out.println(simMap.get(u)+" taken");
+					}
+				}
+			}
+		}
+		return neighborList;
+	}
+
+	
+	public ArrayList<User> userNeighborhood(User activeUser) {
+		List<Double> similaritiesWithActiveUser = userUserSimilarityMatrix.getRow(activeUser.getIdUser()).toList();
+		Collections.sort(similaritiesWithActiveUser);
+		if (pc.isSimilarity()) {
+			Collections.reverse(similaritiesWithActiveUser);
+		}
+		double threashold = similaritiesWithActiveUser.get(Math.min(
+				similaritiesWithActiveUser.size() - 1, KUsers));
+		
+		ArrayList<User> neighborList = new ArrayList<User>();
+
+		for (User itm : users) {
+			if (!userUserSimilarityMatrix.get(activeUser.getIdUser(), itm.getIdUser()).isNaN()) {
+				if (pc.isSimilarity()) {
+					if (userUserSimilarityMatrix.get(activeUser.getIdUser(),
+							itm.getIdUser()) >= threashold) {
+						neighborList.add(itm);
+						// System.out.println(simMap.get(u)+" taken");
+					}
+				} else {
+					if (userUserSimilarityMatrix.get(activeUser.getIdUser(),
+							itm.getIdUser()) <= threashold) {
 						neighborList.add(itm);
 						// System.out.println(simMap.get(u)+" taken");
 					}
@@ -184,6 +257,49 @@ public class ContentBasedFiltering implements
 		return tmpItemItemSimilarityMatrix;
 	}
 
+	public IndexedSimpleMatrix calculateUsersSimilarities() {
+		IndexedSimpleMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
+		Instances instances = MovieLens100KDataReader.fromUsersToWekaDataset(users);
+		/**********weka도도도도도�****/
+		LinearNNSearch knn = new LinearNNSearch(instances);
+		try {
+			ManhattanDistance df = new ManhattanDistance(instances);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("2-last");
+			//System.out.println(df.getAttributeIndices());
+			knn.setDistanceFunction(df);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Enumeration usrs = instances.enumerateInstances();
+		while(usrs.hasMoreElements()){
+			Instance in = (Instance) usrs.nextElement();
+			 try {
+				Instances nearestNeighbour = knn.kNearestNeighbours(in,instances.numInstances());
+				double[] distances = knn.getDistances();
+				for(int i=0;i<nearestNeighbour.numInstances();i++){
+					Instance in2 = nearestNeighbour.instance(i);
+					long  usr1 = Long.parseLong(in.attribute(0).value((int) in.value(0)));
+					long usr2 = Long.parseLong(in2.attribute(0).value((int) in2.value(0)));
+					//System.out.println(it1+"-"+it2);
+					if ((usr1 != usr2) && tmpUserUserSimilarityMatrix.get(usr1,usr2) == 0) {
+						double usr1usr2 =distances[i];
+						//System.out.println(it1+"-"+it2+"="+it1it2Sim);
+						tmpUserUserSimilarityMatrix.set(usr1, usr2,usr1usr2);
+						tmpUserUserSimilarityMatrix.set(usr2, usr1,usr1usr2);
+					}
+				}
+				} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return tmpUserUserSimilarityMatrix;
+	}
+
 
 	public IndexedSimpleMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;
@@ -202,9 +318,7 @@ public class ContentBasedFiltering implements
 		this.itemItemSimilarityMatrix = itemItemSimilarityMatrix;
 	}
 
-	public static int getK() {
-		return K;
-	}
+	
 
 	public static Class<? extends SimilarityMeasure> getPc() {
 		return pc.getClass();

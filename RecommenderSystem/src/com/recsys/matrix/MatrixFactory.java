@@ -35,12 +35,20 @@ public class MatrixFactory {
 		}
 		return new IndexedSimpleMatrix(usersLabels, itemsLabels);
 	}
-	public static IndexedSimpleMatrix createMatrix(List<Item> items) {
+	public static IndexedSimpleMatrix createItemsMatrix(List<Item> items) {
 		List<Long> itemsLabels = new ArrayList<Long>();
 
 		for(int i=0;i<items.size();i++){
 			itemsLabels.add(items.get(i).getIdItem());
 		}
 		return new IndexedSimpleMatrix(itemsLabels, itemsLabels);
+	}
+	public static IndexedSimpleMatrix createUsersMatrix(List<User> users) {
+		List<Long> usersLabels = new ArrayList<Long>();
+
+		for(int i=0;i<users.size();i++){
+			usersLabels.add(users.get(i).getIdUser());
+		}
+		return new IndexedSimpleMatrix(usersLabels, usersLabels);
 	}
 }

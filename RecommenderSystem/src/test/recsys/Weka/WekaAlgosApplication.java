@@ -19,6 +19,8 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.IndexedSimpleMatrix;
+import com.recsys.matrix.MatrixFactory;
 
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.EM;
@@ -29,7 +31,7 @@ import weka.core.Instances;
 import weka.core.ManhattanDistance;
 import weka.core.neighboursearch.LinearNNSearch;
 
-public class WekaAlgosApplicationOnItems {
+public class WekaAlgosApplication {
 	private static String learningRatingsFile = "database/MovieLens/ml-100K/ua.base";
 	private static String usersFile = "database/MovieLens/ml-100K/u.user";
 	private static String itemsFile = "database/MovieLens/ml-100K/u.item";
@@ -48,7 +50,7 @@ public class WekaAlgosApplicationOnItems {
 			users = MovieLens100KDataReader.findUsersFile(usersFile);
 			usersDataset = MovieLens100KDataReader.fromUsersToWekaDataset(users);
 		}
-		System.out.println(itemsDataset.toSummaryString());
+		//System.out.println(itemsDataset.toSummaryString());
 		//System.out.println(itemsDataset);
 	}
 
@@ -56,13 +58,13 @@ public class WekaAlgosApplicationOnItems {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
+	//@Test
 	public final void testDuplicate() {
 		System.out.println(itemsDataset);
 		System.out.println(itemsDataset.instance(0).value(3));
 	}
 
-	@Test
+	//@Test
 	public final void testItemsClustering() {
 		System.out.println("testItemsClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
@@ -95,7 +97,7 @@ public class WekaAlgosApplicationOnItems {
 		} // build the clusterer
 	}
 
-	@Test
+	//@Test
 	public final void testUsersClustering() {
 		System.out.println("testUsersClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
@@ -164,4 +166,46 @@ public class WekaAlgosApplicationOnItems {
 		}
 	}
 
+	@Test
+	public void calculateUsersSimilarities() {
+		IndexedSimpleMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
+		System.out.println(usersDataset);
+		/**********weka도도도도도�****/
+		LinearNNSearch knn = new LinearNNSearch(usersDataset);
+		try {
+			ManhattanDistance df = new ManhattanDistance(usersDataset);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("2-last");
+			System.out.println(df.getAttributeIndices());
+			knn.setDistanceFunction(df);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Enumeration usrs = usersDataset.enumerateInstances();
+		while(usrs.hasMoreElements()){
+			Instance in = (Instance) usrs.nextElement();
+			 try {
+				Instances nearestNeighbour = knn.kNearestNeighbours(in,usersDataset.numInstances());
+				double[] distances = knn.getDistances();
+				for(int i=0;i<nearestNeighbour.numInstances();i++){
+					Instance in2 = nearestNeighbour.instance(i);
+					long  usr1 = Long.parseLong(in.attribute(0).value((int) in.value(0)));
+					long usr2 = Long.parseLong(in2.attribute(0).value((int) in2.value(0)));
+					//System.out.println(it1+"-"+it2);
+					if ((usr1 != usr2) && tmpUserUserSimilarityMatrix.get(usr1,usr2) == 0) {
+						double usr1usr2 =distances[i];
+						System.out.println(usr1+"-"+usr2+"="+usr1usr2);
+						tmpUserUserSimilarityMatrix.set(usr1, usr2,usr1usr2);
+						tmpUserUserSimilarityMatrix.set(usr2, usr1,usr1usr2);
+					}
+				}
+				} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }

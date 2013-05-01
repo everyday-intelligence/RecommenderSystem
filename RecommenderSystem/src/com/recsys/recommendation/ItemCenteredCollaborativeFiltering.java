@@ -168,7 +168,7 @@ public class ItemCenteredCollaborativeFiltering implements
 	}
 
 	public IndexedSimpleMatrix calculateItemsSimilarities() {
-		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createMatrix(items);
+		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
 		for (Item it1 : items) {
 			for (Item it2 : items) {
 				if (!it1.equals(it2) && tmpItemItemSimilarityMatrix.get(it1.getIdItem(),it2.getIdItem()) == 0) {
