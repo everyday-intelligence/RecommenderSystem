@@ -13,5 +13,5 @@ jcs.default.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRU
 # Indexed Disk Cache
 jcs.auxiliary.DC=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheFactory
 jcs.auxiliary.DC.attributes=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheAttributes
-jcs.auxiliary.DC.attributes.DiskPath=D:/PHD/Experimentations/cache
+jcs.auxiliary.DC.attributes.DiskPath=/home/ramzi/Documents/JCS_cache
 log4j.logger.org.apache.jcs=info,CONSOLE
