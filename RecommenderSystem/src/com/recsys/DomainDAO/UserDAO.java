@@ -90,9 +90,8 @@ public class UserDAO implements Serializable{
     public List<User> findUsers() {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(User.class));
-            Query q = em.createQuery(cq);
+            
+            Query q = em.createQuery("from Usesr");
             return q.getResultList();
         } finally {
             em.close();

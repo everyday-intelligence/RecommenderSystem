@@ -87,9 +87,7 @@ public class RatingDAO {
     public List<Rating> findRatings() {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Rating.class));
-            Query q = em.createQuery(cq);
+            Query q = em.createQuery("from Rating");
             return q.getResultList();
         } finally {
             em.close();

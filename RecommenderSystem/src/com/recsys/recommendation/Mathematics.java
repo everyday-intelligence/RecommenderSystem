@@ -44,6 +44,8 @@ public class Mathematics {
 		}
 		double error = 0;
 		for (int i = 0; i < predictionsCouples.size(); i++) {
+			System.out.println("predicted "+ predictionsCouples.get(i).getPredictedValue()+" real "+ predictionsCouples.get(i).getRealValue());
+			//System.out.format("predicted %f \t real %f \n", predictionsCouples.get(i).getPredictedValue(), predictionsCouples.get(i).getRealValue());
 			error += Math.abs(predictionsCouples.get(i).getPredictedValue() - predictionsCouples.get(i).getRealValue());
 		}
 		/*

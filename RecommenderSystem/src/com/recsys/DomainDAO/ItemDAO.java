@@ -91,9 +91,7 @@ public class ItemDAO implements Serializable{
 	    public List<Item> findItems() {
 	        EntityManager em = getEntityManager();
 	        try {
-	            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-	            cq.select(cq.from(Item.class));
-	            Query q = em.createQuery(cq);
+	            Query q = em.createQuery("from Item");
 	            return q.getResultList();
 	        } finally {
 	            em.close();

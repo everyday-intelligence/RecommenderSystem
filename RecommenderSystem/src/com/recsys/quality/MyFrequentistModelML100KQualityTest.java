@@ -119,7 +119,7 @@ public class MyFrequentistModelML100KQualityTest {
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
-		List<Rating> allEstimations = filtre.userRatingsEstimationMaxProba(activeUser);
+		List<Rating> allEstimations = filtre.userRatingsEstimationExpectation(activeUser);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
