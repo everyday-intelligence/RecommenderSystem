@@ -52,10 +52,29 @@ public /*abstract*/ class Item implements Serializable{
 		this.attributesValues.add(attributeValue);
 	}
 	
+	
+
+	
 	@Override
-	public boolean equals(Object o) {
-		
-		return (this.idItem==((Item)o).getIdItem());
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (idItem ^ (idItem >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		if (idItem != other.idItem)
+			return false;
+		return true;
 	}
 
 	@Override

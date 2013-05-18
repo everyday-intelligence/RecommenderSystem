@@ -19,6 +19,7 @@ import com.recsys.CF_IC_RatingsAggregator.MeanAggregator;
 import com.recsys.CF_IC_RatingsAggregator.WeightedMeanAggregator;
 import com.recsys.CF_IC_RatingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.Domain.CategoryGroupContextChecker;
+import com.recsys.Domain.GroupCategory;
 import com.recsys.Domain.GroupCategoryRating;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
@@ -44,7 +45,7 @@ RecommendationStrategy {
 	private List<User> users;
 	private List<Rating> ratings;
 
-	private Map<GroupCategoryRating,Double> cacheProba = new HashMap<GroupCategoryRating,Double>();
+	private Map<GroupCategory,Double> cacheRatings = new HashMap<GroupCategory,Double>();
 	
 	public static SimilarityMeasure<Double> pc = new AdjustedCosineSimilarity<Double>();
 
@@ -82,29 +83,25 @@ RecommendationStrategy {
 		for (Item it : items) {
 			double category = it.getCategory();
 			Double estimatedRating = 0d;
-			Double estimatedRatingProba = 0d;
-			Collection<Rating> sachant =  PredicateUtils.findAll(ratings, new CategoryGroupContextChecker(group,category));
-			//System.out.println("Group = "+group+" Category = "+category+" sachant = "+sachant.size());
-			if(!sachant.isEmpty()){
-				for(double rating = 1; rating<=5;rating++){
-					Double proba = null;
-					
-					GroupCategoryRating groupCategoryRating = new GroupCategoryRating(group, category, rating);
-					proba = cacheProba.get(groupCategoryRating);
-					if(proba == null){		
+			GroupCategory groupCategory = new GroupCategory(group, category);
+			estimatedRating = cacheRatings.get(groupCategory);
+			if(estimatedRating == null){	
+				estimatedRating = 0d;
+				Double estimatedRatingProba = 0d;
+				Collection<Rating> sachant =  PredicateUtils.findAll(ratings, new CategoryGroupContextChecker(group,category));
+				//System.out.println("Group = "+group+" Category = "+category+" sachant = "+sachant.size());
+				if(!sachant.isEmpty()){
+					for(double rating = 1; rating<=5;rating++){
 						Collection<Rating> denum = PredicateUtils.findAll(sachant, new RatingValueChecker(rating));
-						proba = denum.size()/((double)sachant.size());
-						cacheProba.put(groupCategoryRating, proba);
-					}
-					//System.out.println(" rating = "+rating+" proba = "+denum.size()+"/"+sachant.size()+"="+proba);
-					if(proba>estimatedRatingProba){
-						estimatedRating = rating;
-						estimatedRatingProba = proba;
+						Double proba = denum.size()/((double)sachant.size());
+						//System.out.println(" rating = "+rating+" proba = "+denum.size()+"/"+sachant.size()+"="+proba);
+						if(proba>estimatedRatingProba){
+							estimatedRating = rating;
+							estimatedRatingProba = proba;
+						}
 					}
 				}
-			}	
-			if(estimatedRating>0){
-				//System.out.println("predicted "+estimatedRating);				
+				cacheRatings.put(groupCategory, estimatedRating);
 			}
 			allRatingsEstimations.add(new Rating(estimatedRating, it, activeUser));
 		}
@@ -114,23 +111,24 @@ RecommendationStrategy {
 
 	public List<Rating> userRatingsEstimationExpectation(User activeUser) {
 		double group = activeUser.getGroup();
+		//System.out.println(group);
 		List<Rating> allRatingsEstimations = new ArrayList<Rating>();
 		for (Item it : items) {
 			double category = it.getCategory();
 			Double estimatedRating = 0d;
-			Collection<Rating> sachant =  PredicateUtils.findAll(ratings, new CategoryGroupContextChecker(group,category));
-			if(!sachant.isEmpty()){
-				for(double rating = 1; rating<=5;rating++){
-					Double proba;
-					GroupCategoryRating groupCategoryRating = new GroupCategoryRating(group, category, rating);
-					proba = cacheProba.get(groupCategoryRating);
-					if(proba == null){		
+			GroupCategory groupCategory = new GroupCategory(group, category);
+			estimatedRating = cacheRatings.get(groupCategory);
+			if(estimatedRating == null){	
+				estimatedRating = 0d;
+				Collection<Rating> sachant =  PredicateUtils.findAll(ratings, new CategoryGroupContextChecker(group,category));
+				if(!sachant.isEmpty()){
+					for(double rating = 1; rating<=5;rating++){
 						Collection<Rating> denum = PredicateUtils.findAll(sachant, new RatingValueChecker(rating));
-						proba = denum.size()/((double)sachant.size());
-						cacheProba.put(groupCategoryRating, proba);
+						Double proba = denum.size()/((double)sachant.size());
+						estimatedRating+=proba*rating;
 					}
-					estimatedRating+=proba*rating;
 				}
+				cacheRatings.put(groupCategory, estimatedRating);
 			}
 			allRatingsEstimations.add(new Rating(estimatedRating, it, activeUser));
 		}

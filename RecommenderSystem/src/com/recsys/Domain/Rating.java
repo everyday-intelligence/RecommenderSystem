@@ -27,6 +27,26 @@ public class Rating implements Serializable{
 		this.ratingUser=ratingUser;
 	}
 	
+	public long getIdRating() {
+		return idRating;
+	}
+
+	public void setIdRating(long idRating) {
+		this.idRating = idRating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
+	public void setRatedItem(Item ratedItem) {
+		this.ratedItem = ratedItem;
+	}
+
+	public void setRatingUser(User ratingUser) {
+		this.ratingUser = ratingUser;
+	}
+
 	public double getRating() {
 		return rating;
 	}

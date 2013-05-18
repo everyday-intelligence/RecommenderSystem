@@ -72,8 +72,8 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Rating> dataBaseEntries;
 	private static MyFrequentistModelHard filtre;
 
-	private static final int NC = 100;
-	private static final int NG = 30;
+	private static final int NC = 8;
+	private static final int NG = 8;
 	
 	private static final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_EM_"+NC;
 
@@ -105,6 +105,14 @@ public class MyFrequentistModelML100KQualityTest {
 			System.out.println("users clustering exists");
 		}
 		dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
+		for(Rating r:dataBaseEntries){
+			User u = r.getRatingUser();
+			Item it = r.getRatedItem();
+			int indexU = users.indexOf(u);
+			int indexIt = items.indexOf(it);
+			r.setRatingUser(users.get(indexU));
+			r.setRatedItem(items.get(indexIt));
+		}
 		filtre = new MyFrequentistModelHard(users, items, dataBaseEntries);
 		RecSysCache.getJcs().dispose();
 	}
@@ -119,7 +127,7 @@ public class MyFrequentistModelML100KQualityTest {
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
-		List<Rating> allEstimations = filtre.userRatingsEstimationExpectation(activeUser);
+		List<Rating> allEstimations = filtre.userRatingsEstimationMaxProba(activeUser);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
@@ -250,6 +258,7 @@ public class MyFrequentistModelML100KQualityTest {
 			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
 			for(int i=0;i<items.size();i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
+				//System.out.println(clusterAssignments[i]);
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -282,6 +291,7 @@ public class MyFrequentistModelML100KQualityTest {
 			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
 			for(int i=0;i<users.size();i++) {
 				users.get(i).setGroup(clusterAssignments[i]);
+				//System.out.println(clusterAssignments[i]);
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
