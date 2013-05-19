@@ -68,6 +68,7 @@ public class WekaAlgosApplication {
 	
 	//@Test
 	public final void kmeansItemsClustering() {
+		//System.out.println(itemsDataset.toSummaryString());
 		System.out.println("testItemsClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
 		SimpleKMeans clusterer = new SimpleKMeans(); // new instance of clusterer
@@ -82,30 +83,33 @@ public class WekaAlgosApplication {
 			clusterer.setOptions(options); // set the options
 			clusterer.setPreserveInstancesOrder(true);
 			clusterer.setNumClusters(20);
-			clusterer.setDistanceFunction(new EuclideanDistance(itemsDataset));
+			EuclideanDistance df = new EuclideanDistance(itemsDataset);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("3,6-last");
+			clusterer.setDistanceFunction(df);
 			clusterer.buildClusterer(itemsDataset);
 			// System.out.println(clusterer.toString());
 			eval.setClusterer(clusterer); // the cluster to evaluate
 			eval.evaluateClusterer(itemsDataset); // data to evaluate the
 													// clusterer on
-			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
-			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
-			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
-			int[] clusterAssignments = clusterer.getAssignments();
-			System.out.println(" of clustered items : "+clusterAssignments.length);
-			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
-			for(int i=0;i<items.size();i++) {
-				items.get(i).setCategory(clusterAssignments[i]);
-			} // output # of clusters
-			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
-			RecSysCache.getJcs().dispose();
+			//System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
+			System.out.println("clusterResultsToString: " + eval.clusterResultsToString()); // output # of clusters
+			//int[] clusterAssignments = clusterer.getAssignments();
+			//System.out.println(" of clustered items : "+clusterAssignments.length);
+			//assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
+//			for(int i=0;i<items.size();i++) {
+//				items.get(i).setCategory(clusterAssignments[i]);
+//			} // output # of clusters
+//			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
+//			RecSysCache.getJcs().dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // build the clusterer
 	}
 
-	//@Test
+	@Test
 	public final void kmeansUsersClustering() {
 		System.out.println("testUsersClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
@@ -119,24 +123,26 @@ public class WekaAlgosApplication {
 		try {
 			clusterer.setOptions(options); // set the options
 			clusterer.setPreserveInstancesOrder(true);
-			clusterer.setNumClusters(20);
-			clusterer.setDistanceFunction(new EuclideanDistance(usersDataset));
+			clusterer.setNumClusters(40);
+			EuclideanDistance df = new EuclideanDistance(itemsDataset);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("2-4");
+			clusterer.setDistanceFunction(df);
 			clusterer.buildClusterer(usersDataset);
 			// System.out.println(clusterer.toString());
 			eval.setClusterer(clusterer); // the cluster to evaluate
 			eval.evaluateClusterer(usersDataset); // data to evaluate the
-													// clusterer on
-			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
-			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
-			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
-			int[] clusterAssignments = clusterer.getAssignments();
-			System.out.println(" of clustered items : "+clusterAssignments.length);
-			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
-			for(int i=0;i<users.size();i++) {
-				users.get(i).setGroup(clusterAssignments[i]);
-			} // output # of clusters
-			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
-			RecSysCache.getJcs().dispose();
+			System.out.println("clusterResultsToString: " + eval.clusterResultsToString()); // output # of clusters
+//			
+//			int[] clusterAssignments = clusterer.getAssignments();
+//			System.out.println(" of clustered items : "+clusterAssignments.length);
+//			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
+//			for(int i=0;i<users.size();i++) {
+//				users.get(i).setGroup(clusterAssignments[i]);
+//			} // output # of clusters
+//			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
+//			RecSysCache.getJcs().dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,7 +152,7 @@ public class WekaAlgosApplication {
 	
 	
 	
-	@Test
+	//@Test
 	public final void testItemsClustering() {
 		System.out.println("testItemsClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
@@ -154,9 +160,10 @@ public class WekaAlgosApplication {
 		final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_"+clusterer.getClass();
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
-		options[1] = "2";
+		options[1] = "20";
 		try {
 			clusterer.setOptions(options); // set the options
+			//clusterer.setNumClusters(50);
 			clusterer.buildClusterer(itemsDataset);
 			// System.out.println(clusterer.toString());
 			eval.setClusterer(clusterer); // the cluster to evaluate
@@ -169,25 +176,25 @@ public class WekaAlgosApplication {
 			double[] clusterAssignments = eval.getClusterAssignments();
 			System.out.println(" of clustered items : "+clusterAssignments.length);
 			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
-			for(int i=0;i<items.size();i++) {
-				System.out.println("cluster distribution");
-				double[] cd = clusterer.distributionForInstance(itemsDataset.instance(i));
-				for(int j=0;j<cd.length;j++){
-					System.out.print("item "+i+" : ");
-					System.out.print("class "+j+" : "+cd[j]+" | ");
-				}
-				System.out.println();
-				items.get(i).setCategory(clusterAssignments[i]);
-			} // output # of clusters
-			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
-			RecSysCache.getJcs().dispose();
+//			for(int i=0;i<items.size();i++) {
+//				System.out.println("cluster distribution");
+//				double[] cd = clusterer.distributionForInstance(itemsDataset.instance(i));
+////				for(int j=0;j<cd.length;j++){
+////					System.out.print("item "+i+" : ");
+////					System.out.print("class "+j+" : "+cd[j]+" | ");
+////				}
+////				System.out.println();
+//				items.get(i).setCategory(clusterAssignments[i]);
+//			} // output # of clusters
+////			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
+////			RecSysCache.getJcs().dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // build the clusterer
 	}
 
-	@Test
+	//@Test
 	public final void testUsersClustering() {
 		System.out.println("testUsersClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
@@ -208,13 +215,13 @@ public class WekaAlgosApplication {
 			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
 			System.out.println("getClusterPriors: "+clusterer.getClusterPriors());
 			double[] clusterAssignments = eval.getClusterAssignments();
-			System.out.println(" of clustered items : "+clusterAssignments.length);
+			//System.out.println(" of clustered items : "+clusterAssignments.length);
 			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
-			for(int i=0;i<users.size();i++) {
-				users.get(i).setGroup(clusterAssignments[i]);
-			} // output # of clusters
-			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
-			RecSysCache.getJcs().dispose();
+			//for(int i=0;i<users.size();i++) {
+				//users.get(i).setGroup(clusterAssignments[i]);
+			//} // output # of clusters
+			//RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
+			//RecSysCache.getJcs().dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -261,7 +268,7 @@ public class WekaAlgosApplication {
 	public void calculateUsersSimilarities() {
 		IndexedSimpleMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
 		System.out.println(usersDataset);
-		/**********wekaµµµµµµµµµµµ****/
+		/**********wekaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½****/
 		LinearNNSearch knn = new LinearNNSearch(usersDataset);
 		try {
 			ManhattanDistance df = new ManhattanDistance(usersDataset);

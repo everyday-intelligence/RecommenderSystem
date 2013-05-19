@@ -19,7 +19,9 @@ import org.junit.Test;
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.EM;
 import weka.clusterers.SimpleKMeans;
+import weka.core.EuclideanDistance;
 import weka.core.Instances;
+import weka.core.ManhattanDistance;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
@@ -38,8 +40,8 @@ public class MyFrequentistModelML100KQualityTest {
 
 	private static String databaseURL = "database/MovieLens";
 	private static String databaseName = "ml-100K";
-	private static String learningDatafile = "ua.base";
-	private static String testDatafile = "ua.test";
+	private static String learningDatafile = "ub.base";
+	private static String testDatafile = "ub.test";
 	private static String usersDatafile = "u.user";
 	private static String itemsDatafile = "u.item";
 	private static String learningRatingsFile = databaseURL+"/"+databaseName+"/"+learningDatafile;
@@ -72,12 +74,11 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Rating> dataBaseEntries;
 	private static MyFrequentistModelHard filtre;
 
-	private static final int NC = 8;
-	private static final int NG = 8;
+	private static final int NC = 40;
+	private static final int NG = 40;
 	
-	private static final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_EM_"+NC;
-
-	private static final String USERSCLUSTERDCACHE = "usersClustered"+"_EM_"+NG;
+	private static final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_KMeans_"+NC;
+	private static final String USERSCLUSTERDCACHE = "usersClustered"+"_KMeans_"+NG;
 
 
 
@@ -90,7 +91,8 @@ public class MyFrequentistModelML100KQualityTest {
 		if(items == null){
 			items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 			itemsDataset =  MovieLens100KDataReader.fromItemsToWekaDataset(items);
-			emItemsClustering();
+			kmeansItemsClustering();
+			//emItemsClustering();
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
 			System.out.println("items clustering exists");
@@ -99,7 +101,8 @@ public class MyFrequentistModelML100KQualityTest {
 		if(users == null){
 			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();	
 			usersDataset =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
-			emUsersClustering();
+			kmeansUsersClustering();
+			//emUsersClustering();
 			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
 		}else{
 			System.out.println("users clustering exists");
@@ -127,7 +130,7 @@ public class MyFrequentistModelML100KQualityTest {
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
-		List<Rating> allEstimations = filtre.userRatingsEstimationMaxProba(activeUser);
+		List<Rating> allEstimations = filtre.userRatingsEstimationExpectation(activeUser);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
@@ -238,7 +241,6 @@ public class MyFrequentistModelML100KQualityTest {
 		System.out.println("testItemsClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
 		itemsClusterer = new EM(); // new instance of clusterer
-		final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_"+itemsClusterer.getClass();
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
 		options[1] = "15";
@@ -271,7 +273,6 @@ public class MyFrequentistModelML100KQualityTest {
 		System.out.println("testUsersClustering");
 		ClusterEvaluation eval = new ClusterEvaluation();
 		usersClusterer = new EM(); // new instance of clusterer
-		final String USERSCLUSTERDCACHE = "usersClustered"+"_"+usersClusterer.getClass();
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
 		options[1] = "15";
@@ -299,74 +300,64 @@ public class MyFrequentistModelML100KQualityTest {
 		} // build the clusterer
 	}
 	
-//	
-//	public void itemsClustering() {
-//		System.out.println("testItemsClustering");
-//		ClusterEvaluation eval = new ClusterEvaluation();
-//		SimpleKMeans itemsClusterer = new SimpleKMeans(); // new instance of clusterer
-//		itemsClusterer.setSeed(10);
-//
-//		final String ITEMSCLUSTERDCACHE = "itemsClustered"+"_"+itemsClusterer.getClass();
-//		
-//		String[] options = new String[2];
-//		options[0] = "-I"; // max. iterations
-//		options[1] = "20";
-//		try {
-//			itemsClusterer.setOptions(options); // set the options
-//			itemsClusterer.setPreserveInstancesOrder(true);
-//			itemsClusterer.setNumClusters(NC);
-//			itemsClusterer.buildClusterer(itemsDataset);
-//			// System.out.println(clusterer.toString());
-//			eval.setClusterer(itemsClusterer); // the cluster to evaluate
-//			eval.evaluateClusterer(itemsDataset); // data to evaluate the
-//													// clusterer on
-//			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
-//			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
-//			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
-//			int[] clusterAssignments = itemsClusterer.getAssignments();
-//			System.out.println(" of clustered items : "+clusterAssignments.length);
-//			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
-//			for(int i=0;i<items.size();i++) {
-//				items.get(i).setCategory(clusterAssignments[i]);
-//			} // output # of clusters
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} // build the clusterer
-//	}
-//
-//	//@Test
-//	public void usersClustering() {
-//		System.out.println("testUsersClustering");
-//		ClusterEvaluation eval = new ClusterEvaluation();
-//		SimpleKMeans usersClusterer = new SimpleKMeans(); // new instance of clusterer
-//		usersClusterer.setSeed(10);
-//		final String USERSCLUSTERDCACHE = "usersClustered"+"_"+usersClusterer.getClass();
-//
-//		String[] options = new String[2];
-//		options[0] = "-I"; // max. iterations
-//		options[1] = "20";
-//		try {
-//			usersClusterer.setOptions(options); // set the options
-//			usersClusterer.setPreserveInstancesOrder(true);
-//			usersClusterer.setNumClusters(NG);
-//			usersClusterer.buildClusterer(usersDataset);
-//			// System.out.println(clusterer.toString());
-//			eval.setClusterer(usersClusterer); // the cluster to evaluate
-//			eval.evaluateClusterer(usersDataset); // data to evaluate the
-//													// clusterer on
-//			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
-//			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
-//			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
-//			int[] clusterAssignments = usersClusterer.getAssignments();
-//			System.out.println(" of clustered items : "+clusterAssignments.length);
-//			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
-//			for(int i=0;i<users.size();i++) {
-//				users.get(i).setGroup(clusterAssignments[i]);
-//			} // output # of clusters
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} // build the clusterer
-//	}
+	
+	public void kmeansItemsClustering() {
+		System.out.println("testItemsClustering");
+		SimpleKMeans itemsClusterer = new SimpleKMeans(); // new instance of clusterer
+		itemsClusterer.setSeed(10);
+
+		
+		String[] options = new String[2];
+		options[0] = "-I"; // max. iterations
+		options[1] = "20";
+		try {
+			itemsClusterer.setOptions(options); // set the options
+			itemsClusterer.setPreserveInstancesOrder(true);
+			itemsClusterer.setNumClusters(NC);
+			EuclideanDistance df = new EuclideanDistance(itemsDataset);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("3,6-last");
+			itemsClusterer.setDistanceFunction(df);
+			itemsClusterer.buildClusterer(itemsDataset);
+			// System.out.println(clusterer.toString());
+			int[] clusterAssignments = itemsClusterer.getAssignments();
+			for(int i=0;i<items.size();i++) {
+				items.get(i).setCategory(clusterAssignments[i]);
+			} // output # of clusters
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // build the clusterer
+	}
+
+	//@Test
+	public void kmeansUsersClustering() {
+		System.out.println("testUsersClustering");
+		SimpleKMeans usersClusterer = new SimpleKMeans(); // new instance of clusterer
+		usersClusterer.setSeed(10);
+
+		String[] options = new String[2];
+		options[0] = "-I"; // max. iterations
+		options[1] = "20";
+		try {
+			usersClusterer.setOptions(options); // set the options
+			usersClusterer.setPreserveInstancesOrder(true);
+			usersClusterer.setNumClusters(NG);
+			EuclideanDistance df = new EuclideanDistance(itemsDataset);
+			//EuclideanDistance df = new EuclideanDistance(instances);
+			df.setDontNormalize(false);
+			df.setAttributeIndices("2-4");
+			usersClusterer.setDistanceFunction(df);
+			usersClusterer.buildClusterer(usersDataset);
+			// System.out.println(clusterer.toString());
+			int[] clusterAssignments = usersClusterer.getAssignments();
+			for(int i=0;i<users.size();i++) {
+				users.get(i).setGroup(clusterAssignments[i]);
+			} // output # of clusters
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // build the clusterer
+	}
 }
