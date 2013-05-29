@@ -23,7 +23,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 40;
+	private final int NC = 30;
 	
 	
 	@Override
@@ -69,7 +69,7 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 		for(int i=0;i<items.size();i++){
 			double[] attVals = new double[users.size()]; 
 			List<Double> itemRatings = userItemRatingMatrix.getColumn(i).toList();
-			for(int j=0;j<items.size();j++){
+			for(int j=0;j<users.size();j++){
 				attVals[j]=itemRatings.get(j);
 			}
 			instancesList.add(new Instance(1,attVals));

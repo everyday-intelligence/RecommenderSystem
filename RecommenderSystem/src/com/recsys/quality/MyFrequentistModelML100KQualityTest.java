@@ -29,10 +29,7 @@ import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
-import com.recsys.custering.ItemsClusterer;
-import com.recsys.custering.ItemsFeaturesKmeansClusterer;
-import com.recsys.custering.UsersClusterer;
-import com.recsys.custering.UsersDemographicsKmeansClusterer;
+import com.recsys.custering.*;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ContentBasedFiltering;
 import com.recsys.recommendation.Mathematics;
@@ -73,19 +70,26 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Rating> dataBaseEntries;
 	private static MyFrequentistModelHard filtre;
 
-	private ItemsClusterer itemsClusterer = new ItemsFeaturesKmeansClusterer();
-	private UsersClusterer usersClusterer = new UsersDemographicsKmeansClusterer();
+	private ItemsClusterer itemsClusterer = new ItemsRatingsKmeansClusterer();
+	private UsersClusterer usersClusterer = new UsersRatingsKmeansClusterer();
 	
 	private final String ITEMSCLUSTERDCACHE = "itemsClustered"+itemsClusterer.toString();
 	private final String USERSCLUSTERDCACHE = "usersClustered"+usersClusterer.toString();
-
+ 
 	@Before
 	public void initData() throws Exception {
 		dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 		items=(List<Item>) RecSysCache.getJcs().get(ITEMSCLUSTERDCACHE);
 		if(items == null){
 			items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
+			//cas ou lotr null
+			users=(List<User>) RecSysCache.getJcs().get(USERSCLUSTERDCACHE);
+			if(users == null){
+				users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+			}
 			items = itemsClusterer.cluster(items, users, dataBaseEntries);
+			//cas ou lotr null juste pour le precedent
+			users= null;
 			//emItemsClustering();
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
@@ -191,7 +195,7 @@ public class MyFrequentistModelML100KQualityTest {
 			throws InterruptedException, ExecutionException {
 		int threads = Runtime.getRuntime().availableProcessors();
 		ExecutorService service = Executors.newFixedThreadPool(threads);
-
+ 
 		List<Future<List<RealAndPrediction>>> futures = new ArrayList<Future<List<RealAndPrediction>>>();
 		for (final User u : users) {
 			Callable<List<RealAndPrediction>> callable = new Callable<List<RealAndPrediction>>() {
