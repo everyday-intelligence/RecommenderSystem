@@ -15,45 +15,47 @@ import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 
-public class ItemsEMClusterer implements ItemsClusterer {
+public class UsersDemographicsEMClusterer implements UsersClusterer {
 
 	@Override
-	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
-		Instances itemsDataset = MovieLens100KDataReader
-				.fromItemsToWekaDataset(items);
-		System.out.println("testItemsClustering");
+	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
+		Instances usersDataset  =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
 		ClusterEvaluation eval = new ClusterEvaluation();
-		EM itemsClusterer = new EM(); // new instance of clusterer
+		EM usersClusterer = new EM(); // new instance of clusterer
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
 		options[1] = "15";
 		try {
-			itemsClusterer.setOptions(options); // set the options
-			//itemsClusterer.setNumClusters(NC);
-			itemsClusterer.buildClusterer(itemsDataset);
+			usersClusterer.setOptions(options); // set the options
+			//usersClusterer.setNumClusters(NG);
+			usersClusterer.buildClusterer(usersDataset);
 			// System.out.println(clusterer.toString());
-			eval.setClusterer(itemsClusterer); // the cluster to evaluate
-			eval.evaluateClusterer(itemsDataset); // data to evaluate the
+			eval.setClusterer(usersClusterer); // the cluster to evaluate
+			eval.evaluateClusterer(usersDataset); // data to evaluate the
 													// clusterer on
 			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
 			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
 			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
 			double[] clusterAssignments = eval.getClusterAssignments();
 			System.out.println(" of clustered items : "+clusterAssignments.length);
-			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
-			for(int i=0;i<items.size();i++) {
-				items.get(i).setCategory(clusterAssignments[i]);
+			assertEquals(usersDataset.numInstances(), clusterAssignments.length);
+			for(int i=0;i<users.size();i++) {
+				users.get(i).setGroup(clusterAssignments[i]);
 				//System.out.println(clusterAssignments[i]);
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // build the clusterer
-		return items;
+		return users;
+
 	}
+
 	@Override
 	public String toString() {
-		return "ItemsEMClusterer";
+		return "UsersEMClusterer";
 	}
+
+	
 
 }
