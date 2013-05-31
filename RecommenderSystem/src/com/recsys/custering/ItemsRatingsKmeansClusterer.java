@@ -23,7 +23,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 30;
+	private final int NC = 300;
 	
 	
 	@Override

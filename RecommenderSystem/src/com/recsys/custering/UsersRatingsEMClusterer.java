@@ -3,6 +3,8 @@ package com.recsys.custering;
 import java.util.ArrayList;
 import java.util.List;
 
+import weka.clusterers.ClusterEvaluation;
+import weka.clusterers.EM;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Attribute;
 import weka.core.EuclideanDistance;
@@ -22,31 +24,27 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
-public class UsersRatingsKmeansClusterer implements UsersClusterer {
-	private final int NG = 20;
+public class UsersRatingsEMClusterer implements UsersClusterer {
+	//private final int NG = 30;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances usersDataset  =  createUsersRatingsDataset(items, users, ratings);
-		SimpleKMeans usersClusterer = new SimpleKMeans(); // new instance of
-															// clusterer
-		usersClusterer.setSeed(10);
-
+		ClusterEvaluation eval = new ClusterEvaluation();
+		EM usersClusterer = new EM(); // new instance of clusterer
+		
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
-		options[1] = "20";
+		options[1] = "1";
 		try {
 			usersClusterer.setOptions(options); // set the options
-			usersClusterer.setPreserveInstancesOrder(true);
-			usersClusterer.setNumClusters(NG);
-			EuclideanDistance df = new EuclideanDistance(usersDataset);
-			// EuclideanDistance df = new EuclideanDistance(instances);
-			df.setDontNormalize(false);
+			//usersClusterer.setNumClusters(NG);
 			//All attributs df.setAttributeIndices("2-4");
-			usersClusterer.setDistanceFunction(df);
 			usersClusterer.buildClusterer(usersDataset);
+			eval.setClusterer(usersClusterer); // the cluster to evaluate
+			eval.evaluateClusterer(usersDataset); // data to evaluate the
 			// System.out.println(clusterer.toString());
-			int[] clusterAssignments = usersClusterer.getAssignments();
+			double[] clusterAssignments = eval.getClusterAssignments();
 			for (int i = 0; i < users.size(); i++) {
 				users.get(i).setGroup(clusterAssignments[i]);
 			} // output # of clusters
@@ -89,7 +87,7 @@ public class UsersRatingsKmeansClusterer implements UsersClusterer {
 	
 	@Override
 	public String toString() {
-		return "UsersRatingsKmeansClusterer_NG_"+NG;
+		return "UsersRatingsEMClusterer_NG_";//+NG;
 	}
 
 	
