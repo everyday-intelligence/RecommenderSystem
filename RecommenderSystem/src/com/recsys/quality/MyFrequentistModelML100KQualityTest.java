@@ -70,8 +70,8 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Rating> dataBaseEntries;
 	private static MyFrequentistModelHard filtre;
 
-	private ItemsClusterer itemsClusterer = new ItemsRatingsKmeansClusterer();
-	private UsersClusterer usersClusterer = new UsersRatingsKmeansClusterer();
+	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsKmeansClusterer();
+	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
 	
 	private final String ITEMSCLUSTERDCACHE = "itemsClustered"+itemsClusterer.toString();
 	private final String USERSCLUSTERDCACHE = "usersClustered"+usersClusterer.toString();
@@ -193,7 +193,7 @@ public class MyFrequentistModelML100KQualityTest {
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {
-		int threads = Runtime.getRuntime().availableProcessors();
+		int threads =  1;//Runtime.getRuntime().availableProcessors() ;
 		ExecutorService service = Executors.newFixedThreadPool(threads);
  
 		List<Future<List<RealAndPrediction>>> futures = new ArrayList<Future<List<RealAndPrediction>>>();

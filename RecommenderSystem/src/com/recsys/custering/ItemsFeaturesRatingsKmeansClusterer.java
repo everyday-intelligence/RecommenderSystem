@@ -22,8 +22,8 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
-public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 30;
+public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
+	private final int NC = 48;
 	
 	
 	@Override
@@ -59,37 +59,28 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 	}
 
 	private Instances createItemsRatingsDataset(List<Item> items,List<User> users, List<Rating> ratings){
+		Instances itemsFeaturesDataset  =  MovieLens100KDataReader.fromItemsToWekaDataset(items);
+		Instances itemsFeaturesRatingsDataset = new Instances(itemsFeaturesDataset);
+		
 		IndexedSimpleMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
 		for (Rating r : ratings) {
 			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
-		List<Instance> instancesList = new ArrayList<Instance>();
-		for(int i=0;i<items.size();i++){
-			double[] attVals = new double[users.size()]; 
-			List<Double> itemRatings = userItemRatingMatrix.getColumn(i).toList();
-			for(int j=0;j<users.size();j++){
-				attVals[j]=itemRatings.get(j);
-			}
-			instancesList.add(new Instance(1,attVals));
-		}
 		
-		FastVector attributes = new FastVector();
-		for(User us:users){
-			attributes.addElement(new Attribute(us.getIdUser()+""));
+		for(User u : users){
+			itemsFeaturesRatingsDataset.insertAttributeAt(new Attribute(u.getIdUser()+""), itemsFeaturesRatingsDataset.numAttributes());
+			for(int i=0;i<items.size();i++){
+				itemsFeaturesRatingsDataset.instance(i).setValue(itemsFeaturesRatingsDataset.numAttributes() - 1, userItemRatingMatrix.get(u.getIdUser(), items.get(i).getIdItem()));
+			}
 		}
-		Instances data = new Instances("MyData", attributes, 0);
-		for(Instance in:instancesList){
-			in.setDataset(data);
-			data.add(in);
-		}
-		return data;
+		return itemsFeaturesRatingsDataset;
 	}
 	
 	@Override
 	public String toString() {
-		return "ItemsRatingsKmeansClusterer_NC_"+NC;
+		return "ItemsFeaturesRatingsKmeansClusterer_NC_"+NC;
 	}
 
 	
