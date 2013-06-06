@@ -3,6 +3,10 @@ package com.recsys.custering;
 import java.util.ArrayList;
 import java.util.List;
 
+import weka.clusterers.ClusterEvaluation;
+import weka.clusterers.DensityBasedClusterer;
+import weka.clusterers.EM;
+import weka.clusterers.MakeDensityBasedClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Attribute;
 import weka.core.EuclideanDistance;
@@ -13,35 +17,41 @@ import weka.core.Instances;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
+import com.recsys.DomainDAO.MovieLens100KDataReader;
+import com.recsys.DomainDAO.MovieLensItemDataParser;
+import com.recsys.DomainDAO.MovieLensUserDataParser;
+import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
+import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
-public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 5;
+public class ItemsRatingsDensityBasedClusterer implements ItemsClusterer {
+	private int NC = 25;
+
+	//private final int NC = 30;
 	
 	
 	@Override
 	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances itemsDataset  =  createItemsRatingsDataset(items, users, ratings);
-		SimpleKMeans itemsClusterer = new SimpleKMeans(); // new instance of
-															// clusterer
-		itemsClusterer.setSeed(10);
+		MakeDensityBasedClusterer itemsClusterer = new MakeDensityBasedClusterer(); // new instance of clusterer
+		ClusterEvaluation eval = new ClusterEvaluation();
 
 		String[] options = new String[2];
 		options[0] = "-I"; // max. iterations
-		options[1] = "20";
+		options[1] = "1";
 		try {
-			itemsClusterer.setOptions(options); // set the options
-			itemsClusterer.setPreserveInstancesOrder(true);
+			//itemsClusterer.setOptions(options); // set the options
+			//itemsClusterer.setPreserveInstancesOrder(true);
 			itemsClusterer.setNumClusters(NC);
-			EuclideanDistance df = new EuclideanDistance(itemsDataset);
-			// EuclideanDistance df = new EuclideanDistance(instances);
-			df.setDontNormalize(false);
 			//All attributs df.setAttributeIndices("2-4");
-			itemsClusterer.setDistanceFunction(df);
 			itemsClusterer.buildClusterer(itemsDataset);
+			eval.setClusterer(itemsClusterer); // the cluster to evaluate
+			eval.evaluateClusterer(itemsDataset); // data to evaluate the
 			// System.out.println(clusterer.toString());
-			int[] clusterAssignments = itemsClusterer.getAssignments();
+			double[] clusterAssignments = eval.getClusterAssignments();
+			NC = eval.getNumClusters();
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
 				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
@@ -84,7 +94,7 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 	
 	@Override
 	public String toString() {
-		return "ItemsRatingsKmeansClusterer_NC_"+NC;
+		return "ItemsRatingsMakeDensityBasedClusterer_NC_";//+NC;
 	}
 
 	@Override

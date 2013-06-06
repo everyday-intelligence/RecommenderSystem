@@ -12,12 +12,11 @@ import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
-	private final int NC = 40;
+	private final int NC = 30;
 
 	@Override
 	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
-		Instances itemsDataset = MovieLens100KDataReader
-				.fromItemsToWekaDataset(items);
+		Instances itemsDataset = MovieLens100KDataReader.fromItemsToWekaDataset(items);
 		SimpleKMeans itemsClusterer = new SimpleKMeans(); // new instance of
 															// clusterer
 		itemsClusterer.setSeed(10);
@@ -28,7 +27,7 @@ public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
 		try {
 			itemsClusterer.setOptions(options); // set the options
 			itemsClusterer.setPreserveInstancesOrder(true);
-			itemsClusterer.setNumClusters(NC);
+			itemsClusterer.setNumClusters(NC+1);//il soustrait un je ne sais pas pk
 			EuclideanDistance df = new EuclideanDistance(itemsDataset);
 			// EuclideanDistance df = new EuclideanDistance(instances);
 			df.setDontNormalize(false);
@@ -39,6 +38,10 @@ public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
 			int[] clusterAssignments = itemsClusterer.getAssignments();
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
+				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
+				//if(itemsClusterer.distributionForInstance(itemsDataset.instance(i)).length!=this.NC){
+					System.out.println("erreurrrrrr  NC="+this.NC+" algo="+itemsClusterer.distributionForInstance(itemsDataset.instance(i)).length);
+				//}
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -49,6 +52,10 @@ public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
 	@Override
 	public String toString() {
 		return "ItemsFeaturesKmeansClusterer_NC_"+NC;
+	}
+	@Override
+	public int getNC() {
+		return NC;
 	}
 
 }

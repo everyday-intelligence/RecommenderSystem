@@ -15,6 +15,7 @@ public /*abstract*/ class Item implements Serializable{
 	private long idItem;
 	private List<AttributeValue> attributesValues;
 	private double category; 
+	private double[] categoriesMemberships;
 
 	public Item(){}
 	
@@ -92,6 +93,14 @@ public /*abstract*/ class Item implements Serializable{
 
 	public void setCategory(double category) {
 		this.category = category;
+	}
+
+	public double[] getCategoriesMemberships() {
+		return categoriesMemberships;
+	}
+
+	public void setCategoriesMemberships(double[] categoriesMemberships) {
+		this.categoriesMemberships = categoriesMemberships;
 	}
 
 	

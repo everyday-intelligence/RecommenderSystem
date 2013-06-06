@@ -17,6 +17,7 @@ import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class ItemsFeaturesEMClusterer implements ItemsClusterer {
 
+	private int NC;
 	@Override
 	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances itemsDataset = MovieLens100KDataReader
@@ -36,6 +37,7 @@ public class ItemsFeaturesEMClusterer implements ItemsClusterer {
 			eval.evaluateClusterer(itemsDataset); // data to evaluate the
 													// clusterer on
 			System.out.println("# of clusters: " + eval.getNumClusters()); // output # of clusters
+			NC = eval.getNumClusters();
 			System.out.println("LogLikelihood: " + eval.getLogLikelihood()); // output # of clusters
 			System.out.println("ClassesToClusters(): " + eval.getClassesToClusters()); // output # of clusters
 			double[] clusterAssignments = eval.getClusterAssignments();
@@ -43,6 +45,7 @@ public class ItemsFeaturesEMClusterer implements ItemsClusterer {
 			assertEquals(itemsDataset.numInstances(), clusterAssignments.length);
 			for(int i=0;i<items.size();i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
+				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
 				//System.out.println(clusterAssignments[i]);
 			} // output # of clusters
 		} catch (Exception e) {
@@ -54,6 +57,10 @@ public class ItemsFeaturesEMClusterer implements ItemsClusterer {
 	@Override
 	public String toString() {
 		return "ItemsEMClusterer";
+	}
+	@Override
+	public int getNC() {
+		return NC;
 	}
 
 }

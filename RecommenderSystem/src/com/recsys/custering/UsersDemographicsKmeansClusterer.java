@@ -12,7 +12,7 @@ import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class UsersDemographicsKmeansClusterer implements UsersClusterer {
-	private final int NG = 40;
+	private final int NG = 10;
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances usersDataset  =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
@@ -38,6 +38,8 @@ public class UsersDemographicsKmeansClusterer implements UsersClusterer {
 			int[] clusterAssignments = usersClusterer.getAssignments();
 			for (int i = 0; i < users.size(); i++) {
 				users.get(i).setGroup(clusterAssignments[i]);
+				users.get(i).setGroupsMemberships(usersClusterer.distributionForInstance(usersDataset.instance(i)));
+
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -52,6 +54,10 @@ public class UsersDemographicsKmeansClusterer implements UsersClusterer {
 		return "UsersDemographicsKmeansClusterer_NG_"+NG;
 	}
 
-	
+	@Override
+	public int getNG() {
+		// TODO Auto-generated method stub
+		return NG;
+	}
 
 }

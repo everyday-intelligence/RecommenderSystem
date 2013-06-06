@@ -25,6 +25,8 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsRatingsEMClusterer implements ItemsClusterer {
+	private int NC;
+
 	//private final int NC = 30;
 	
 	
@@ -47,8 +49,10 @@ public class ItemsRatingsEMClusterer implements ItemsClusterer {
 			eval.evaluateClusterer(itemsDataset); // data to evaluate the
 			// System.out.println(clusterer.toString());
 			double[] clusterAssignments = eval.getClusterAssignments();
+			NC = eval.getNumClusters();
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
+				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -91,6 +95,9 @@ public class ItemsRatingsEMClusterer implements ItemsClusterer {
 		return "ItemsRatingsEMClusterer_NC_";//+NC;
 	}
 
-	
+	@Override
+	public int getNC() {
+		return NC;
+	}
 
 }

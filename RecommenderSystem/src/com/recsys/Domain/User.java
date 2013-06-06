@@ -20,6 +20,7 @@ public /*abstract*/ class User implements Serializable {
 	private long idUser;
 	private double group; 
 	private List<AttributeValue> attributesValues;
+	private double[] groupsMemberships;
 
 	@OneToMany(fetch=FetchType.EAGER,mappedBy="ratingUser")
 	private List<Rating> ratings;
@@ -100,6 +101,14 @@ public /*abstract*/ class User implements Serializable {
 			this.attributesValues = new ArrayList<AttributeValue>();
 		}
 		this.attributesValues.add(attributeValue);
+	}
+
+	public double[] getGroupsMemberships() {
+		return groupsMemberships;
+	}
+
+	public void setGroupsMemberships(double[] groupsMemberships) {
+		this.groupsMemberships = groupsMemberships;
 	}
 
 }

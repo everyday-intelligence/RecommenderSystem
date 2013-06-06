@@ -23,7 +23,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UsersDemographicsRatingsKmeansClusterer implements UsersClusterer {
-	private final int NG = 15;
+	private final int NG = 3;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
@@ -49,6 +49,8 @@ public class UsersDemographicsRatingsKmeansClusterer implements UsersClusterer {
 			int[] clusterAssignments = usersClusterer.getAssignments();
 			for (int i = 0; i < users.size(); i++){
 				users.get(i).setGroup(clusterAssignments[i]);
+				users.get(i).setGroupsMemberships(usersClusterer.distributionForInstance(usersDataset.instance(i)));
+				//System.out.println(users.get(i).getGroupsMemberships());
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -83,6 +85,10 @@ public class UsersDemographicsRatingsKmeansClusterer implements UsersClusterer {
 	@Override
 	public String toString() {
 		return "UsersDemographicsRatingsKmeansClusterer_NG_"+NG;
+	}
+
+	public int getNG() {
+		return NG;
 	}
 
 	

@@ -23,7 +23,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 48;
+	private final int NC = 5;
 	
 	
 	@Override
@@ -50,6 +50,8 @@ public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
 			int[] clusterAssignments = itemsClusterer.getAssignments();
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).setCategory(clusterAssignments[i]);
+				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
+
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -81,6 +83,10 @@ public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
 	@Override
 	public String toString() {
 		return "ItemsFeaturesRatingsKmeansClusterer_NC_"+NC;
+	}
+
+	public int getNC() {
+		return NC;
 	}
 
 	

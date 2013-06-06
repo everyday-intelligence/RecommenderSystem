@@ -34,6 +34,7 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ContentBasedFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.MyFrequentistModelHard;
+import com.recsys.recommendation.MyFrequentistModelSoft;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
 
@@ -68,13 +69,13 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Item> items;
 	
 	private static List<Rating> dataBaseEntries;
-	private static MyFrequentistModelHard filtre;
+	private static MyFrequentistModelSoft filtre;
 
-	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsKmeansClusterer();
-	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
+	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsDensityBasedClusterer();
+	private UsersClusterer usersClusterer = new UsersDemographicsRatingsDensityBasedClusterer();
 	
-	private final String ITEMSCLUSTERDCACHE = "itemsClustered"+itemsClusterer.toString();
-	private final String USERSCLUSTERDCACHE = "usersClustered"+usersClusterer.toString();
+	private String ITEMSCLUSTERDCACHE = "itemsClustered";
+	private String USERSCLUSTERDCACHE = "usersClustered";
  
 	@Before
 	public void initData() throws Exception {
@@ -91,6 +92,7 @@ public class MyFrequentistModelML100KQualityTest {
 			//cas ou lotr null juste pour le precedent
 			users= null;
 			//emItemsClustering();
+			ITEMSCLUSTERDCACHE+=itemsClusterer.toString();
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
 			System.out.println("items clustering exists");
@@ -100,6 +102,7 @@ public class MyFrequentistModelML100KQualityTest {
 			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();	
 			users = usersClusterer.cluster(items, users, dataBaseEntries);
 			//emUsersClustering();
+			USERSCLUSTERDCACHE+=usersClusterer.toString();
 			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
 		}else{
 			System.out.println("users clustering exists");
@@ -112,8 +115,10 @@ public class MyFrequentistModelML100KQualityTest {
 			r.setRatingUser(users.get(indexU));
 			r.setRatedItem(items.get(indexIt));
 		}
-		filtre = new MyFrequentistModelHard(users, items, dataBaseEntries);
 		RecSysCache.getJcs().dispose();
+		System.out.println("NG = "+usersClusterer.getNG());
+		System.out.println("NC = "+itemsClusterer.getNC());
+		filtre = new MyFrequentistModelSoft(users, items, dataBaseEntries,usersClusterer.getNG(),itemsClusterer.getNC());
 	}
 
 /*
@@ -165,8 +170,8 @@ public class MyFrequentistModelML100KQualityTest {
 		}
 		return realsAndPredicted;
 	}
-/*
-	@Test
+
+	//@Test
 	public void allUsersRatingsQualityTest() {
 		List<RealAndPrediction> allPredictions = new ArrayList<RealAndPrediction>();
 		for (User u : users) {
@@ -188,12 +193,13 @@ public class MyFrequentistModelML100KQualityTest {
 		System.out.println("total rmse = " + rmse);
 	}
 
-*/
+
+
 	
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {
-		int threads =  1;//Runtime.getRuntime().availableProcessors() ;
+		int threads =  Runtime.getRuntime().availableProcessors() ;
 		ExecutorService service = Executors.newFixedThreadPool(threads);
  
 		List<Future<List<RealAndPrediction>>> futures = new ArrayList<Future<List<RealAndPrediction>>>();
@@ -228,5 +234,31 @@ public class MyFrequentistModelML100KQualityTest {
 		System.out.println("total mae = " + mae);
 		System.out.println("total rmse = " + rmse);
 		//RecSysCache.getJcs().dispose();
+	}
+	//@Test
+	public void testUsersMemberships(){
+		for(User u:users){
+			//System.out.println(u.getGroupsMemberships().length);
+//			double[] gm = u.getGroupsMemberships();
+//			double sum = 0d;
+//			for(int i=0;i<gm.length;i++){
+//				sum+=gm[i];
+//			}
+//			System.out.println(sum);
+		}
+	}
+	//@Test
+	public void testItemsMemberships(){
+		for(Item u:items){
+			System.out.println(u.getCategoriesMemberships().length);
+//			double[] gm = u.getCategoriesMemberships();
+//			double sum = 0d;
+//			for(int i=0;i<gm.length;i++){
+//				sum+=gm[i];
+//				System.out.print(gm[i]+" ");
+//			}
+//			System.out.println("");
+//			System.out.println(sum);
+		}
 	}
 }

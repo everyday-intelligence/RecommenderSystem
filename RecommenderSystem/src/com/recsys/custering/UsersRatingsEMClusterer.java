@@ -27,6 +27,8 @@ import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 public class UsersRatingsEMClusterer implements UsersClusterer {
 	//private final int NG = 30;
 	
+	private int NG;
+
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances usersDataset  =  createUsersRatingsDataset(items, users, ratings);
@@ -44,9 +46,11 @@ public class UsersRatingsEMClusterer implements UsersClusterer {
 			eval.setClusterer(usersClusterer); // the cluster to evaluate
 			eval.evaluateClusterer(usersDataset); // data to evaluate the
 			// System.out.println(clusterer.toString());
+			NG = eval.getNumClusters();
 			double[] clusterAssignments = eval.getClusterAssignments();
 			for (int i = 0; i < users.size(); i++) {
 				users.get(i).setGroup(clusterAssignments[i]);
+				users.get(i).setGroupsMemberships(usersClusterer.distributionForInstance(usersDataset.instance(i)));
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -90,6 +94,10 @@ public class UsersRatingsEMClusterer implements UsersClusterer {
 		return "UsersRatingsEMClusterer_NG_";//+NG;
 	}
 
-	
+	@Override
+	public int getNG() {
+		// TODO Auto-generated method stub
+		return NG;
+	}
 
 }

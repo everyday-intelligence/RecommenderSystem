@@ -22,8 +22,8 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
-public class UsersRatingsKmeansClusterer implements UsersClusterer {
-	private final int NG = 20;
+public class UsersDemographicsRatingsDensityBasedClusterer implements UsersClusterer {
+	private final int NG = 30;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
@@ -47,10 +47,10 @@ public class UsersRatingsKmeansClusterer implements UsersClusterer {
 			usersClusterer.buildClusterer(usersDataset);
 			// System.out.println(clusterer.toString());
 			int[] clusterAssignments = usersClusterer.getAssignments();
-			for (int i = 0; i < users.size(); i++) {
+			for (int i = 0; i < users.size(); i++){
 				users.get(i).setGroup(clusterAssignments[i]);
 				users.get(i).setGroupsMemberships(usersClusterer.distributionForInstance(usersDataset.instance(i)));
-
+				//System.out.println(users.get(i).getGroupsMemberships());
 			} // output # of clusters
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -61,43 +61,36 @@ public class UsersRatingsKmeansClusterer implements UsersClusterer {
 	}
 
 	private Instances createUsersRatingsDataset(List<Item> items,List<User> users, List<Rating> ratings){
+		Instances usersDemographicsDataset  =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
+		Instances usersDemographicsRatingsDataset = new Instances(usersDemographicsDataset);
+		
 		IndexedSimpleMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
 		for (Rating r : ratings) {
 			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
-		List<Instance> instancesList = new ArrayList<Instance>();
-		for(int i=0;i<users.size();i++){
-			double[] attVals = new double[items.size()]; 
-			List<Double> userRatings = userItemRatingMatrix.getRow(i).toList();
-			for(int j=0;j<items.size();j++){
-				attVals[j]=userRatings.get(j);
+		
+		for(Item it : items){
+			usersDemographicsRatingsDataset.insertAttributeAt(new Attribute(it.getIdItem()+""), usersDemographicsRatingsDataset.numAttributes());
+			for(int i=0;i<users.size();i++){
+				usersDemographicsRatingsDataset.instance(i).setValue(usersDemographicsRatingsDataset.numAttributes() - 1, userItemRatingMatrix.get(users.get(i).getIdUser(), it.getIdItem()));
 			}
-			instancesList.add(new Instance(1,attVals));
 		}
 		
-		FastVector attributes = new FastVector();
-		for(Item it:items){
-			attributes.addElement(new Attribute(it.getIdItem()+""));
-		}
-		Instances data = new Instances("MyData", attributes, 0);
-		for(Instance in:instancesList){
-			in.setDataset(data);
-			data.add(in);
-		}
-		return data;
+		
+		return usersDemographicsRatingsDataset;
 	}
 	
 	@Override
 	public String toString() {
-		return "UsersRatingsKmeansClusterer_NG_"+NG;
+		return "UsersDemographicsRatingsMakeDensityBasedClusterer_NG_"+NG;
 	}
 
-	@Override
 	public int getNG() {
-		// TODO Auto-generated method stub
 		return NG;
 	}
+
+	
 
 }
