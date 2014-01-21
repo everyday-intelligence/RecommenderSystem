@@ -17,13 +17,14 @@ import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.DomainDAO.MovieLensItemDataParser;
 import com.recsys.DomainDAO.MovieLensUserDataParser;
 import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UsersDemographicsRatingsKmeansClusterer implements UsersClusterer {
-	private final int NG = 3;
+	private final int NG = 15;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
@@ -64,7 +65,7 @@ public class UsersDemographicsRatingsKmeansClusterer implements UsersClusterer {
 		Instances usersDemographicsDataset  =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
 		Instances usersDemographicsRatingsDataset = new Instances(usersDemographicsDataset);
 		
-		IndexedSimpleMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
+		AbstractMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
 		for (Rating r : ratings) {
 			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),

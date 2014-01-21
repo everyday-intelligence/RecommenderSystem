@@ -16,6 +16,8 @@ public abstract class AbstractMatrix  implements Serializable{
 	
 	public abstract Double get(int row, int col);
 	public abstract void set(int row, int col, Double vals);
+	public abstract Double get(long rowLabel, long colLabel);
+	public abstract void set(long rowLabel, long colLabel, Double vals);
 
 	public int getColumnsNumber() {
 		return columnsNumber;
@@ -27,7 +29,8 @@ public abstract class AbstractMatrix  implements Serializable{
 
 	public abstract AbstractVector getRow(int rowNumber);
 	public abstract AbstractVector getColumn(int colNumber);
-	
+	public abstract AbstractVector getRow(long rowLabel) ;
+	public abstract AbstractVector getColumn(long colLabel) ;
 	
 	public MatrixCoordinates size(){
 		return new MatrixCoordinates(rowsNumber, columnsNumber);

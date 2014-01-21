@@ -19,6 +19,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 
@@ -266,7 +267,7 @@ public class WekaAlgosApplication {
 
 	//@Test
 	public void calculateUsersSimilarities() {
-		IndexedSimpleMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
+		AbstractMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
 		System.out.println(usersDataset);
 		/**********weka�����������****/
 		LinearNNSearch knn = new LinearNNSearch(usersDataset);

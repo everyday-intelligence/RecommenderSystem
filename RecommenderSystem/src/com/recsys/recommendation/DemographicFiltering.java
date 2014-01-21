@@ -21,6 +21,7 @@ import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
@@ -36,11 +37,11 @@ public class DemographicFiltering implements
 
 	private List<Item> items;
 	private List<User> users;
-	private IndexedSimpleMatrix userItemRatingMatrix;
-	private IndexedSimpleMatrix itemItemSimilarityMatrix;
-	private IndexedSimpleMatrix userUserSimilarityMatrix;
+	private AbstractMatrix userItemRatingMatrix;
+	private AbstractMatrix itemItemSimilarityMatrix;
+	private AbstractMatrix userUserSimilarityMatrix;
 
-	public IndexedSimpleMatrix getUserUserSimilarityMatrix() {
+	public AbstractMatrix getUserUserSimilarityMatrix() {
 		return userUserSimilarityMatrix;
 	}
 
@@ -65,7 +66,7 @@ public class DemographicFiltering implements
 	public static SimilarityMeasure<Double> pc = new AdjustedCosineSimilarity<Double>();
 
 	
-	public DemographicFiltering(List<Item> items,List<User> users, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix,IndexedSimpleMatrix userUserSimilarityMatrix) {
+	public DemographicFiltering(List<Item> items,List<User> users, AbstractMatrix userItemRatingMatrix, AbstractMatrix itemItemSimilarityMatrix,AbstractMatrix userUserSimilarityMatrix) {
 		super();
 		this.items = items;
 		this.users = users;
@@ -214,10 +215,10 @@ public class DemographicFiltering implements
 
 	
 	
-	public IndexedSimpleMatrix calculateItemsSimilarities() {
-		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
+	public AbstractMatrix calculateItemsSimilarities() {
+		AbstractMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
 		Instances instances = MovieLens100KDataReader.fromItemsToWekaDataset(items);
-		/**********wekaµµµµµµµµµµµ****/
+		/**********wekaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½****/
 		LinearNNSearch knn = new LinearNNSearch(instances);
 		try {
 			ManhattanDistance df = new ManhattanDistance(instances);
@@ -257,10 +258,10 @@ public class DemographicFiltering implements
 		return tmpItemItemSimilarityMatrix;
 	}
 
-	public IndexedSimpleMatrix calculateUsersSimilarities() {
-		IndexedSimpleMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
+	public AbstractMatrix calculateUsersSimilarities() {
+		AbstractMatrix tmpUserUserSimilarityMatrix = MatrixFactory.createUsersMatrix(users);
 		Instances instances = MovieLens100KDataReader.fromUsersToWekaDataset(users);
-		/**********wekaµµµµµµµµµµµ****/
+		/**********wekaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½****/
 		LinearNNSearch knn = new LinearNNSearch(instances);
 		try {
 			ManhattanDistance df = new ManhattanDistance(instances);
@@ -301,7 +302,7 @@ public class DemographicFiltering implements
 	}
 
 
-	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+	public AbstractMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;
 	}
 
@@ -309,7 +310,7 @@ public class DemographicFiltering implements
 		this.userItemRatingMatrix = userItemRatingMatrix;
 	}
 
-	public IndexedSimpleMatrix getItemItemSimilarityMatrix() {
+	public AbstractMatrix getItemItemSimilarityMatrix() {
 		return itemItemSimilarityMatrix;
 	}
 

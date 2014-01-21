@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 
 public class WeightedMeanAggregator extends CF_UC_RatingAggregator {
@@ -12,7 +13,7 @@ public class WeightedMeanAggregator extends CF_UC_RatingAggregator {
 	@Override
 	public Double aggregate(User activeUser, Item it, List<User> similarUsers,
 			List<Item> items, Map<User, Double> simMap,
-			IndexedSimpleMatrix dataMatrix) {
+			AbstractMatrix dataMatrix) {
 
 		double estimation = 0;
 		if (dataMatrix.get(activeUser.getIdUser(), it.getIdItem()) == 0) {

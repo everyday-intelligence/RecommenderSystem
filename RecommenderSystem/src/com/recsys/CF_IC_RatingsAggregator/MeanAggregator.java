@@ -6,12 +6,13 @@ import java.util.Map;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
 public class MeanAggregator  extends CF_IC_RatingAggregator{
 
-	public Double aggregate(User user, Item item, IndexedSimpleMatrix itemItemSimilarityMatrix, IndexedSimpleMatrix userItemRatingMatrix, ArrayList<Item> itemNeighborhoodRatedByUser) {
+	public Double aggregate(User user, Item item, AbstractMatrix itemItemSimilarityMatrix, AbstractMatrix userItemRatingMatrix, ArrayList<Item> itemNeighborhoodRatedByUser) {
 
 		//ArrayList<Item> itemNeighborhoodRatedByUser = itemNeighborhoodRatedByUser(user,item);
 		//System.out.println("item "+item.getIdItem()+" has "+itemNeighborhoodRatedByUser.size()+" / "+itemNeighborhood.size()+" rated by user");

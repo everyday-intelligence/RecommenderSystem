@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.recsys.CF_UC_RatingsAggregator.CF_UC_RatingAggregator;
+import com.recsys.CF_UC_RatingsAggregator.WeightedMeanAggregator;
 import com.recsys.CF_UC_RatingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
-import com.recsys.matrix.IndexedSimpleMatrix;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.MatrixFactory;
 import com.recsys.similarity.CosineDistanceNumber;
 import com.recsys.similarity.SimilarityMeasure;
@@ -22,12 +23,12 @@ public class UserCenteredCollaborativeFiltering implements
 
 	private List<User> users = new ArrayList<User>();
 	private List<Item> items = new ArrayList<Item>();
-	private IndexedSimpleMatrix userItemRatingMatrix;
+	private AbstractMatrix userItemRatingMatrix;
 	// Top-K neighbor, threashold, notRated: value for unrated items
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
 	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
-	CF_UC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
+	CF_UC_RatingAggregator na = new WeightedMeanAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();
@@ -44,7 +45,7 @@ public class UserCenteredCollaborativeFiltering implements
 	}
 
 	public UserCenteredCollaborativeFiltering(List<User> users,
-			List<Item> items, IndexedSimpleMatrix userItemRatingMatrix) {
+			List<Item> items, AbstractMatrix userItemRatingMatrix) {
 		this.users = users;
 		this.items = items;
 		this.userItemRatingMatrix = userItemRatingMatrix;
@@ -74,7 +75,7 @@ public class UserCenteredCollaborativeFiltering implements
 		
 	}
 
-	// ici les méthodes de recherche de voisinage, estimation, ...... .....
+	// ici les mï¿½thodes de recherche de voisinage, estimation, ...... .....
 
 	// Similarity: Pearson's correlation coefficient
 	public Map<User, Double> calculateUsersSimilarities(User activeUser) {
@@ -183,7 +184,7 @@ public class UserCenteredCollaborativeFiltering implements
 
 	}
 
-	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+	public AbstractMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;
 	}
 	

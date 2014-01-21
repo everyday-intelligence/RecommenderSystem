@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
@@ -13,7 +14,7 @@ public class MeanAggregator extends CF_UC_RatingAggregator {
 
 	@Override
 	public Double aggregate(User activeUser, Item it, List<User> similarUsers,List<Item> items,
-			Map<User, Double> simMap, IndexedSimpleMatrix dataMatrix) {
+			Map<User, Double> simMap, AbstractMatrix dataMatrix) {
 
 		double estimation = 0;
 		List<Double> similarsCommonRatings = new ArrayList<Double>();

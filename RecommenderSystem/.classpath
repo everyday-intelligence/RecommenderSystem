@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="/home/ramzi/Documents/libraries/jcs-1.3.jar"/>
 	<classpathentry kind="lib" path="/home/ramzi/Documents/libraries/eclipselink.jar"/>
 	<classpathentry kind="lib" path="/home/ramzi/Documents/libraries/javax.persistence_2.0.4.v201112161009.jar"/>
+	<classpathentry kind="lib" path="/home/ramzi/Documents/libraries/jblas-1.2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

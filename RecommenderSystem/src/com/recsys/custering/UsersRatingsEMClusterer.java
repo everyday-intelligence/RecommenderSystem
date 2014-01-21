@@ -19,6 +19,7 @@ import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.DomainDAO.MovieLensItemDataParser;
 import com.recsys.DomainDAO.MovieLensUserDataParser;
 import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
@@ -61,7 +62,7 @@ public class UsersRatingsEMClusterer implements UsersClusterer {
 	}
 
 	private Instances createUsersRatingsDataset(List<Item> items,List<User> users, List<Rating> ratings){
-		IndexedSimpleMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
+		AbstractMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
 		for (Rating r : ratings) {
 			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),

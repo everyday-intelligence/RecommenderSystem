@@ -69,17 +69,19 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Item> items;
 	
 	private static List<Rating> dataBaseEntries;
-	private static MyFrequentistModelSoft filtre;
+	private static MyFrequentistModelHard filtre;
 
-	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsDensityBasedClusterer();
-	private UsersClusterer usersClusterer = new UsersDemographicsRatingsDensityBasedClusterer();
+	private ItemsClusterer itemsClusterer = new ItemsRatingsKmeansClusterer();
+	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
 	
-	private String ITEMSCLUSTERDCACHE = "itemsClustered";
-	private String USERSCLUSTERDCACHE = "usersClustered";
+	private String ITEMSCLUSTERDCACHE = "";
+	private String USERSCLUSTERDCACHE = "";
  
 	@Before
 	public void initData() throws Exception {
 		dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
+		USERSCLUSTERDCACHE+=usersClusterer.toString();
+		ITEMSCLUSTERDCACHE+=itemsClusterer.toString();
 		items=(List<Item>) RecSysCache.getJcs().get(ITEMSCLUSTERDCACHE);
 		if(items == null){
 			items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
@@ -92,7 +94,6 @@ public class MyFrequentistModelML100KQualityTest {
 			//cas ou lotr null juste pour le precedent
 			users= null;
 			//emItemsClustering();
-			ITEMSCLUSTERDCACHE+=itemsClusterer.toString();
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
 			System.out.println("items clustering exists");
@@ -102,7 +103,6 @@ public class MyFrequentistModelML100KQualityTest {
 			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();	
 			users = usersClusterer.cluster(items, users, dataBaseEntries);
 			//emUsersClustering();
-			USERSCLUSTERDCACHE+=usersClusterer.toString();
 			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
 		}else{
 			System.out.println("users clustering exists");
@@ -118,7 +118,8 @@ public class MyFrequentistModelML100KQualityTest {
 		RecSysCache.getJcs().dispose();
 		System.out.println("NG = "+usersClusterer.getNG());
 		System.out.println("NC = "+itemsClusterer.getNC());
-		filtre = new MyFrequentistModelSoft(users, items, dataBaseEntries,usersClusterer.getNG(),itemsClusterer.getNC());
+		//filtre = new MyFrequentistModelSoft(users, items, dataBaseEntries,usersClusterer.getNG(),itemsClusterer.getNC());
+		filtre = new MyFrequentistModelHard(users, items, dataBaseEntries);
 	}
 
 /*

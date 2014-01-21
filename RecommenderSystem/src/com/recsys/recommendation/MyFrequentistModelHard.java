@@ -47,7 +47,6 @@ RecommendationStrategy {
 
 	private Map<GroupCategory,Double> cacheRatings = new HashMap<GroupCategory,Double>();
 	
-	public static SimilarityMeasure<Double> pc = new AdjustedCosineSimilarity<Double>();
 
 
 
@@ -128,7 +127,7 @@ RecommendationStrategy {
 						estimatedRating+=proba*rating;
 					}
 				}
-				estimatedRating = (double) Math.round(estimatedRating);
+				//estimatedRating = (double) Math.round(estimatedRating);
 				cacheRatings.put(groupCategory, estimatedRating);
 			}
 			allRatingsEstimations.add(new Rating(estimatedRating, it, activeUser));

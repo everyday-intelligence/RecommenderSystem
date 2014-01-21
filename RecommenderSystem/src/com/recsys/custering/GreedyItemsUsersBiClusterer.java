@@ -5,6 +5,7 @@ import java.util.List;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 
@@ -12,7 +13,7 @@ public class GreedyItemsUsersBiClusterer implements ItemsUsersBiClusterer {
 
 	private List<Item> items;
 	private List<User> users;
-	private IndexedSimpleMatrix userItemRatingMatrix;
+	private AbstractMatrix userItemRatingMatrix;
 	
 	public GreedyItemsUsersBiClusterer(List<Item> items,List<User> users, List<Rating> ratings) {
 		super();

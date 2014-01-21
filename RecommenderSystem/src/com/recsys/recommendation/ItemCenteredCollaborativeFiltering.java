@@ -13,6 +13,7 @@ import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
@@ -27,15 +28,15 @@ public class ItemCenteredCollaborativeFiltering implements
 		RecommendationStrategy {
 
 	private List<Item> items;
-	private IndexedSimpleMatrix userItemRatingMatrix;
-	private IndexedSimpleMatrix itemItemSimilarityMatrix;
+	private AbstractMatrix userItemRatingMatrix;
+	private AbstractMatrix itemItemSimilarityMatrix;
 
 	public static final int K = 100;
 	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
 	public static CF_IC_RatingAggregator na = new WeightedMeanAggregator();
 
 	
-	public ItemCenteredCollaborativeFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {
+	public ItemCenteredCollaborativeFiltering(List<Item> items, AbstractMatrix userItemRatingMatrix, AbstractMatrix itemItemSimilarityMatrix) {
 		super();
 		this.items = items;
 		this.userItemRatingMatrix = userItemRatingMatrix;
@@ -167,8 +168,8 @@ public class ItemCenteredCollaborativeFiltering implements
 		return neighborList;
 	}
 
-	public IndexedSimpleMatrix calculateItemsSimilarities() {
-		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
+	public AbstractMatrix calculateItemsSimilarities() {
+		AbstractMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
 		for (Item it1 : items) {
 			for (Item it2 : items) {
 				if (!it1.equals(it2) && tmpItemItemSimilarityMatrix.get(it1.getIdItem(),it2.getIdItem()) == 0) {
@@ -206,7 +207,7 @@ public class ItemCenteredCollaborativeFiltering implements
 		}
 	}
 
-	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+	public AbstractMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;
 	}
 
@@ -214,7 +215,7 @@ public class ItemCenteredCollaborativeFiltering implements
 		this.userItemRatingMatrix = userItemRatingMatrix;
 	}
 
-	public IndexedSimpleMatrix getItemItemSimilarityMatrix() {
+	public AbstractMatrix getItemItemSimilarityMatrix() {
 		return itemItemSimilarityMatrix;
 	}
 

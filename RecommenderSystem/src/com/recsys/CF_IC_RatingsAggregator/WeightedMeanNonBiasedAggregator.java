@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 
@@ -15,7 +16,7 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 
 	private static Map<Item, Double> allItemsMeanRatings = new ConcurrentHashMap<Item, Double>();
 	
-	public Double aggregate(User user, Item item, IndexedSimpleMatrix itemItemSimilarityMatrix, IndexedSimpleMatrix userItemRatingMatrix, ArrayList<Item> itemNeighborhoodRatedByUser) {
+	public Double aggregate(User user, Item item, AbstractMatrix itemItemSimilarityMatrix, AbstractMatrix userItemRatingMatrix, ArrayList<Item> itemNeighborhoodRatedByUser) {
 		
 		Double itmMeanRatings=getItemMeanRatings(item, userItemRatingMatrix);
 		
@@ -32,7 +33,7 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 		return estimation + itmMeanRatings;
 	}
 	
-	double getItemMeanRatings(Item itm, IndexedSimpleMatrix userItemRatingMatrix){
+	double getItemMeanRatings(Item itm, AbstractMatrix userItemRatingMatrix){
 		Double itmMeanRating=allItemsMeanRatings.get(itm);
 		if (itmMeanRating  != null) {
 			return itmMeanRating;

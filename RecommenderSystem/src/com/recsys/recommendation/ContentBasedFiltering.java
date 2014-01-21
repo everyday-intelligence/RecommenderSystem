@@ -21,6 +21,7 @@ import com.recsys.Domain.Rating;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.AbstractVector;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
@@ -35,15 +36,15 @@ public class ContentBasedFiltering implements
 		RecommendationStrategy {
 
 	private List<Item> items;
-	private IndexedSimpleMatrix userItemRatingMatrix;
-	private IndexedSimpleMatrix itemItemSimilarityMatrix;
+	private AbstractMatrix userItemRatingMatrix;
+	private AbstractMatrix itemItemSimilarityMatrix;
 
 	public static final int K = 100;
 	public static SimilarityMeasure<Double> pc = new ManhattanDistanceNumber<Double>();
 	public static CF_IC_RatingAggregator na = new MeanAggregator();
 
 	
-	public ContentBasedFiltering(List<Item> items, IndexedSimpleMatrix userItemRatingMatrix, IndexedSimpleMatrix itemItemSimilarityMatrix) {
+	public ContentBasedFiltering(List<Item> items, AbstractMatrix userItemRatingMatrix, AbstractMatrix itemItemSimilarityMatrix) {
 		super();
 		this.items = items;
 		this.userItemRatingMatrix = userItemRatingMatrix;
@@ -141,10 +142,10 @@ public class ContentBasedFiltering implements
 
 	
 	
-	public IndexedSimpleMatrix calculateItemsSimilarities() {
-		IndexedSimpleMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
+	public AbstractMatrix calculateItemsSimilarities() {
+		AbstractMatrix tmpItemItemSimilarityMatrix = MatrixFactory.createItemsMatrix(items);
 		Instances instances = MovieLens100KDataReader.fromItemsToWekaDataset(items);
-		/**********wekaµµµµµµµµµµµ****/
+		/**********wekaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½****/
 		LinearNNSearch knn = new LinearNNSearch(instances);
 		try {
 			ManhattanDistance df = new ManhattanDistance(instances);
@@ -185,15 +186,15 @@ public class ContentBasedFiltering implements
 	}
 
 
-	public IndexedSimpleMatrix getUserItemRatingMatrix() {
+	public AbstractMatrix getUserItemRatingMatrix() {
 		return userItemRatingMatrix;
 	}
 
-	public void setUserItemRatingMatrix(IndexedSimpleMatrix userItemRatingMatrix) {
+	public void setUserItemRatingMatrix(AbstractMatrix userItemRatingMatrix) {
 		this.userItemRatingMatrix = userItemRatingMatrix;
 	}
 
-	public IndexedSimpleMatrix getItemItemSimilarityMatrix() {
+	public AbstractMatrix getItemItemSimilarityMatrix() {
 		return itemItemSimilarityMatrix;
 	}
 

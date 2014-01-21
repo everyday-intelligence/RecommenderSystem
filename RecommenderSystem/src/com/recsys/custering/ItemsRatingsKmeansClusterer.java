@@ -13,14 +13,15 @@ import weka.core.Instances;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.User;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 
 public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 5;
+	private final int NC = 30;
 	
 	
-	@Override
+	@Override 
 	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances itemsDataset  =  createItemsRatingsDataset(items, users, ratings);
 		SimpleKMeans itemsClusterer = new SimpleKMeans(); // new instance of
@@ -54,7 +55,7 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 	}
 
 	private Instances createItemsRatingsDataset(List<Item> items,List<User> users, List<Rating> ratings){
-		IndexedSimpleMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
+		AbstractMatrix userItemRatingMatrix = MatrixFactory.createMatrix(users, items);
 		for (Rating r : ratings) {
 			userItemRatingMatrix.set(r.getRatingUser().getIdUser(),
 					r.getRatedItem().getIdItem(),
