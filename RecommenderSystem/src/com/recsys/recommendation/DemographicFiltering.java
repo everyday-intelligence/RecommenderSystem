@@ -162,7 +162,7 @@ public class DemographicFiltering implements
 		ArrayList<Item> neighborList = new ArrayList<Item>();
 
 		for (Item itm : items) {
-			if (!itemItemSimilarityMatrix.get(activeItem.getIdItem(), itm.getIdItem()).isNaN()) {
+			if (itemItemSimilarityMatrix.get(activeItem.getIdItem(), itm.getIdItem())!= Double.NaN) {
 				if (pc.isSimilarity()) {
 					if (itemItemSimilarityMatrix.get(activeItem.getIdItem(),
 							itm.getIdItem()) >= threashold) {
@@ -194,7 +194,7 @@ public class DemographicFiltering implements
 		ArrayList<User> neighborList = new ArrayList<User>();
 
 		for (User itm : users) {
-			if (!userUserSimilarityMatrix.get(activeUser.getIdUser(), itm.getIdUser()).isNaN()) {
+			if (userUserSimilarityMatrix.get(activeUser.getIdUser(), itm.getIdUser())!= Double.NaN) {
 				if (pc.isSimilarity()) {
 					if (userUserSimilarityMatrix.get(activeUser.getIdUser(),
 							itm.getIdUser()) >= threashold) {

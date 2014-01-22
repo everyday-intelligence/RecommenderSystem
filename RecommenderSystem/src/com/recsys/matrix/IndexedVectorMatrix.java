@@ -6,16 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IndexedSimpleMatrix extends AbstractMatrix implements Serializable{
-	protected double[][] matrix;   // rows-by-columns array
+public class IndexedVectorMatrix extends AbstractMatrix implements Serializable{
+	protected VectorMatrix matrix;   // rows-by-columns array
 	private Map<Long,Integer> rowLabelMatrixRowMapping;
 	private Map<Long,Integer> colLabelMatrixColMapping;
 	private List<Long> rowsLabels = new ArrayList<Long>();
 	private List<Long> colsLabels = new ArrayList<Long>();
 	
-	public IndexedSimpleMatrix(List<Long>rowsLabels, List<Long>colsLabels) {
+	public IndexedVectorMatrix(List<Long>rowsLabels, List<Long>colsLabels) {
 		super(rowsLabels.size(), colsLabels.size());
-		matrix = new double[this.rowsNumber][this.columnsNumber];
+		matrix = new VectorMatrix(rowsLabels.size(), colsLabels.size());
         for(int i=0;i<getRowsNumber();i++){
 			for(int j=0;j<getColumnsNumber();j++){
 				set(i,j,0d);
@@ -40,9 +40,9 @@ public class IndexedSimpleMatrix extends AbstractMatrix implements Serializable{
 
 
     // create M-by-N matrix of 0's
-    public IndexedSimpleMatrix(int rows,int columns) {
+    public IndexedVectorMatrix(int rows,int columns) {
         super(rows,columns);
-        matrix = new double[rows][columns];
+        matrix = new VectorMatrix(rows, columns);
         for(int i=0;i<getRowsNumber();i++){
 			for(int j=0;j<getColumnsNumber();j++){
 				set(i,j,0d);
@@ -57,7 +57,7 @@ public class IndexedSimpleMatrix extends AbstractMatrix implements Serializable{
     	if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 			throw(new IndexOutOfBoundsException("coordonn�es hors de la matrice"));
 		}else{
-    		return matrix[row][col];
+    		return matrix.get(row, col);
 		}
     }
     
@@ -66,23 +66,19 @@ public class IndexedSimpleMatrix extends AbstractMatrix implements Serializable{
     	if((row<0) || (row>=this.rowsNumber) || (col<0) || (col>=this.columnsNumber)){
 			throw(new IndexOutOfBoundsException("coordonn�es hors de la matrice"));
 		}else{
-    		matrix[row][col]=vals;
+    		matrix.set(row, col, vals);
 		}
     }
     
     
 	@Override
 	public AbstractVector getRow(int rowNumber) {
-		return new SimpleVector(matrix[rowNumber]);
+		return matrix.getRow(rowNumber);
 	}
 
 	@Override
 	public AbstractVector getColumn(int colNumber) {
-		double[] v = new double[this.rowsNumber];
-		for(int i=0;i<this.rowsNumber;i++){
-			v[i]=matrix[i][colNumber];
-		}
-		return new SimpleVector(v);
+		return matrix.getColumn(colNumber);
 	}
 
 	

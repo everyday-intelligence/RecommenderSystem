@@ -31,9 +31,9 @@ public class ItemCenteredCollaborativeFiltering implements
 	private AbstractMatrix userItemRatingMatrix;
 	private AbstractMatrix itemItemSimilarityMatrix;
 
-	public static final int K = 100;
+	public static final int K = 400;
 	public static SimilarityMeasure<Double> pc = new RMSEDistanceNumber<Double>();
-	public static CF_IC_RatingAggregator na = new WeightedMeanAggregator();
+	public static CF_IC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	
 	public ItemCenteredCollaborativeFiltering(List<Item> items, AbstractMatrix userItemRatingMatrix, AbstractMatrix itemItemSimilarityMatrix) {
@@ -113,7 +113,7 @@ public class ItemCenteredCollaborativeFiltering implements
 		ArrayList<Item> neighborList = new ArrayList<Item>();
 
 		for (Item itm : itemsRatedByUser) {
-			if (!itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()).isNaN()) {
+			if (itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem())!= Double.NaN) {
 				if (pc.isSimilarity()) {
 					if (itemItemSimilarityMatrix.get(item.getIdItem(),
 							itm.getIdItem()) >= threashold) {
@@ -148,7 +148,7 @@ public class ItemCenteredCollaborativeFiltering implements
 		ArrayList<Item> neighborList = new ArrayList<Item>();
 
 		for (Item itm : items) {
-			if (!itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()).isNaN()) {
+			if (itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem())!= Double.NaN) {
 				if (pc.isSimilarity()) {
 					if (itemItemSimilarityMatrix.get(item.getIdItem(),
 							itm.getIdItem()) >= threashold) {

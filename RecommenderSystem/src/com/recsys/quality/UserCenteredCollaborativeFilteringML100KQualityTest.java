@@ -18,6 +18,7 @@ import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ItemCenteredCollaborativeFiltering;
 import com.recsys.recommendation.Mathematics;
@@ -61,7 +62,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 		
-		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
+		AbstractMatrix userItemRatingMatrix = (AbstractMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
 		
 		if(userItemRatingMatrix != null){
 			System.out.println("userItemRatingMatrix cached");

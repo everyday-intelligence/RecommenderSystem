@@ -121,7 +121,7 @@ public class ContentBasedFiltering implements
 		ArrayList<Item> neighborList = new ArrayList<Item>();
 
 		for (Item itm : itemsRatedByUser) {
-			if (!itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()).isNaN()) {
+			if (itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()) != Double.NaN) {
 				if (pc.isSimilarity()) {
 					if (itemItemSimilarityMatrix.get(item.getIdItem(),
 							itm.getIdItem()) >= threashold) {

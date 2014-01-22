@@ -14,10 +14,10 @@ public abstract class AbstractMatrix  implements Serializable{
 		this.rowsNumber = rowsNumber;
 	}
 	
-	public abstract Double get(int row, int col);
-	public abstract void set(int row, int col, Double vals);
-	public abstract Double get(long rowLabel, long colLabel);
-	public abstract void set(long rowLabel, long colLabel, Double vals);
+	public abstract double get(int row, int col);
+	public abstract void set(int row, int col, double vals);
+	public abstract double get(long rowLabel, long colLabel);
+	public abstract void set(long rowLabel, long colLabel, double vals);
 
 	public int getColumnsNumber() {
 		return columnsNumber;

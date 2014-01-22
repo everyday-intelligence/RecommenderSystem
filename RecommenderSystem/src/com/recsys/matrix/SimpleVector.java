@@ -6,25 +6,25 @@ import java.util.List;
 
 public class SimpleVector extends AbstractVector{
 
-	private Double[] vector;
+	private double[] vector;
 
-	public SimpleVector(Double[] vector) {
+	public SimpleVector(double[] vector) {
 		super(vector.length);
 		this.vector = vector;
 	}
 	public SimpleVector(int size) {
 		super(size);
-		this.vector = new Double[size];
+		this.vector = new double[size];
 	}
 	public int size(){
 		return vector.length;
 	}
 	@Override
-	public Double get(int index) {
+	public double get(int index) {
 		return vector[index];
 	}
 	@Override
-	public void set(int index, Double val) {
+	public void set(int index, double val) {
 		vector[index]=val;		
 	}
 	@Override
@@ -35,7 +35,7 @@ public class SimpleVector extends AbstractVector{
 	}
 	
 	public List<Double> toList(){
-		return Arrays.asList(vector);
+		return null;
 	}
 	
 }
