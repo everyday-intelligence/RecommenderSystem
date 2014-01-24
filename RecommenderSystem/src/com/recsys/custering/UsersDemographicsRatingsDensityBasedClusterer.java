@@ -24,7 +24,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UsersDemographicsRatingsDensityBasedClusterer implements UsersClusterer {
-	private final int NG = 30;
+	private final int NG = 15;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {

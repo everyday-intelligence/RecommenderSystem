@@ -12,7 +12,7 @@ import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
-	private final int NC = 30;
+	private final int NC =55;
 
 	@Override
 	public List<Item> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
@@ -40,7 +40,7 @@ public class ItemsFeaturesKmeansClusterer implements ItemsClusterer {
 				items.get(i).setCategory(clusterAssignments[i]);
 				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
 				//if(itemsClusterer.distributionForInstance(itemsDataset.instance(i)).length!=this.NC){
-					System.out.println("erreurrrrrr  NC="+this.NC+" algo="+itemsClusterer.distributionForInstance(itemsDataset.instance(i)).length);
+					//System.out.println("erreurrrrrr  NC="+this.NC+" algo="+itemsClusterer.distributionForInstance(itemsDataset.instance(i)).length);
 				//}
 			} // output # of clusters
 		} catch (Exception e) {

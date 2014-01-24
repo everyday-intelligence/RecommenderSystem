@@ -26,7 +26,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsFeaturesRatingsDensityBasedClusterer implements ItemsClusterer {
-	private int NC = 30;
+	private int NC = 45;
 	
 	
 	@Override

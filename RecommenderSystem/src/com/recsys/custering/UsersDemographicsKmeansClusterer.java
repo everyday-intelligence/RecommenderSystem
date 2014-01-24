@@ -12,7 +12,7 @@ import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 
 public class UsersDemographicsKmeansClusterer implements UsersClusterer {
-	private final int NG = 10;
+	private final int NG = 35;
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {
 		Instances usersDataset  =  MovieLens100KDataReader.fromUsersToWekaDataset(users);
