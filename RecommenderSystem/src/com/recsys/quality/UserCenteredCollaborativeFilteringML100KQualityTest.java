@@ -93,8 +93,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 		ArrayList<User> similarUserList = filtre.neighborhood(simMap,activeUser);
 		List<Rating> allEstimations = filtre.userRatingsEstimation(activeUser, similarUserList,simMap);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
-				testRatingsFile, activeUser.getIdUser());
+		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(testRatingsFile, activeUser.getIdUser());
 		//System.out.println("user " + activeUser.getIdUser() + " has "	+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {
 			System.out

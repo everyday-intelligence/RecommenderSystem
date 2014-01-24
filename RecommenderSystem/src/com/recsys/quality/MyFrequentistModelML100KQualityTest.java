@@ -1,42 +1,28 @@
 package com.recsys.quality;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.jcs.JCS;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import weka.clusterers.ClusterEvaluation;
-import weka.clusterers.EM;
-import weka.clusterers.SimpleKMeans;
-import weka.core.EuclideanDistance;
-import weka.core.Instances;
-import weka.core.ManhattanDistance;
 
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingItemChecker;
+import com.recsys.Domain.RatingUserChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
 import com.recsys.custering.*;
 import com.recsys.matrix.AbstractMatrix;
-import com.recsys.matrix.IndexedSimpleMatrix;
-import com.recsys.recommendation.ContentBasedFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.MyFrequentistModelHard;
-import com.recsys.recommendation.MyFrequentistModelSoft;
-import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 import com.recsys.utils.PredicateUtils;
 
 public class MyFrequentistModelML100KQualityTest {
@@ -72,8 +58,8 @@ public class MyFrequentistModelML100KQualityTest {
 	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsKmeansClusterer();
 	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
 	
-	private String ITEMSCLUSTERDCACHE = "";
-	private String USERSCLUSTERDCACHE = "";
+	private String ITEMSCLUSTERDCACHE = databaseName+"_"+learningDatafile+"_";
+	private String USERSCLUSTERDCACHE = databaseName+"_"+learningDatafile+"_";
  
 	private static final String userItemRatingMatrixCacheID = "userItemRatingMatrix"+"_"+databaseName+"_"+learningDatafile;
 
@@ -138,8 +124,11 @@ public class MyFrequentistModelML100KQualityTest {
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
 		List<Rating> allEstimations = filtre.userRatingsEstimationExpectationNonBiased(activeUser);
 		/* begin Quality Test */
-		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
-				testRatingsFile, activeUser.getIdUser());
+		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(testRatingsFile, activeUser.getIdUser());
+		//test sur learning Data
+		//Collection<Rating> userRealRatings = PredicateUtils.findAll(dataBaseEntries,new RatingUserChecker(activeUser));
+
+		
 		//System.out.println("user " + activeUser.getIdUser() + " has "	+ userRealRatings.size() + " ratings");
 		if (userRealRatings.isEmpty()) {
 			System.out.println("no ratings in test data so no quality measure : exit");
@@ -152,18 +141,17 @@ public class MyFrequentistModelML100KQualityTest {
 			double realRating = r.getRating();
 			double predictedRating;
 
-			List<Rating> estimatedItemRatings = (List<Rating>) PredicateUtils
-					.findAll(allEstimations, new RatingItemChecker(r.getRatedItem()));
+			List<Rating> estimatedItemRatings = (List<Rating>) PredicateUtils.findAll(allEstimations, new RatingItemChecker(r.getRatedItem()));
 			if (!estimatedItemRatings.isEmpty()) {
 				Rating estimatedItemRating = estimatedItemRatings.get(0);
 				predictedRating = estimatedItemRating.getRating();
 				if(Double.isNaN(predictedRating) || Double.isInfinite(predictedRating)){
-					predictedRating = 0;
+					predictedRating=getMeanRatings(userRealRatings);
 				}
 			} else {
-				predictedRating = 0;
+				predictedRating = getMeanRatings(userRealRatings);
 			}
-
+										
 			realsAndPredicted.add(new RealAndPrediction(realRating,predictedRating));
 		}
 		//System.out.println(realsAndPredicted);
@@ -210,6 +198,7 @@ public class MyFrequentistModelML100KQualityTest {
 		List<Future<List<RealAndPrediction>>> futures = new ArrayList<Future<List<RealAndPrediction>>>();
 		for (final User u : users) {
 			Callable<List<RealAndPrediction>> callable = new Callable<List<RealAndPrediction>>() {
+				@Override
 				public List<RealAndPrediction> call() throws Exception {
 					// process your input here and compute the output
 					List<RealAndPrediction> output = oneUserRatingsQuality(u);
@@ -264,5 +253,16 @@ public class MyFrequentistModelML100KQualityTest {
 //			System.out.println("");
 //			System.out.println(sum);
 		}
+	}
+	public double getMeanRatings(Collection<Rating> uRatings){		
+			double meanURatings = 0d;
+			if(!uRatings.isEmpty()){
+				for(Rating r:uRatings){
+					meanURatings+=r.getRating();
+				}
+				meanURatings/=uRatings.size();	
+			}
+		
+		return meanURatings;
 	}
 }

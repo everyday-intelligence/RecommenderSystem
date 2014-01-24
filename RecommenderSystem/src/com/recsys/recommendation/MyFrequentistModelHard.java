@@ -2,27 +2,13 @@ package com.recsys.recommendation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import weka.core.EuclideanDistance;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.ManhattanDistance;
-import weka.core.neighboursearch.LinearNNSearch;
-
-import com.recsys.CF_IC_RatingsAggregator.CF_IC_RatingAggregator;
-import com.recsys.CF_IC_RatingsAggregator.MeanAggregator;
-import com.recsys.CF_IC_RatingsAggregator.WeightedMeanAggregator;
-import com.recsys.CF_IC_RatingsAggregator.WeightedMeanNonBiasedAggregator;
 import com.recsys.Domain.CategoryGroupContextChecker;
 import com.recsys.Domain.GroupCategory;
-import com.recsys.Domain.GroupCategoryRating;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
 import com.recsys.Domain.RatingGroupChecker;
@@ -32,17 +18,8 @@ import com.recsys.Domain.RatingValueChecker;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
 import com.recsys.Domain.UserCategory;
-import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.matrix.AbstractMatrix;
-import com.recsys.matrix.AbstractVector;
-import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
-import com.recsys.similarity.AdjustedCosineSimilarity;
-import com.recsys.similarity.CosineDistanceNumber;
-import com.recsys.similarity.MAEDistanceNumber;
-import com.recsys.similarity.ManhattanDistanceNumber;
-import com.recsys.similarity.RMSEDistanceNumber;
-import com.recsys.similarity.SimilarityMeasure;
 import com.recsys.utils.PredicateUtils;
 
 public class MyFrequentistModelHard implements RecommendationStrategy {
@@ -176,6 +153,7 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 			 Double gmr = getGroupMeanRatings(activeUser.getGroup());
 			//System.out.println("biased "+r.getRating()+" nonbiased"+estim);
 			 double estim = r.getRating() - gmr+umr;
+			
 			r.setRating(estim);	
 			allRatingsEstimations.add(r);
 		}
@@ -201,7 +179,7 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 	
 	
 	
-	private double getUserMeanRatings(User user){		
+	public double getUserMeanRatings(User user){		
 		Double meanURatings = cacheAllUsersMeanRatings.get(user);
 		if (meanURatings==null) {
 			meanURatings=0d;
