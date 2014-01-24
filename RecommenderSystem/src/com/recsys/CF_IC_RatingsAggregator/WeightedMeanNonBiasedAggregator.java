@@ -23,15 +23,16 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 		Double estimation = 0d;
 		double norm = 0d;
 		for (Item it : itemNeighborhoodRatedByUser) {
-			estimation = estimation	+ (userItemRatingMatrix.get(user.getIdUser(), it.getIdItem()) - getItemMeanRatings(it, userItemRatingMatrix))
-					* itemItemSimilarityMatrix.get(item.getIdItem(),it.getIdItem());
-			norm += itemItemSimilarityMatrix.get(item.getIdItem(),it.getIdItem());
+			double denum = itemItemSimilarityMatrix.get(item.getIdItem(),it.getIdItem());
+			estimation = estimation	+ (userItemRatingMatrix.get(user.getIdUser(), it.getIdItem()) - getItemMeanRatings(it, userItemRatingMatrix))* denum;
+			norm += denum;
 		}
-		if(!estimation.isInfinite()&&estimation != 0){
+		if(!estimation.isInfinite()&&norm != 0){
 			estimation/=norm;
+			return estimation + itmMeanRatings;
 		}
-		return estimation + itmMeanRatings;
-	}
+		return 0d;
+}
 	
 	double getItemMeanRatings(Item itm, AbstractMatrix userItemRatingMatrix){
 		Double itmMeanRating=allItemsMeanRatings.get(itm);
@@ -41,7 +42,7 @@ public class WeightedMeanNonBiasedAggregator extends CF_IC_RatingAggregator{
 		itmMeanRating = 0d;
 		int nbItmRatings = 0;
 		AbstractVector allItmRatings = userItemRatingMatrix.getColumn(itm.getIdItem());
-		for(int i=0;i<allItmRatings.length;i++){
+		for(int i=0;i<allItmRatings.size();i++){
 			Double itmR = allItmRatings.get(i);
 			if(itmR!=0){
 				itmMeanRating+=itmR;

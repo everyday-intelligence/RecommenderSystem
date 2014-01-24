@@ -20,7 +20,8 @@ import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
-import com.recsys.matrix.IndexedSimpleMatrix;
+import com.recsys.matrix.AbstractMatrix;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.recommendation.ContentBasedFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
@@ -65,11 +66,11 @@ public class ContentBasedFilteringML100KQualityTest {
 		items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		
-		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
+		AbstractMatrix userItemRatingMatrix = (AbstractMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
 		
 		if(userItemRatingMatrix != null){
 			System.out.println("userItemRatingMatrix cached");
-			IndexedSimpleMatrix itemItemSimilarityMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(itemItemSimilarityMatrixCacheID);
+			AbstractMatrix itemItemSimilarityMatrix = (AbstractMatrix) RecSysCache.getJcs().get(itemItemSimilarityMatrixCacheID);
 			if(itemItemSimilarityMatrix != null){
 				System.out.println("itemItemSimilarityMatrix cached");
 				filtre = new ContentBasedFiltering(items, userItemRatingMatrix,itemItemSimilarityMatrix);

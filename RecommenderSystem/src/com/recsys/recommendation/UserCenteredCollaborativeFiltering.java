@@ -28,7 +28,7 @@ public class UserCenteredCollaborativeFiltering implements
 	public static final int K = 150;
 	public static final int NOTRATED = 0;
 	SimilarityMeasure<Double> pc = new CosineDistanceNumber<Double>();
-	CF_UC_RatingAggregator na = new WeightedMeanAggregator();
+	CF_UC_RatingAggregator na = new WeightedMeanNonBiasedAggregator();
 
 	public UserCenteredCollaborativeFiltering(List<User> users,List<Item> items, List<Rating> ratings) {
 		super();
@@ -62,10 +62,9 @@ public class UserCenteredCollaborativeFiltering implements
 		ArrayList<User> similarUsersList = neighborhood(simMap, activeUser);
 		List<Rating> allPossibleCandidatesEstimation = userRatingsEstimation(activeUser, similarUsersList,simMap);
 		if(allPossibleCandidatesEstimation == null || allPossibleCandidatesEstimation.isEmpty()){
-			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
+			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>(allPossibleCandidatesEstimation.size());
 			for (Rating r : allPossibleCandidatesEstimation) {
-				allPossibleCandidates.add(new Recommendation(r.getRatedItem(), r
-						.getRating()));
+				allPossibleCandidates.add(new Recommendation(r.getRatedItem(), r.getRating()));
 			}
 			return allPossibleCandidates;
 		}else{
@@ -80,7 +79,7 @@ public class UserCenteredCollaborativeFiltering implements
 	// Similarity: Pearson's correlation coefficient
 	public Map<User, Double> calculateUsersSimilarities(User activeUser) {
 
-		Map<User, Double> simMap = new HashMap<User, Double>();
+		Map<User, Double> simMap = new HashMap<User, Double>(users.size());
 		ArrayList<Double> userRatings = new ArrayList<Double>();
 		ArrayList<Double> activeUserRatings = new ArrayList<Double>();
 		// looking for common items
@@ -137,10 +136,11 @@ public class UserCenteredCollaborativeFiltering implements
 		if(pc.isSimilarity()){
 			Collections.reverse(simList);
 		}
-		double threashold = simList.get(Math.min(simList.size()-1, K));	
+		int nbS = Math.min(simList.size()-1, K);
+		double threashold = simList.get(nbS);	
 		
 		//System.out.println("user "+activeUser.getIdUser()+" sims vary from "+Collections.min(simList)+" to "+Collections.max(simList)+ " simMin = "+threashold);
-		ArrayList<User> neighborList = new ArrayList<User>();
+		ArrayList<User> neighborList = new ArrayList<User>(nbS);
 		for(User u:simMap.keySet()){
 			if(pc.isSimilarity()){
 				if(simMap.get(u)>=threashold){
@@ -164,7 +164,7 @@ public class UserCenteredCollaborativeFiltering implements
 			ArrayList<User> similarUserList, Map<User, Double> simMap) {
 
 		double estimation;
-		List<Rating> allPossibleCandidatesEstimations = new ArrayList<Rating>();
+		List<Rating> allPossibleCandidatesEstimations = new ArrayList<Rating>(items.size());
 
 		if (similarUserList==null || similarUserList.isEmpty()) {
 			System.out.println("No estimation");

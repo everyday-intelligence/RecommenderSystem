@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class AbstractVector {
 
-	public int length;
+	protected int length;
 	public abstract  double get(int index);
 	public abstract void set(int index, double val);
 	public AbstractVector(int length) {
@@ -12,5 +12,7 @@ public abstract class AbstractVector {
 		this.length = length;
 	}
 	public abstract List toList();
-	
+	public int size(){
+		return length;
+	}
 }

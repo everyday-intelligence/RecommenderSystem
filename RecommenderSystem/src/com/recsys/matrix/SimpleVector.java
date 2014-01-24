@@ -16,9 +16,7 @@ public class SimpleVector extends AbstractVector{
 		super(size);
 		this.vector = new double[size];
 	}
-	public int size(){
-		return vector.length;
-	}
+	
 	@Override
 	public double get(int index) {
 		return vector[index];
@@ -35,7 +33,11 @@ public class SimpleVector extends AbstractVector{
 	}
 	
 	public List<Double> toList(){
-		return null;
+		ArrayList<Double> list = new ArrayList<Double>(vector.length);
+		for(double d:vector){
+			list.add(d);			
+		}
+		return list;
 	}
 	
 }

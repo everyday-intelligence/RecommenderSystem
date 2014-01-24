@@ -1,5 +1,6 @@
 package com.recsys.similarity;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.recsys.recommendation.Mathematics;
@@ -17,11 +18,14 @@ public class AdjustedCosineSimilarity<Double> extends	NumbersSimilarityMeasure<j
 		if (!activeRatings.isEmpty() && otherUserRatings.size() > 1) {
 			double userMeanRatings = Mathematics.average(otherUserRatings);
 			double activeMeanRatings = Mathematics.average(activeRatings);	
-			
-			for (int nb = 0; nb < otherUserRatings.size(); nb++) {
-				numerateur += (activeRatings.get(nb) - activeMeanRatings) * (otherUserRatings.get(nb) - userMeanRatings);
-				denumerateurUser += Math.pow((activeRatings.get(nb) - activeMeanRatings),2);
-				denumerateurActive += Math.pow((otherUserRatings.get(nb) - userMeanRatings),2);
+			Iterator<java.lang.Double> i1 = activeRatings.iterator();
+			Iterator<java.lang.Double> i2 = otherUserRatings.iterator();
+			while(i1.hasNext()){
+				double double1 = i1.next();
+				double double2 = i2.next();
+				numerateur += (double1 - activeMeanRatings) * (double2 - userMeanRatings);
+				denumerateurUser += Math.pow((double1 - activeMeanRatings),2);
+				denumerateurActive += Math.pow((double2 - userMeanRatings),2);
 			}
 
 			simPears = numerateur/(Math.sqrt(denumerateurActive*denumerateurUser));

@@ -1,5 +1,6 @@
 package com.recsys.similarity;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class CosineDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
@@ -11,10 +12,14 @@ public class CosineDistanceNumber<Double> extends NumbersSimilarityMeasure<java.
 		double dist = 0d;
 		double normX = 0d;
 		double normY = 0d;
-		for(int i=0;i<values1.size();i++){
-			dist += values1.get(i)*values2.get(i);
-			normX+=Math.pow(values1.get(i),2);
-			normY+=Math.pow(values2.get(i),2);
+		Iterator<java.lang.Double> i1 = values1.iterator();
+		Iterator<java.lang.Double> i2 = values2.iterator();
+		while(i1.hasNext()){
+			double a1 = i1.next();
+			double a2 = i2.next();
+			dist += a1*a2;
+			normX+=Math.pow(a1,2);
+			normY+=Math.pow(a2,2);
 		}
 		double cosine = dist/(normX*normY);
 		//System.out.println(values1.size()+"-------------"+cosine);

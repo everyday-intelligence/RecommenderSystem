@@ -17,7 +17,7 @@ import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 
-public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
+public class ItemsNORMRatingsKmeansClusterer implements ItemsClusterer {
 	private final int NC = 30;
 	
 	
@@ -64,6 +64,7 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 					r.getRatedItem().getIdItem(),
 					r.getRating());
 		}
+		userItemRatingMatrix.NonBiasedRow();
 		int iSize = items.size();
 		List<Instance> instancesList = new ArrayList<Instance>(iSize);
 		for(int i=0;i<iSize;i++){
@@ -90,7 +91,7 @@ public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
 	
 	@Override
 	public String toString() {
-		return "ItemsRatingsKmeansClusterer_NC_"+NC;
+		return "ItemsNORMRatingsKmeansClusterer_NC_"+NC;
 	}
 
 	@Override

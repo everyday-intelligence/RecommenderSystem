@@ -8,7 +8,7 @@ public class PredicateUtils {
 
 	// put this in some class
 	public static <T> Collection<T> findAll(Collection<T> coll, Checker<T> chk) {
-	    List<T> l = new ArrayList<T>();
+	    List<T> l = new ArrayList<T>(coll.size());
 	    for (T obj : coll) {
 	         if (chk.verifyPredicate(obj))
 	             l.add(obj);

@@ -1,5 +1,6 @@
 package com.recsys.similarity;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class MAEDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
@@ -10,8 +11,10 @@ public class MAEDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lan
 			List<java.lang.Double> values2) {
 		
 		double error = 0d;
-		for (int i = 0; i < values1.size(); i++) {
-			error += Math.abs(values1.get(i) - values2.get(i));
+		Iterator<java.lang.Double> i1 = values1.iterator();
+		Iterator<java.lang.Double> i2 = values2.iterator();
+		while(i1.hasNext()){
+			error += Math.abs(i1.next() - i2.next());
 		}
 		
 		return error;

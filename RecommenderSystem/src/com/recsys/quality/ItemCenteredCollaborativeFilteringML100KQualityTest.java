@@ -20,7 +20,8 @@ import com.recsys.Domain.RatingItemChecker;
 import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
-import com.recsys.matrix.IndexedSimpleMatrix;
+import com.recsys.matrix.AbstractMatrix;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.recommendation.ItemCenteredCollaborativeFiltering;
 import com.recsys.recommendation.Mathematics;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
@@ -30,8 +31,8 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 
 	private static String databaseURL = "database/MovieLens";
 	private static String databaseName = "ml-100K";
-	private static String learningDatafile = "u1.base";
-	private static String testDatafile = "u1.test";
+	private static String learningDatafile = "ua.base";
+	private static String testDatafile = "ua.test";
 	private static String usersDatafile = "u.user";
 	private static String itemsDatafile = "u.item";
 	private static String learningRatingsFile = databaseURL+"/"+databaseName+"/"+learningDatafile;
@@ -64,11 +65,11 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 		items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
 		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 		
-		IndexedSimpleMatrix userItemRatingMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
+		AbstractMatrix userItemRatingMatrix = (AbstractMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
 		
 		if(userItemRatingMatrix != null){
 			System.out.println("userItemRatingMatrix cached");
-			IndexedSimpleMatrix itemItemSimilarityMatrix = (IndexedSimpleMatrix) RecSysCache.getJcs().get(itemItemSimilarityMatrixCacheID);
+			AbstractMatrix itemItemSimilarityMatrix = (AbstractMatrix) RecSysCache.getJcs().get(itemItemSimilarityMatrixCacheID);
 			if(itemItemSimilarityMatrix != null){
 				System.out.println("itemItemSimilarityMatrix cached");
 				filtre = new ItemCenteredCollaborativeFiltering(items, userItemRatingMatrix,itemItemSimilarityMatrix);
@@ -124,10 +125,13 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 			if (!estimatedItemRatings.isEmpty()) {
 				Rating estimatedItemRating = estimatedItemRatings.get(0);
 				predictedRating = estimatedItemRating.getRating();
+				if(Double.isNaN(predictedRating) || Double.isInfinite(predictedRating)){
+					predictedRating = 0;
+				}
 			} else {
 				predictedRating = 0;
 			}
-
+			
 			realsAndPredicted.add(new RealAndPrediction(realRating,
 					predictedRating));
 		}
@@ -188,8 +192,9 @@ public class ItemCenteredCollaborativeFilteringML100KQualityTest {
 
 		List<RealAndPrediction> outputs = new ArrayList<RealAndPrediction>();
 		for (Future<List<RealAndPrediction>> future : futures) {
-			if (future.get() != null) {
-				outputs.addAll(future.get());
+			List<RealAndPrediction> preds = future.get();
+			if (preds != null && !preds.isEmpty()) {
+				outputs.addAll(preds);
 			}
 		}
 		double mae = 0;

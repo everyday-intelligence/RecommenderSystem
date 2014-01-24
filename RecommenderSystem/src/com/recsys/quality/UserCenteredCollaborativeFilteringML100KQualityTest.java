@@ -90,10 +90,8 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
 		//System.out.println("-----------------------------------------");
 		Map<User, Double> simMap = filtre.calculateUsersSimilarities(activeUser);
-		ArrayList<User> similarUserList = filtre.neighborhood(simMap,
-				activeUser);
-		List<Rating> allEstimations = filtre.userRatingsEstimation(
-				activeUser, similarUserList,simMap);
+		ArrayList<User> similarUserList = filtre.neighborhood(simMap,activeUser);
+		List<Rating> allEstimations = filtre.userRatingsEstimation(activeUser, similarUserList,simMap);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());
@@ -104,14 +102,13 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 			return null;
 		}
 
-		List<RealAndPrediction> realsAndPredicted = new ArrayList<RealAndPrediction>();
+		List<RealAndPrediction> realsAndPredicted = new ArrayList<RealAndPrediction>(userRealRatings.size());
 
 		for (Rating r : userRealRatings) {
 			double realRating = r.getRating();
 			double predictedRating;
 
-			List<Rating> estimatedItemRatings = (List<Rating>) PredicateUtils
-					.findAll(allEstimations, new RatingItemChecker(r.getRatedItem()));
+			List<Rating> estimatedItemRatings = (List<Rating>) PredicateUtils.findAll(allEstimations, new RatingItemChecker(r.getRatedItem()));
 			if (!estimatedItemRatings.isEmpty()) {
 				Rating estimatedItemRating = estimatedItemRatings.get(0);
 				predictedRating = estimatedItemRating.getRating();
@@ -119,8 +116,7 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 				predictedRating = 0;
 			}
 
-			realsAndPredicted.add(new RealAndPrediction(realRating,
-					predictedRating));
+			realsAndPredicted.add(new RealAndPrediction(realRating,predictedRating));
 		}
 		try {
 			double mae = Mathematics.mae(realsAndPredicted);
@@ -157,6 +153,45 @@ public class UserCenteredCollaborativeFilteringML100KQualityTest {
 
 */
 	
+//	@Test
+//	public void allUsersRatingsQualityTestParallel()
+//			throws InterruptedException, ExecutionException {
+//		int threads = Runtime.getRuntime().availableProcessors();
+//		ExecutorService service = Executors.newFixedThreadPool(threads);
+//
+//		List<Future<List<RealAndPrediction>>> futures = new ArrayList<Future<List<RealAndPrediction>>>();
+//		for (final User u : users) {
+//			Callable<List<RealAndPrediction>> callable = new Callable<List<RealAndPrediction>>() {
+//				public List<RealAndPrediction> call() throws Exception {
+//					// process your input here and compute the output
+//					List<RealAndPrediction> output = oneUserRatingsQuality(u);
+//					return output;
+//				}
+//			};
+//			futures.add(service.submit(callable));
+//		}
+//
+//		service.shutdown();
+//
+//		List<RealAndPrediction> outputs = new ArrayList<RealAndPrediction>();
+//		for (Future<List<RealAndPrediction>> future : futures) {
+//			if (future.get() != null) {
+//				outputs.addAll(future.get());
+//			}
+//		}
+//		double mae = 0;
+//		double rmse = 0;
+//		try {
+//			mae = Mathematics.mae(outputs);
+//			rmse = Mathematics.rmse(outputs);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println("total mae = " + mae);
+//		System.out.println("total rmse = " + rmse);
+//		RecSysCache.getJcs().dispose();
+//	}
 	@Test
 	public void allUsersRatingsQualityTestParallel()
 			throws InterruptedException, ExecutionException {

@@ -136,7 +136,7 @@ public class ItemCenteredCollaborativeFiltering implements
 	public ArrayList<Item> neighborhood__(Item item) {
 		List<Double> itemSimilarityValues = new ArrayList<Double>();
 		AbstractVector row = itemItemSimilarityMatrix.getRow(item.getIdItem());
-		for (int i = 0; i < row.length; i++) {
+		for (int i = 0; i < row.size(); i++) {
 			itemSimilarityValues.add(row.get(i));
 		}
 		Collections.sort(itemSimilarityValues);
@@ -192,7 +192,7 @@ public class ItemCenteredCollaborativeFiltering implements
 			// cosine
 			List<Double> it1CommonRatings = new ArrayList<Double>();
 			List<Double> it2CommonRatings = new ArrayList<Double>();
-			for (int i = 0; i < it1Ratings.length; i++) {
+			for (int i = 0; i < it1Ratings.size(); i++) {
 				if (it1Ratings.get(i) != 0 && it1Ratings.get(i) != 0) {
 					it1CommonRatings.add(it1Ratings.get(i));
 					it2CommonRatings.add(it2Ratings.get(i));

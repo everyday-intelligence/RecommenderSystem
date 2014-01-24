@@ -24,8 +24,9 @@ public class WeightedMeanAggregator extends CF_UC_RatingAggregator {
 			for (User user : similarUsers) {
 				Double r_u_it = dataMatrix.get(user.getIdUser(), it.getIdItem());
 				if (r_u_it != 0) {
-					avg += r_u_it	* simMap.get(user);
-					norm += simMap.get(user);
+					Double simU = simMap.get(user);
+					avg += r_u_it	* simU;
+					norm += simU;
 				}
 			}
 			if (avg != 0) {

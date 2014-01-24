@@ -2,6 +2,8 @@ package com.recsys.matrix;
 
 import java.io.Serializable;
 
+import com.recsys.recommendation.Mathematics;
+
 public abstract class AbstractMatrix  implements Serializable{
 
 
@@ -36,4 +38,13 @@ public abstract class AbstractMatrix  implements Serializable{
 		return new MatrixCoordinates(rowsNumber, columnsNumber);
 	}
 
+	public void NonBiasedRow(){
+		for(int i=0;i<rowsNumber;i++){
+			double avgRow = Mathematics.average(getRow(i).toList());
+			for(int j=0;j<columnsNumber;j++){
+				double val = get(i,j);
+				set(i,j,val-avgRow);
+			}
+		}
+	}
 }

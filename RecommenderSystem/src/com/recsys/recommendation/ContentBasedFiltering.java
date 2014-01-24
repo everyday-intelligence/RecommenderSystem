@@ -77,7 +77,7 @@ public class ContentBasedFiltering implements
 		List<Rating> allPossibleCandidatesEstimation = userRatingsEstimation(activeUser);
 		if (allPossibleCandidatesEstimation == null
 				|| allPossibleCandidatesEstimation.isEmpty()) {
-			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>();
+			List<Recommendation> allPossibleCandidates = new ArrayList<Recommendation>(allPossibleCandidatesEstimation.size());
 			for (Rating r : allPossibleCandidatesEstimation) {
 				allPossibleCandidates.add(new Recommendation(r.getRatedItem(),
 						r.getRating()));
@@ -90,7 +90,7 @@ public class ContentBasedFiltering implements
 	}
 
 	public List<Rating> userRatingsEstimation(User activeUser) {
-		List<Rating> allRatingsEstimations = new ArrayList<Rating>();
+		List<Rating> allRatingsEstimations = new ArrayList<Rating>(items.size());
 		for (Item it : items) {
 			ArrayList<Item> itemNeighborhoodRatedByUser = itemNeighborhoodRatedByUser(activeUser, it);
 			Double estimatedRating = na.aggregate(activeUser, it, itemItemSimilarityMatrix, userItemRatingMatrix, itemNeighborhoodRatedByUser );
@@ -116,9 +116,10 @@ public class ContentBasedFiltering implements
 		if (pc.isSimilarity()) {
 			Collections.reverse(itemRatedSimilarityValues);
 		}
-		double threashold = itemRatedSimilarityValues.get(Math.min(
-				itemRatedSimilarityValues.size() - 1, K));
-		ArrayList<Item> neighborList = new ArrayList<Item>();
+		int nbS = Math.min(
+				itemRatedSimilarityValues.size() - 1, K);
+		double threashold = itemRatedSimilarityValues.get(nbS);
+		ArrayList<Item> neighborList = new ArrayList<Item>(nbS);
 
 		for (Item itm : itemsRatedByUser) {
 			if (itemItemSimilarityMatrix.get(item.getIdItem(), itm.getIdItem()) != Double.NaN) {

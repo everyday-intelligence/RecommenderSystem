@@ -11,7 +11,6 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.Mathematics;
 
 public class MeanAggregator extends CF_UC_RatingAggregator {
-
 	@Override
 	public Double aggregate(User activeUser, Item it, List<User> similarUsers,List<Item> items,
 			Map<User, Double> simMap, AbstractMatrix dataMatrix) {

@@ -13,17 +13,19 @@ public class MatrixFactory {
 	public static final int INDEXED_VECTOR_MATRIX = 2;
 	
 	
-	public static final int matrixType = 0;
+	public static final int matrixType = 1;
 
 
 	public static AbstractMatrix createMatrix(List<User> users, List<Item> items){
 		//on va lire un fichier de configuretion qui dira quel type de matrice utiliser pour le moment on teste avec la SimpleMatrix
-		List<Long> usersLabels = new ArrayList<Long>();
-		List<Long> itemsLabels = new ArrayList<Long>();
-		for(int i=0;i<users.size();i++){
+		int uSize = users.size();
+		int iSize = items.size();
+		List<Long> usersLabels = new ArrayList<Long>(uSize);
+		List<Long> itemsLabels = new ArrayList<Long>(iSize);
+		for(int i=0;i<uSize;i++){
 			usersLabels.add(users.get(i).getIdUser());
 		}
-		for(int i=0;i<items.size();i++){
+		for(int i=0;i<iSize;i++){
 			itemsLabels.add(items.get(i).getIdItem());
 		}
 		
@@ -58,9 +60,9 @@ public class MatrixFactory {
 	
 	
 	public static AbstractMatrix createItemsMatrix(List<Item> items) {
-		List<Long> itemsLabels = new ArrayList<Long>();
-
-		for(int i=0;i<items.size();i++){
+		int iSize = items.size();
+		List<Long> itemsLabels = new ArrayList<Long>(iSize);
+		for(int i=0;i<iSize;i++){
 			itemsLabels.add(items.get(i).getIdItem());
 		}
 		if(matrixType==INDEXED_SIMPLE_MATRIX){
@@ -74,9 +76,10 @@ public class MatrixFactory {
 		}
 	}
 	public static AbstractMatrix createUsersMatrix(List<User> users) {
-		List<Long> usersLabels = new ArrayList<Long>();
+		int uSize = users.size();
+		List<Long> usersLabels = new ArrayList<Long>(uSize);
 
-		for(int i=0;i<users.size();i++){
+		for(int i=0;i<uSize;i++){
 			usersLabels.add(users.get(i).getIdUser());
 		}
 		if(matrixType==INDEXED_SIMPLE_MATRIX){

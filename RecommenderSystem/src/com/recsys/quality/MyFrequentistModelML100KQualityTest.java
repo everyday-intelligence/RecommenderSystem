@@ -30,6 +30,7 @@ import com.recsys.Domain.User;
 import com.recsys.DomainDAO.MovieLens100KDataReader;
 import com.recsys.cache.RecSysCache;
 import com.recsys.custering.*;
+import com.recsys.matrix.AbstractMatrix;
 import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.recommendation.ContentBasedFiltering;
 import com.recsys.recommendation.Mathematics;
@@ -52,10 +53,7 @@ public class MyFrequentistModelML100KQualityTest {
 	private static String testRatingsFile = databaseURL+"/"+databaseName+"/"+testDatafile;
 
 
-	List<Double> predictedUsersRatings = new ArrayList<Double>();
-	List<Double> realUsersRatings = new ArrayList<Double>();
-	
-	/*
+		/*
 	 * private EntityManagerFactory
 	 * emf=Persistence.createEntityManagerFactory("RecommenderSystem"); ItemDAO
 	 * itemD=new ItemDAO(emf); UserDAO userD=new UserDAO(emf); RatingDAO
@@ -72,41 +70,40 @@ public class MyFrequentistModelML100KQualityTest {
 	private static MyFrequentistModelHard filtre;
 
 	private ItemsClusterer itemsClusterer = new ItemsRatingsKmeansClusterer();
-	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
+	private UsersClusterer usersClusterer = new UsersDemographicsNORMRatingsKmeansClusterer();
 	
 	private String ITEMSCLUSTERDCACHE = "";
 	private String USERSCLUSTERDCACHE = "";
  
+	private static final String userItemRatingMatrixCacheID = "userItemRatingMatrix"+"_"+databaseName+"_"+learningDatafile;
+
 	@Before
 	public void initData() throws Exception {
+		
 		dataBaseEntries = MovieLens100KDataReader.findRatingsFile(learningRatingsFile);
 		USERSCLUSTERDCACHE+=usersClusterer.toString();
 		ITEMSCLUSTERDCACHE+=itemsClusterer.toString();
 		items=(List<Item>) RecSysCache.getJcs().get(ITEMSCLUSTERDCACHE);
 		if(items == null){
+			System.out.println("miss "+ITEMSCLUSTERDCACHE);
 			items = MovieLens100KDataReader.findItemsFile(itemsFile);// itemD.findItems();
-			//cas ou lotr null
-			users=(List<User>) RecSysCache.getJcs().get(USERSCLUSTERDCACHE);
-			if(users == null){
-				users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
-			}
+			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 			items = itemsClusterer.cluster(items, users, dataBaseEntries);
-			//cas ou lotr null juste pour le precedent
-			users= null;
-			//emItemsClustering();
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
-			System.out.println("items clustering exists");
+			System.out.println("hit "+ITEMSCLUSTERDCACHE);
 		}
 		users=(List<User>) RecSysCache.getJcs().get(USERSCLUSTERDCACHE);
 		if(users == null){
-			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();	
+			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
 			users = usersClusterer.cluster(items, users, dataBaseEntries);
-			//emUsersClustering();
 			RecSysCache.getJcs().put(USERSCLUSTERDCACHE, users);
 		}else{
-			System.out.println("users clustering exists");
+			System.out.println("hit "+USERSCLUSTERDCACHE);			
 		}
+
+		
+
 		for(Rating r:dataBaseEntries){
 			User u = r.getRatingUser();
 			Item it = r.getRatedItem();
@@ -119,7 +116,12 @@ public class MyFrequentistModelML100KQualityTest {
 		System.out.println("NG = "+usersClusterer.getNG());
 		System.out.println("NC = "+itemsClusterer.getNC());
 		//filtre = new MyFrequentistModelSoft(users, items, dataBaseEntries,usersClusterer.getNG(),itemsClusterer.getNC());
-		filtre = new MyFrequentistModelHard(users, items, dataBaseEntries);
+		AbstractMatrix userItemRatingMatrix = (AbstractMatrix) RecSysCache.getJcs().get(userItemRatingMatrixCacheID);
+		if(userItemRatingMatrix == null){
+			filtre = new MyFrequentistModelHard(users, items, dataBaseEntries);
+		}else{
+			filtre = new MyFrequentistModelHard(users, items, dataBaseEntries,userItemRatingMatrix);			
+		}
 	}
 
 /*
@@ -142,7 +144,7 @@ public class MyFrequentistModelML100KQualityTest {
 			return null;
 		}
 
-		List<RealAndPrediction> realsAndPredicted = new ArrayList<RealAndPrediction>();
+		List<RealAndPrediction> realsAndPredicted = new ArrayList<RealAndPrediction>(userRealRatings.size());
 
 		for (Rating r : userRealRatings) {
 			double realRating = r.getRating();
@@ -153,12 +155,14 @@ public class MyFrequentistModelML100KQualityTest {
 			if (!estimatedItemRatings.isEmpty()) {
 				Rating estimatedItemRating = estimatedItemRatings.get(0);
 				predictedRating = estimatedItemRating.getRating();
+				if(Double.isNaN(predictedRating) || Double.isInfinite(predictedRating)){
+					predictedRating = 0;
+				}
 			} else {
 				predictedRating = 0;
 			}
 
-			realsAndPredicted.add(new RealAndPrediction(realRating,
-					predictedRating));
+			realsAndPredicted.add(new RealAndPrediction(realRating,predictedRating));
 		}
 		//System.out.println(realsAndPredicted);
 		try {
@@ -166,7 +170,6 @@ public class MyFrequentistModelML100KQualityTest {
 			double rmse = Mathematics.rmse(realsAndPredicted);
 			System.out.format("User %d \t %d \t %.3f \t %.3f \n", activeUser.getIdUser(), userRealRatings.size(), mae, rmse);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return realsAndPredicted;
@@ -187,7 +190,6 @@ public class MyFrequentistModelML100KQualityTest {
 			mae = Mathematics.mae(allPredictions);
 			rmse = Mathematics.rmse(allPredictions);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("total mae = " + mae);
@@ -229,7 +231,6 @@ public class MyFrequentistModelML100KQualityTest {
 			mae = Mathematics.mae(outputs);
 			rmse = Mathematics.rmse(outputs);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("total mae = " + mae);

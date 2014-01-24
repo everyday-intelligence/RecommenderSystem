@@ -1,5 +1,6 @@
 package com.recsys.similarity;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ManhattanDistanceNumber<Double> extends NumbersSimilarityMeasure<java.lang.Double> {
@@ -9,8 +10,10 @@ public class ManhattanDistanceNumber<Double> extends NumbersSimilarityMeasure<ja
 	public java.lang.Double measureSimilarity(List<java.lang.Double> values1,
 			List<java.lang.Double> values2) {
 		double dist = 0d;
-		for(int i=0;i<values1.size();i++){
-			dist += Math.abs(values1.get(i)-values2.get(i));
+		Iterator<java.lang.Double> i1 = values1.iterator();
+		Iterator<java.lang.Double> i2 = values2.iterator();
+		while(i1.hasNext()){
+			dist += Math.abs(i1.next()-i2.next());
 		}
 		if(dist==0){
 			return 1d;

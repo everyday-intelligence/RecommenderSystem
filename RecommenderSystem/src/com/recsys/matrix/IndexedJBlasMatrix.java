@@ -18,7 +18,12 @@ public class IndexedJBlasMatrix extends AbstractMatrix implements Serializable{
 	
 	public IndexedJBlasMatrix(List<Long>rowsLabels, List<Long>colsLabels) {
 		super(rowsLabels.size(), colsLabels.size());
-		matrix = new DoubleMatrix(rowsNumber, columnsNumber, 0);
+		matrix = new DoubleMatrix(rowsNumber, columnsNumber);
+        for(int i=0;i<getRowsNumber();i++){
+			for(int j=0;j<getColumnsNumber();j++){
+				set(i,j,0d);
+			}
+		}
 		rowLabelMatrixRowMapping = new HashMap<Long,Integer>(rowsLabels.size());
 		for(int i=0;i<rowsLabels.size();i++){
 			rowLabelMatrixRowMapping.put(rowsLabels.get(i), i);
@@ -70,22 +75,17 @@ public class IndexedJBlasMatrix extends AbstractMatrix implements Serializable{
     
 	@Override
 	public AbstractVector getRow(int rowNumber) {
-		SimpleVector v = new SimpleVector(rowNumber);
+		
 		double[] vd = matrix.getRow(rowNumber).toArray();
-		for(int i=0;i<vd.length;i++){
-			v.set(i, vd[i]);
-		}
-		return v;
+		
+		return new SimpleVector(vd);
 	}
 
 	@Override
 	public AbstractVector getColumn(int colNumber) {
-		SimpleVector v = new SimpleVector(colNumber);
 		double[] vd = matrix.getColumn(colNumber).toArray();
-		for(int i=0;i<vd.length;i++){
-			v.set(i, vd[i]);
-		}
-		return v;
+		return  new SimpleVector(vd);
+
 	}
 
 	
