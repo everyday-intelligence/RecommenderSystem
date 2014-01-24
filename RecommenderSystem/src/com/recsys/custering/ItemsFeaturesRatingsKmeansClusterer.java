@@ -24,7 +24,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 5;
+	private final int NC = 50;
 	
 	
 	@Override
@@ -49,9 +49,11 @@ public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
 			itemsClusterer.buildClusterer(itemsDataset);
 			// System.out.println(clusterer.toString());
 			int[] clusterAssignments = itemsClusterer.getAssignments();
-			for (int i = 0; i < items.size(); i++) {
-				items.get(i).setCategory(clusterAssignments[i]);
-				items.get(i).setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
+			int i=0;
+			for (Item itm: items) {
+				itm.setCategory(clusterAssignments[i]);
+				itm.setCategoriesMemberships(itemsClusterer.distributionForInstance(itemsDataset.instance(i)));
+				i++;
 
 			} // output # of clusters
 		} catch (Exception e) {
@@ -74,8 +76,10 @@ public class ItemsFeaturesRatingsKmeansClusterer implements ItemsClusterer {
 		
 		for(User u : users){
 			itemsFeaturesRatingsDataset.insertAttributeAt(new Attribute(u.getIdUser()+""), itemsFeaturesRatingsDataset.numAttributes());
-			for(int i=0;i<items.size();i++){
-				itemsFeaturesRatingsDataset.instance(i).setValue(itemsFeaturesRatingsDataset.numAttributes() - 1, userItemRatingMatrix.get(u.getIdUser(), items.get(i).getIdItem()));
+			int i=0;
+			for(Item itm:items){
+				itemsFeaturesRatingsDataset.instance(i).setValue(itemsFeaturesRatingsDataset.numAttributes() - 1, userItemRatingMatrix.get(u.getIdUser(), itm.getIdItem()));
+				i++;
 			}
 		}
 		return itemsFeaturesRatingsDataset;

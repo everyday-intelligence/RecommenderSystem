@@ -24,7 +24,7 @@ import com.recsys.matrix.MatrixFactory;
 import com.recsys.recommendation.UserCenteredCollaborativeFiltering;
 
 public class UsersRatingsKmeansClusterer implements UsersClusterer {
-	private final int NG = 20;
+	private final int NG = 30;
 	
 	@Override
 	public List<User> cluster(List<Item> items,List<User> users, List<Rating> ratings) {

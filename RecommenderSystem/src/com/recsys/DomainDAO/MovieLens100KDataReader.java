@@ -30,7 +30,7 @@ public class MovieLens100KDataReader{
 
 	// Read the users' Id from the file
 	public static List<User> findUsersFile(String fichier) {
-		List<User> userList = new ArrayList<User>();
+		List<User> userList = new ArrayList<User>(1000);
 		try {
 			InputStream ips = new FileInputStream(fichier);
 			InputStreamReader ipsr = new InputStreamReader(ips);
@@ -78,7 +78,7 @@ public class MovieLens100KDataReader{
 	}
 	
 	public static Instances fromItemsToWekaDataset(List<Item> items) {
-		List<Instance> instancesList = new ArrayList<Instance>();
+		List<Instance> instancesList = new ArrayList<Instance>(1000);
 		int numAttributes = MovieLensItemDataParser.attributesNames.length;
 		Map<String, ArrayList<String>> categoricalVariablesValues = new HashMap<String,ArrayList<String>>();
 		for(Item itm:items){
@@ -173,7 +173,7 @@ public class MovieLens100KDataReader{
 	
 
 	public static Instances fromUsersToWekaDataset(List<User> users) {
-		List<Instance> instancesList = new ArrayList<Instance>();
+		List<Instance> instancesList = new ArrayList<Instance>(1000);
 		int numAttributes = MovieLensUserDataParser.attributesNames.length;
 		Map<String, ArrayList<String>> categoricalVariablesValues = new HashMap<String,ArrayList<String>>();
 		for(User itm:users){
@@ -268,7 +268,7 @@ public class MovieLens100KDataReader{
 	
 
 	public static List<Rating> findRatingsFile(String fichier) {
-		List<Rating> ratingList = new ArrayList<Rating>();
+		List<Rating> ratingList = new ArrayList<Rating>(100000);
 		try {
 			InputStream ips = new FileInputStream(fichier);
 			InputStreamReader ipsr = new InputStreamReader(ips);

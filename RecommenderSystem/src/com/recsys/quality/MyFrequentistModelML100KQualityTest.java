@@ -69,8 +69,8 @@ public class MyFrequentistModelML100KQualityTest {
 	private static List<Rating> dataBaseEntries;
 	private static MyFrequentistModelHard filtre;
 
-	private ItemsClusterer itemsClusterer = new ItemsRatingsKmeansClusterer();
-	private UsersClusterer usersClusterer = new UsersDemographicsNORMRatingsKmeansClusterer();
+	private ItemsClusterer itemsClusterer = new ItemsFeaturesRatingsKmeansClusterer();
+	private UsersClusterer usersClusterer = new UsersDemographicsRatingsKmeansClusterer();
 	
 	private String ITEMSCLUSTERDCACHE = "";
 	private String USERSCLUSTERDCACHE = "";
@@ -92,7 +92,9 @@ public class MyFrequentistModelML100KQualityTest {
 			RecSysCache.getJcs().put(ITEMSCLUSTERDCACHE, items);
 		}else{
 			System.out.println("hit "+ITEMSCLUSTERDCACHE);
-		}
+		}				users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+		users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
+
 		users=(List<User>) RecSysCache.getJcs().get(USERSCLUSTERDCACHE);
 		if(users == null){
 			users = MovieLens100KDataReader.findUsersFile(usersFile);// userD.findUsers();
@@ -134,7 +136,7 @@ public class MyFrequentistModelML100KQualityTest {
 	
 	// Rating estimation
 	public List<RealAndPrediction> oneUserRatingsQuality(User activeUser) {
-		List<Rating> allEstimations = filtre.userRatingsEstimationExpectation(activeUser);
+		List<Rating> allEstimations = filtre.userRatingsEstimationExpectationNonBiased(activeUser);
 		/* begin Quality Test */
 		List<Rating> userRealRatings = MovieLens100KDataReader.findUserRatings(
 				testRatingsFile, activeUser.getIdUser());

@@ -18,7 +18,7 @@ import com.recsys.matrix.IndexedSimpleMatrix;
 import com.recsys.matrix.MatrixFactory;
 
 public class ItemsRatingsKmeansClusterer implements ItemsClusterer {
-	private final int NC = 30;
+	private final int NC = 40;
 	
 	
 	@Override 

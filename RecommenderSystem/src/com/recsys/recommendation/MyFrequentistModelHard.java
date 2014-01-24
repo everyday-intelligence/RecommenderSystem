@@ -25,7 +25,9 @@ import com.recsys.Domain.GroupCategory;
 import com.recsys.Domain.GroupCategoryRating;
 import com.recsys.Domain.Item;
 import com.recsys.Domain.Rating;
+import com.recsys.Domain.RatingGroupChecker;
 import com.recsys.Domain.RatingUserCategoryChecker;
+import com.recsys.Domain.RatingUserChecker;
 import com.recsys.Domain.RatingValueChecker;
 import com.recsys.Domain.Recommendation;
 import com.recsys.Domain.User;
@@ -50,9 +52,11 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 	private List<Rating> ratings;
 
 	private Map<GroupCategory, Double> cacheRatings = new Hashtable<GroupCategory, Double>();
+	private Map<GroupCategory, Double> cacheGroupCategoryMeanRating = new Hashtable<GroupCategory, Double>();
 	private Map<UserCategory, Double> cacheUserCategoryMeanRating = new Hashtable<UserCategory, Double>();
 	private AbstractMatrix userItemRatingMatrix;
 	private static Map<User, Double> cacheAllUsersMeanRatings = new ConcurrentHashMap<User, Double>();
+	private static Map<Double, Double> cacheAllGroupsMeanRatings = new ConcurrentHashMap<Double, Double>();
 
 	public MyFrequentistModelHard(List<User> users, List<Item> items,
 			List<Rating> ratings) {
@@ -162,15 +166,25 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 	}
 	public List<Rating> userRatingsEstimationExpectationNonBiased(User activeUser) {
 		 List<Rating> biasedRatings = userRatingsEstimationExpectation(activeUser);
+		List<Rating> allRatingsEstimations = new ArrayList<Rating>(items.size());
 		 for(Rating r:biasedRatings){
-			r.setRating(r.getRating() - getGroupCategoryMeanRatings(activeUser.getGroup(), r.getRatedItem().getCategory())+getUserCategoryMeanRatings(activeUser,r.getRatedItem().getCategory()));
+			//double ucmr = getUserCategoryMeanRatings(activeUser,r.getRatedItem().getCategory());
+			//double gcmr = getGroupCategoryMeanRatings(activeUser.getGroup(), r.getRatedItem().getCategory());
+			//System.out.println("ucmr="+ucmr+" gcmr"+gcmr);
+			//double estim = r.getRating() - gcmr+ucmr;
+			 double umr = getUserMeanRatings(activeUser);
+			 Double gmr = getGroupMeanRatings(activeUser.getGroup());
+			//System.out.println("biased "+r.getRating()+" nonbiased"+estim);
+			 double estim = r.getRating() - gmr+umr;
+			r.setRating(estim);	
+			allRatingsEstimations.add(r);
 		}
-		return biasedRatings;
+		return allRatingsEstimations;
 	}
 	
 	private Double getGroupCategoryMeanRatings(double group,double category) {
 		GroupCategory groupCategory = new GroupCategory(group, category);
-		Double gpCatMeanRating = cacheRatings.get(groupCategory);
+		Double gpCatMeanRating = cacheGroupCategoryMeanRating.get(groupCategory);
 		if (gpCatMeanRating == null) {
 			Collection<Rating> grpCatRatings = PredicateUtils.findAll(ratings,new CategoryGroupContextChecker(group, category));
 			gpCatMeanRating = 0d;
@@ -180,7 +194,7 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 				}
 				gpCatMeanRating/=grpCatRatings.size();
 			}
-			cacheRatings.put(groupCategory, gpCatMeanRating);
+			cacheGroupCategoryMeanRating.put(groupCategory, gpCatMeanRating);
 		}
 		return gpCatMeanRating;
 	}
@@ -190,37 +204,34 @@ public class MyFrequentistModelHard implements RecommendationStrategy {
 	private double getUserMeanRatings(User user){		
 		Double meanURatings = cacheAllUsersMeanRatings.get(user);
 		if (meanURatings==null) {
-			meanURatings = 0d;
-			int nbURatings = 0;		
-				AbstractVector userAllRatings = userItemRatingMatrix.getRow(user.getIdUser());
-				for(int i=0;i<userAllRatings.size();i++){
-					double ruItm = userAllRatings.get(i);
-					if (ruItm != 0) {
-						meanURatings += ruItm;
-						nbURatings++;
-					}
+			meanURatings=0d;
+			Collection<Rating> uRatings = PredicateUtils.findAll(ratings,new RatingUserChecker(user));
+			if(!uRatings.isEmpty()){
+				for(Rating r:uRatings){
+					meanURatings+=r.getRating();
 				}
-			if (nbURatings == 0) {
-				cacheAllUsersMeanRatings.put(user, getGroupMeanRatings(user.getGroup()));
-			} else {
-				meanURatings /= nbURatings;
-				cacheAllUsersMeanRatings.put(user, meanURatings);
+				meanURatings/=uRatings.size();	
 			}
 		}
+		cacheAllUsersMeanRatings.put(user, meanURatings);
 		//System.out.println(hit/nbCalls+"%");
 		return meanURatings;
 	}
 	private Double getGroupMeanRatings(double group) {
-		double gpMeanRating = 0d;
-		int nbR = 0;
-			for(Rating r:ratings){
-				if(r.getRatingUser().getGroup() == group){
-					gpMeanRating+=r.getRating();	
-					nbR++;
+		Double gMeanRAtings = cacheAllGroupsMeanRatings.get(group);
+		if (gMeanRAtings==null) {
+			gMeanRAtings=0d;
+			Collection<Rating> gRatings = PredicateUtils.findAll(ratings,new RatingGroupChecker(group));
+			if(!gRatings.isEmpty()){
+				for(Rating r:gRatings){
+					gMeanRAtings+=r.getRating();
 				}
+				gMeanRAtings/=gRatings.size();	
 			}
-			gpMeanRating/=nbR;
-		return gpMeanRating;
+		}
+		cacheAllGroupsMeanRatings.put(group, gMeanRAtings);
+		//System.out.println(hit/nbCalls+"%");
+		return gMeanRAtings;
 	}
 	private double getUserCategoryMeanRatings(User user,double category){
 		UserCategory userCategory = new UserCategory(user.getIdUser(), category);
